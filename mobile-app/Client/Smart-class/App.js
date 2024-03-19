@@ -1,18 +1,14 @@
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import { MainPage } from './page/main-page';
+import { MainPageTeacher } from './page/main-page-teacher/main-page-teacher';
+import { globalStyles } from './style/global';
 
+
+const DefaultPage = MainPageTeacher();
 export default function App() {
   return (
-      <MainPage/>
+      <DefaultPage globalStyle={globalStyles}/>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
