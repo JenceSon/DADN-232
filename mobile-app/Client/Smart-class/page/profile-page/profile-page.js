@@ -1,9 +1,10 @@
 import React from "react";
 import { Text, View } from "react-native";
+import { globalStyles } from "../../style/global";
 
-export function Profile({globalStyle}){
+export function Profile({navigation}){
     return (
-        <View>
+        <View style = {globalStyles.container}>
             <Text>Profile</Text>
         </View>
     )

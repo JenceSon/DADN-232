@@ -7,3 +7,9 @@ export const globalStyles = StyleSheet.create({
       justifyContent: 'center',
     },
   });
+
+  export const  colors = {
+    navigationColorActive : '#3DB2FF',
+    navigatorColorInActive : '#000000',
+    headerColor : '#ffffff',
+  };

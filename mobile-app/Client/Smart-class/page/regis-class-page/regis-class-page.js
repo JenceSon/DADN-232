@@ -1,10 +1,11 @@
 import React from "react";
 import { Text, View } from "react-native";
+import { globalStyles } from "../../style/global";
 
-export function RegisClass({globalStyle}){
+export function RegisterClass({navigation}){
     return (
-        <View>
-            <Text>Regis class page</Text>
+        <View style = {globalStyles.container}>
+            <Text>Profile</Text>
         </View>
     )
 }
