@@ -1,5 +1,11 @@
 import React from "react";
+import { View } from "react-native";
+import { globalStyles } from "../../style/global";
 
 export function Mic(){
-    return null;
+    return(
+        <View style = {globalStyles.container}>
+            
+        </View>
+    )
 }
