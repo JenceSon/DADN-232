@@ -30,6 +30,7 @@ export function CalendarBox ()  {
                 shadowOffset: { width: 2, height: 4 },
                 shadowOpacity: 0.15,
                 shadowRadius: 3,
+                elevation: 3,
             }}
           >
             <View
@@ -45,6 +46,7 @@ export function CalendarBox ()  {
                 shadowOffset: { width: 2, height: 4 },
                 shadowOpacity: 0.15,
                 shadowRadius: 3,
+                elevation: 3,
                 flexGrow: 1,
               }}
             >
@@ -58,8 +60,8 @@ export function CalendarBox ()  {
                 <Text
                   style={{
                     fontSize: 16,
-                    fontWeight: "light",
-                    color: "#beeefa",
+                    fontWeight: "bold",
+                    color: "#98e6fa",
                     marginTop: 12,
                   }}
                 >
@@ -78,8 +80,8 @@ export function CalendarBox ()  {
                 <Text
                   style={{
                     fontSize: 16,
-                    fontWeight: "light",
-                    color: "#beeefa",
+                    fontWeight: "bold",
+                    color: "#98e6fa",
                     marginTop: 12,
                   }}
                 >
