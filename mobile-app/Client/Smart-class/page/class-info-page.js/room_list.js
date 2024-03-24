@@ -41,6 +41,18 @@ export function RoomList() {
       id: "9",
       title: "Ninth Item",
     },
+    {
+      id: "10",
+      title: "Tenth Item",
+    },
+    {
+      id: "11",
+      title: "Eleventh Item",
+    },
+    {
+      id: "12",
+      title: "Twelfth Item",
+    }
   ];
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState("");
@@ -64,11 +76,11 @@ export function RoomList() {
 
             padding: 40,
             shadowColor: "#171717",
-            shadowOffset: { width: 2, height: 4 },
-            shadowOpacity: 0.15,
+            shadowOffset: { width: 1, height: 2 },
+            shadowOpacity: 0.25,
             shadowRadius: 3,
             width: 380,
-            elevation: 3,
+            elevation: 5,
           },
         ]}
       >
@@ -96,8 +108,8 @@ export function RoomList() {
       <Modal isVisible={modalVisible}>
         <Pressable
           style={{
-            flexDirection: "row",
-            justifyContent: "center",
+            flexDirection: "column",
+            // justifyContent: "center",
             backgroundColor: "white",
             alignItems: "center",
             borderRadius: 20,
@@ -105,20 +117,122 @@ export function RoomList() {
           }}
           onPress={toggleModal}
         >
-          <Text>{selectedRoom.title}</Text>
+          <Text
+            style={{
+              fontSize: 25,
+              fontWeight: "bold",
+              color: "#82e2fa",
+              marginTop: 60,
+            }}
+          >
+            Room: {selectedRoom.title}
+          </Text>
+          <View
+            style={{
+              flexDirection: "column",
+              justifyContent: "center",
+              backgroundColor: "white",
+              alignItems: "center",
+              borderRadius: 20,
+              marginTop: 40,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 50,
+                fontWeight: "bold",
+                color: "#82e2fa",
+              }}
+            >
+              {" "}
+              32 °
+            </Text>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "bold",
+                color: "#bcebf7",
+                marginTop: 40,
+              }}
+            >
+              Max: 32 ° Min: 32 °
+            </Text>
+          </View>
+
+          <View
+            style={{
+              flexDirection: "column",
+              justifyContent: "center",
+              backgroundColor: "white",
+              alignItems: "center",
+              borderRadius: 20,
+              marginTop: 40,
+              width: "90%",
+              height: 100,
+
+              shadowColor: "#171717",
+              shadowOffset: { width: 1, height: 2 },
+              shadowOpacity: 0.25,
+              shadowRadius: 3,
+              elevation: 5,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "bold",
+              }}
+            >
+              Attendance
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              height: 150,
+              width: "90%",
+              // backgroundColor: "red",
+              alignItems: "center",
+              marginTop: 20,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "white",
+                height: 100,
+                width: "45%",
+                borderRadius: 20,
+                shadowColor: "#171717",
+                shadowOffset: { width: 1, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 3,
+                elevation: 5,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text>light</Text>
+            </View>
+            <View
+              style={{
+                backgroundColor: "white",
+                height: 100,
+                width: "45%",
+                borderRadius: 20,
+                shadowColor: "#171717",
+                shadowOffset: { width: 1, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 3,
+                elevation: 5,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text>Humidity</Text>
+            </View>
+          </View>
         </Pressable>
-        {/* <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            backgroundColor: "white",
-            alignItems: "center",
-            borderRadius: 20,
-            height: 600,
-          }}
-        >
-          <Text>{selectedRoom.title}</Text>
-        </View> */}
       </Modal>
       <Text
         style={{
@@ -130,9 +244,10 @@ export function RoomList() {
       >
         Registered room
       </Text>
+
       <View
         style={{
-          marginTop: 20,
+          marginTop: 5,
         }}
       >
         <FlatList
