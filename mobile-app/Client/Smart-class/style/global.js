@@ -4,7 +4,7 @@ export const globalStyles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor : '#EFF8FF'
+    backgroundColor : 'white'
   },
 });
 
