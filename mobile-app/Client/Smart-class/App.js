@@ -6,21 +6,25 @@ import { globalStyles } from './style/global';
 import { Login } from './page/login-page/login-page';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Provider } from "react-redux";
+import store from './store';
 
 
 const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator 
-      initialRouteName="Login"
-      screenOptions={{
-        headerShown : false,
-      }}
-      >
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Main teacher" component={MainTeacher} />
-      </Stack.Navigator>
+      <Provider store={store}>
+        <Stack.Navigator
+          initialRouteName="Login"
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Main teacher" component={MainTeacher} />
+        </Stack.Navigator>
+      </Provider>
     </NavigationContainer>
   );
 }
