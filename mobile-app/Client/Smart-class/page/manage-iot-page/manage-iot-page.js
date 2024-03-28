@@ -127,7 +127,7 @@ function ListBuilding() {
                         }
                         id= {item.name}
                     >
-                        <Ionicons name='home' color={'black'} size={80}/>
+                        <Ionicons name='home' color={'#0074CE'} size={80}/>
                         <Text
                             style={manageIOTStyles.buildingText}
                         >
