@@ -27,7 +27,7 @@ export function MainTeacher({ teacher }) {
     const navigation = useNavigation();
     return (
         <Tab.Navigator
-            initialRouteName={manageIOTName}
+            initialRouteName={classInfoName}
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;

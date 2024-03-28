@@ -4,7 +4,7 @@ export const globalStyles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor : '#EFF8FF'
+    backgroundColor : 'white'
   },
 });
 
@@ -14,4 +14,5 @@ export const colors = {
   headerColor: '#ffffff',
   btnColor : '#0693F1',
   bgColor : '#EFF8FF',
+  headerColor1: 'black',
 };
