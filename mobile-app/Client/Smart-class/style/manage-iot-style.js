@@ -91,7 +91,7 @@ export const manageIOTStyles = StyleSheet.create({
         borderRadius : 12,
     },
     idText:{
-        fontsize : 15,
+        fontSize : 15,
         color : 'white',
         fontWeight : 'bold',
     },
