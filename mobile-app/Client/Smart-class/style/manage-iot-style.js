@@ -6,8 +6,6 @@ export const manageIOTStyles = StyleSheet.create({
     container:{
         flex : 1,
         backgroundColor : 'white',
-        
-
     },
     button1:{
         marginVertical : '5%',
@@ -48,17 +46,15 @@ export const manageIOTStyles = StyleSheet.create({
         
     },
     buildingBtn:{
-        height : 150,
-        width : 150,
-        alignSelf :'center',
-        marginHorizontal : '5%',
-        marginVertical : '5%',
+        width:'45%',
+        aspectRatio: 1,
+        marginVertical: "2.5%",
         backgroundColor : 'white',
         shadowColor : '#171717',
-            shadowOffset: { width: 4, height: 8 },
-            shadowOpacity: 0.3,
-            shadowRadius: 3,
-            elevation: 5,
+        shadowOffset: { width: 4, height: 8 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 5,
         shadowOpacity : 20,
         alignItems : 'center',
         justifyContent : 'center',
@@ -101,6 +97,5 @@ export const manageIOTStyles = StyleSheet.create({
         marginVertical : '5%',
         fontWeight : 'bold',
         color : '#0074CE',
-    }
-    
+    },
 });

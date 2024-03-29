@@ -118,6 +118,9 @@ function ListBuilding() {
                 numColumns={2}
                 keyExtractor={(item)=> item.name}
                 data={listBuilding}
+                contentContainerStyle={{ justifyContent:'start'}}
+                columnWrapperStyle={{justifyContent:'space-around' }}
+                // contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
                 renderItem={({ item }) => (
                     <Pressable
                         style={manageIOTStyles.buildingBtn}
@@ -126,6 +129,7 @@ function ListBuilding() {
                         }
                         }
                         id= {item.name}
+                        keyExtractor={item.name}
                     >
                         <Ionicons name='home' color={'#0074CE'} size={80}/>
                         <Text
