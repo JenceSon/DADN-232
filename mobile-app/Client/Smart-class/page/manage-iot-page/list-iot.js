@@ -30,6 +30,10 @@ export function ListIOT() {
                     id: 'FAN04',
                     //
                 },
+                {
+                    id: 'FAN05',
+                    //
+                },
             ]
         },
         {
@@ -65,32 +69,33 @@ export function ListIOT() {
                         <Text style={manageIOTStyles.typeText}>
                             {type.type}
                         </Text>
-                        <View style={{ alignItems: "center" }}>
-                            <FlatList
-                                numColumns={4}
-                                key={'listDevice_' + type.type}
-                                data={type.listDevice}
-                                renderItem={({ item }) => {
-                                    let iconName = 'leaf'
-                                    if (type.type == 'FAN') iconName = 'leaf'
-                                    else iconName = 'sunny'
-                                    return (
+                        <FlatList
+                            numColumns={4}
+                            key={'listDevice_' + type.type}
+                            data={type.listDevice}
+                            contentContainerStyle={{ flexDirection : 'column' }}
+                            columnWrapperStyle={{ justifyContent: 'space-around' }}
+                            renderItem={({ item }) => {
+                                let iconName = 'leaf'
+                                if (type.type == 'FAN') iconName = 'leaf'
+                                else iconName = 'sunny'
+                                return (
                                     <Pressable
                                         style={manageIOTStyles.deviceBtn}
                                         onPress={() => { //TODO
-                                        //-=====
-                                        
+                                            //-=====
+
                                         }}
-                                        id= {item.id}
+                                        id={item.id}
                                     >
                                         <Ionicons name={iconName} color={'white'} size={15} />
                                         <Text style={manageIOTStyles.idText}>
                                             {item.id}
                                         </Text>
                                     </Pressable>
-                                )}}
-                            />
-                        </View>
+                                )
+                            }}
+                        />
                     </View>
                 ))
             }
