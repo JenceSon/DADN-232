@@ -67,17 +67,16 @@ export const manageIOTStyles = StyleSheet.create({
     },
     //iot side
     typeText:{
-        fontSize : 20,
+        fontSize : RFPercentage(2.5),
         color : 'black',
         fontWeight : 'bold',
         marginLeft : '5%',
         //marginBottom : '5%'
     },
     deviceBtn:{
-        height : 70,
-        width : 70,
-        marginVertical : '2.5%',
-        marginHorizontal : '3%',
+        width : '20%',
+        aspectRatio : 1,
+        marginVertical : '2%',
         backgroundColor : '#3DB2FF',
         alignItems : 'center',
         justifyContent : 'center',
@@ -85,12 +84,12 @@ export const manageIOTStyles = StyleSheet.create({
         borderRadius : 12,
     },
     idText:{
-        fontSize : 15,
+        fontSize : RFPercentage(2),
         color : 'white',
         fontWeight : 'bold',
     },
     headerRoom:{
-        fontSize : 25,
+        fontSize : RFPercentage(3.5),
         textAlign : 'center',
         marginVertical : '5%',
         fontWeight : 'bold',
