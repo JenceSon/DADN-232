@@ -1,34 +1,109 @@
 import React from "react";
-import { Button, Text, TouchableOpacity, View } from "react-native";
+import { Button, Text, TouchableOpacity, View, Image, ScrollView } from "react-native";
 import { FontAwesome } from '@expo/vector-icons';
 import { useSelector, useDispatch } from "react-redux";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { colors } from "../../style/global";
+import { setName } from "../../features/user/userSlice";
 export function Profile({ navigation }) {
     const user = useSelector(state => state.user); //vao cac states chua trong store, lua ra state ten "user"
     const nameArr = user.name.split(" ");
     const shortName = nameArr[nameArr.length - 2] + " " + nameArr[nameArr.length - 1]
     const dispatch = useDispatch();
+    function AnaHeader(params) {
+        return (
+            <View
+                style={{
+                    backgroundColor: "#82e2fa",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    paddingHorizontal: 12,
+                    paddingBottom: 12
+                }}
+            >
+                <View
+                    style={{
+                        flexDirection: "row",
+                        flex: 1,
+                    }}
+                >
+                    <Image
+                        style={{
+                            width: 50,
+                            height: 50,
+                            marginTop: 10,
+                            marginLeft: 5,
+                        }}
+                        source={require("../../assets/profile.png")}
+                    />
+                    <View>
 
-    return (
-        <View className="mx-8 my-2">
-            <View className="flex flex-row justify-between mb-2 items-center ">
-                <View className="">
-                    <Text className="text-xl font-bold ">{shortName}</Text>
-                    <Text className="text-gray-400 font-medium">{user.role}</Text>
-                </View>
-                <TouchableOpacity onPress={() => { console.log("click icon pencil") }} >
-                    <View className="">
-                        <FontAwesome name="pencil-square-o" size={35} color="black" />
+                        <Text
+                            style={{
+                                fontSize: 20,
+                                fontWeight: "bold",
+                                color: "white",
+
+                                marginLeft: 10,
+                            }}
+                        >
+                            {user.name}
+                        </Text>
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                marginLeft: 10,
+                                marginTop: 5,
+                            }}
+                        >
+                            <MaterialCommunityIcons
+                                name="badge-account-horizontal"
+                                size={24}
+                                color="white"
+                            />
+                            <Text
+                                style={{
+                                    fontSize: 14,
+                                    color: "white",
+                                    marginLeft: 10,
+                                    marginTop: 5,
+                                }}
+                            >
+                                Role: {user.role}
+                            </Text>
+                        </View>
                     </View>
+                </View>
+
+                <TouchableOpacity
+                    onPress={() => {
+                        console.log("Notification");
+                        //TODO: View notification list
+                    }}
+                >
+
+                    <FontAwesome name="pencil-square-o" style={{
+                        marginTop: 30,
+                    }}
+                        size={28}
+                        color="black" />
                 </TouchableOpacity>
             </View>
+
+
+        );
+    }
+    return (
+        <ScrollView style={{ backgroundColor: colors.bgColor }} className="mx-0">
+            <AnaHeader />
             <Container type={"row"}>
                 <View className="basis-1/3">
                     <Text>CSE</Text>
-                    <Label labeName={"Khoa"} />
+                    <Label labeName={"Falcuty"} />
                 </View>
                 <View className="basis-1/3">
                     <Text>MTKH02</Text>
-                    <Label labeName={"Lớp"} />
+                    <Label labeName={"Class"} />
                 </View>
                 <View className="basis-1/3">
                     <Text>2110913</Text>
@@ -37,16 +112,17 @@ export function Profile({ navigation }) {
             </Container>
             <View>
                 {/* <View className="flex flex-col gap-2 mt-1"> */}
-                <Container type={"col"} name={"Thông tin"}>
-                    <ContanerElemenRow label={"Tên"} value={"Nguyễn 'Ego' Khánh Hoà"} />
-                    <ContanerElemenRow label={"SĐT"} value={"0910090999"} />
+                <Container type={"col"} name={"Information"}>
+                    <ContanerElemenRow label={"Full Name"} value={"Nguyễn 'Ego' Khánh Hoà"} />
+                    <ContanerElemenRow label={"Phone"} value={"0910090999"} />
                     <ContanerElemenRow label={"Email"} value={"hoa.dathu@hcmut.edu.vn"} />
-                    <ContanerElemenRow label={"Tình trạng"} value={"Đang học"} />
-                    <ContanerElemenRow label={"Hệ"} value={"Chính quy"} />
+                    <ContanerElemenRow label={"Status"} value={"On learning"} />
+                    <ContanerElemenRow label={"Type"} value={"Formal"} />
                 </Container>
+                <Button title="Change name" onPress={() => {dispatch(setName("Dương Khương Duy"))}}/>
             </View>
-
-        </View>
+            
+        </ScrollView>
     )
 }
 function Label({ labeName }) {
@@ -58,7 +134,7 @@ function Label({ labeName }) {
 function Container({ children, type, name }) {
     return (
         // <View className={(type == "row" ? "flex flex-row" : "flex flex-col") + " container justify-between gap-3 mb-10 border border-gray-400 p-4 rounded-2xl"}>
-        <View className={"my-4 border border-gray-400 px-2 rounded-2xl"}>
+        <View className={"mx-3 my-4 border border-blue-500 px-2 rounded-2xl"}>
             {
                 (name != null) &&
                 <View>
