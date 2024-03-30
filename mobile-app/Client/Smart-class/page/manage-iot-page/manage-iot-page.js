@@ -116,8 +116,11 @@ function ListBuilding() {
             <FlatList
                 key={'listBuilding'}
                 numColumns={2}
-                keyExtractor={(item)=> item.name}
                 data={listBuilding}
+                keyExtractor={(item, index)=> index}
+                contentContainerStyle={{ justifyContent:'start'}}
+                columnWrapperStyle={{justifyContent:'space-around' }}
+                // contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
                 renderItem={({ item }) => (
                     <Pressable
                         style={manageIOTStyles.buildingBtn}
@@ -125,9 +128,10 @@ function ListBuilding() {
                             navigation.navigate(item.name, { listRoom: listRoom });
                         }
                         }
-                        id= {item.name}
+                        //id= {item.name}
+                        //key={item.name}
                     >
-                        <Ionicons name='home' color={'black'} size={80}/>
+                        <Ionicons name='home' color={'#0074CE'} size = {80}/>
                         <Text
                             style={manageIOTStyles.buildingText}
                         >

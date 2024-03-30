@@ -40,17 +40,19 @@ export function Display(){
         <View style={manageIOTStyles.container}>
             <FlatList
                 data={listRoom}
+                contentContainerStyle = {manageIOTStyles.containerFlat}
+                //contentContainerStyle = {'20%'}
                 renderItem={({ item }) => (
                     <Pressable
                         style={() => {
                             if (listRoom.indexOf(item) % 2 == 0) {
                                 buttonText = manageIOTStyles.buttonText2
                                 iconColor = 'black'
-                                return manageIOTStyles.button1
+                                return manageIOTStyles.button1Room
                             }
                             buttonText = manageIOTStyles.buttonText1
                             iconColor = 'white'
-                            return manageIOTStyles.button2
+                            return manageIOTStyles.button2Room
                         }}
                         onPress={() => {
                             navigation.navigate(item.name, { listIOT: item.listIOT, nameRoom: item.name });
@@ -63,9 +65,7 @@ export function Display(){
                         >
                             {item.name}
                         </Text>
-                        <Ionicons name='arrow-forward' size={20} color={iconColor} style = {manageIOTStyles.icon}
-                    
-                        />
+                        <Ionicons name='arrow-forward' size={20} color={iconColor}/>
                     </Pressable>
                 )}
             />
