@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Alert, Modal, Pressable, TextInput } from
 import { Picker } from "@react-native-picker/picker";
 import { FontAwesome6 } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import { colors, globalStyles } from "../../style/global";
 export function Mic() {
     const [isMicOn, setIsMicOn] = useState(false);
     const [rcDone, setRcDone] = useState(false);
@@ -26,7 +27,7 @@ export function Mic() {
             setRcDone(false);
         else {
             setRcDone(true)
-            Alert.alert("Nội dung micro thu được", "Ban do rat vui", [{ text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+            Alert.alert("Micro recorded", "Ban do rat vui", [{ text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
             { text: 'OK', onPress: () => { console.log('Ok Pressed') }, style: 'default' }]);
         }
         setIsMicOn(prevState => !prevState);
@@ -42,8 +43,8 @@ export function Mic() {
                     setModalRpError(!modalRpError);
                 }}>
                 <View className="flex flex-1 justify-center items-center">
-                    <View className="w-64 bg-sky-500/75 rounded-xl p-3.5">
-                        <Text className="text-white font-bold text-lg mx-auto">Báo cáo lỗi micro</Text>
+                    <View className="w-64 rounded-3xl p-3.5" style={{ backgroundColor: "#82e2fa" }}>
+                        <Text className="text-white font-bold text-lg mx-auto">Report Micro Error</Text>
                         <View className="flex flex-col gap-4 justify-center mb-4">
                             <Picker
                                 selectedValue={micError}
@@ -52,13 +53,13 @@ export function Mic() {
                                     setMicError(itemValue)
                                 }
                             >
-                                <Picker.Item label="Không ghi nhận được giọng nói" value="Không ghi nhận được giọng nói" />
-                                <Picker.Item label="Không mở được mic" value="Không mở được mic" />
+                                <Picker.Item label="Micro cannot record my voice" value="Không ghi nhận được giọng nói" />
+                                <Picker.Item label="I cannot turn on micro" value="Không mở được mic" />
                             </Picker>
                             <View className="bg-gray-100 rounded-2xl">
                                 <TextInput
                                     className="mx-auto rounded-xl"
-                                    placeholder="Nhập lý do khác"
+                                    placeholder="Type another error"
                                 />
                             </View>
                         </View>
@@ -82,15 +83,16 @@ export function Mic() {
     return (
         <>
             <ModalError />
-            <View className="flex-row justify-end">
-                <View className="flex-row items-center gap-2">
-                    <Text className="text-base">Báo lỗi</Text>
+
+            <View className="flex-row justify-end" style={{ backgroundColor: colors.bgColor }}>
+                <View className="flex-row items-center gap-2" >
+                    <Text className="text-base">Report Error</Text>
                     <TouchableOpacity onPress={() => setModalRpError(true)}>
                         <MaterialIcons name="error-outline" size={40} color="black" />
                     </TouchableOpacity>
                 </View>
             </View>
-            <View className="flex flex-1 justify-center items-center">
+            <View className="flex flex-1 justify-center items-center" style={{ backgroundColor: colors.bgColor }}>
                 <View className="items-center">
                     <View className="p-3 mx-auto flex-row justify-between">
                         <Text className="text-xl font-semibold  basis-1/3">Micro: </Text>
