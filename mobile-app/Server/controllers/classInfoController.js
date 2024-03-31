@@ -1,12 +1,20 @@
 import User from "../models/userModel.js";
+import Building from "../models/buildingModel.js";
+import ClassRoom from "../models/classModel.js";
 async function getListClassByUser(req, res) {
-  const id = "2111401";
-  const email = "luuchanhung@gmail.com";
-  const name = "Hung";
-  const phone = "0987654321";
-  const role = "Teacher";
-  const userid = await User.get(id);
-  res.send("ok");
+  try {
+    const id = "H6-201"
+    const size = 100
+    const building = "H6"
+    const re = await ClassRoom.add(id, size, building);
+    res.send("ok")
+
+  } catch (e) {
+    console.error("Error getting list class:", e);
+    res.status(500).json({ message: "Error getting list class" });
+  }
+
+
 }
 
 async function getInfoClass(req, res) {}

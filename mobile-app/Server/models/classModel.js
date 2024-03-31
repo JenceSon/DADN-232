@@ -1,0 +1,58 @@
+import {
+  addDoc,
+  collection,
+  setDoc,
+  doc,
+  getDoc,
+  deleteDoc,
+} from "firebase/firestore";
+import db from "../utils/firebase.js";
+
+const ClassRoom = {
+  add: async (id, size, building) => {
+    try {
+      const re = await setDoc(doc(db, "Building/"+ building + "/ClassRooms",id), {
+        size: size,
+     });
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  },
+    get: async (id,building) => {
+        try {
+        const docRef = doc(db, "Building/" +building+ "/ClasRooms",id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            console.log("Document data:", docSnap.data());
+        } else {
+            console.log("No such document!");
+        }
+        return docSnap.data() ;
+        } catch (e) {
+        console.error("Error getting document:", e);
+        }
+    },
+    update: async (id, size, building) => {
+        try {
+        const docRef = doc(db, "Building/"+ building + "/ClassRooms",id);
+        await setDoc(docRef, {
+            size: size,
+        });
+        return true;
+        } catch (e) {
+        console.error("Error updating document:", e);
+        }
+    
+    },
+    delete: async (id,building) => {
+        try {
+        await deleteDoc(doc(db, "Building/"+ building + "/ClassRooms",id));
+        return true;
+        } catch (e) {
+        console.error("Error removing document: ", e);
+        }
+    },
+
+};
+
+export default ClassRoom;
