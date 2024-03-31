@@ -15,7 +15,7 @@ export const colors = {
   btnColor : '#0693F1',
   bgColor : '#EFF8FF',
   headerColor1: 'black',
-
+  
   //use these for yourself
   primary100 : '#0074CE',
   primary80 : '#0693F1',
@@ -24,5 +24,4 @@ export const colors = {
   primary20 : 'EFF8FF',
   black : 'black',
   white : 'white',
-
 };
