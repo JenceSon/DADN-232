@@ -15,4 +15,6 @@ export const colors = {
   btnColor : '#0693F1',
   bgColor : '#EFF8FF',
   headerColor1: 'black',
+  
+  //hi
 };
