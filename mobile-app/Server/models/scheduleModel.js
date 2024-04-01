@@ -7,52 +7,54 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import db from "../utils/firebase.js";
-
-const ClassRoom = {
-  add: async (id, size, building) => {
+const Schedule = {
+  add: async (id, Date, building, classroom, userID) => {
     try {
-      const re = await setDoc(doc(db, "Building/"+ building + "/ClassRooms",id), {
-        size: size,
-     });
+      const re = await setDoc(doc(db, "Schedule/" + id), {
+        Date: Date,
+        Location: doc(db, "Building/" + building + "/ClassRooms/", classroom),
+        User: doc(db, "User", userID),
+      });
+
+      return true;
     } catch (e) {
       console.error("Error adding document: ", e);
     }
   },
-    get: async (id,building) => {
+    get: async (id) => {
         try {
-        const docRef = doc(db, "Building/" +building+ "/ClassRooms",id);
+        const docRef = doc(db, "Schedule", id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             console.log("Document data:", docSnap.data());
         } else {
             console.log("No such document!");
         }
-        return docSnap.data() ;
+        return docSnap.data();
         } catch (e) {
         console.error("Error getting document:", e);
         }
     },
-    update: async (id, size, building) => {
+    update: async (id, Date, building, classroom, userID) => {
         try {
-        const docRef = doc(db, "Building/"+ building + "/ClassRooms",id);
+        const docRef = doc(db, "Schedule", id);
         await setDoc(docRef, {
-            size: size,
+            Date: Date,
+            Location: doc(db, "Building/" + building + "/ClassRooms/", classroom),
+            User: doc(db, "User", userID),
         });
         return true;
         } catch (e) {
         console.error("Error updating document:", e);
         }
-    
     },
-    delete: async (id,building) => {
+    delete: async (id) => {
         try {
-        await deleteDoc(doc(db, "Building/"+ building + "/ClassRooms",id));
+        await deleteDoc(doc(db, "Schedule", id));
         return true;
         } catch (e) {
         console.error("Error removing document: ", e);
         }
     },
-
 };
-
-export default ClassRoom;
+export default Schedule;

@@ -12,7 +12,7 @@ const Light = {
     try {
       const re = await setDoc(doc(db, "Light/" + id), {
         Status: status,
-        Location: "/Building/" + building + "/" + "ClassRooms/" + classroom,
+        Location: doc(db, "Building/" + building + "/ClassRooms/", classroom),
       });
 
       return true;
@@ -39,7 +39,7 @@ const Light = {
       const docRef = doc(db, "Light", id);
       await setDoc(docRef, {
         Status: status,
-        Location: "/Building/" + building + "/" + "ClassRooms/" + classroom,
+        Location: doc(db, "Building/" + building + "/ClassRooms/", classroom),
       });
       return true;
     } catch (e) {
