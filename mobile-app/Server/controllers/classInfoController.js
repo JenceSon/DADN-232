@@ -1,12 +1,14 @@
 import User from "../models/userModel.js";
 import Building from "../models/buildingModel.js";
 import ClassRoom from "../models/classModel.js";
+import Light from "../models/lightModel.js";
 async function getListClassByUser(req, res) {
   try {
-    const id = "H6-201"
-    const size = 100
+    const id = "Light0001"
+    const status = "on"
     const building = "H6"
-    const re = await ClassRoom.add(id, size, building);
+    const room = "H6-201"
+    const re = await Light.add(id, status, building, room)
     res.send("ok")
 
   } catch (e) {
