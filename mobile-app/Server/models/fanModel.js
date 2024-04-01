@@ -12,7 +12,7 @@ const Fan = {
     try {
       const re = await setDoc(doc(db, "Fan/" + id), {
         Status: status,
-        Location: "/Building/" + building + "/" + "ClassRooms/" + classroom,
+        Location: doc(db, "Building/" + building + "/ClassRooms/", classroom),
       });
 
       return true;
@@ -39,7 +39,7 @@ const Fan = {
       const docRef = doc(db, "Fan", id);
       await setDoc(docRef, {
         Status: status,
-        Location: "/Building/" + building + "/" + "ClassRooms/" + classroom,
+        Location: doc(db, "Building/" + building + "/ClassRooms/", classroom),
       });
       return true;
     } catch (e) {
