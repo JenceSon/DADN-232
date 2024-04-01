@@ -1,30 +1,30 @@
-import { addDoc, collection, setDoc,doc, getDoc, deleteDoc} from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  setDoc,
+  doc,
+  getDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import db from "../utils/firebase.js";
-const User = {
-  add: async (id, email, name, phone, role) => {
+
+const ClassRoom = {
+  add: async (id, size, building) => {
     try {
-      const docRef = await setDoc(doc(db, "User",id), {
-        
-        Email: email,
-        Name: name,
-        Phone: phone,
-        Role: role,
-      
-      });
-      console.log(docRef)
-      return true;
+      const re = await setDoc(doc(db, "Building/"+ building + "/ClassRooms",id), {
+        size: size,
+     });
     } catch (e) {
       console.error("Error adding document: ", e);
     }
   },
-    get: async (id) => {
+    get: async (id,building) => {
         try {
-        const docRef = doc(db, "User",id);
+        const docRef = doc(db, "Building/" +building+ "/ClasRooms",id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             console.log("Document data:", docSnap.data());
         } else {
-            // doc.data() will be undefined in this case
             console.log("No such document!");
         }
         return docSnap.data() ;
@@ -32,27 +32,27 @@ const User = {
         console.error("Error getting document:", e);
         }
     },
-    update: async (id, email, name, phone, role) => {
+    update: async (id, size, building) => {
         try {
-        const docRef = doc(db, "User",id);
+        const docRef = doc(db, "Building/"+ building + "/ClassRooms",id);
         await setDoc(docRef, {
-            Email: email,
-            Name: name,
-            Phone: phone,
-            Role: role,
+            size: size,
         });
         return true;
         } catch (e) {
         console.error("Error updating document:", e);
         }
+    
     },
-    delete: async (id) => {
+    delete: async (id,building) => {
         try {
-        await deleteDoc(doc(db, "User",id));
+        await deleteDoc(doc(db, "Building/"+ building + "/ClassRooms",id));
         return true;
         } catch (e) {
         console.error("Error removing document: ", e);
         }
     },
+
 };
-export default User;
+
+export default ClassRoom;
