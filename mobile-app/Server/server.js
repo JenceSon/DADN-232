@@ -3,6 +3,7 @@ import manageIOTRouter from './routes/manageIOTRouter.js'
 import micRouter from './routes/micRouter.js'
 import profileRouter from './routes/profileRouter.js'
 import registerClassRouter from './routes/registerClassRouter.js'
+import loginRouter from './routes/loginRouter.js'
 import express from 'express'
 const app  = express()
 const port = 3000
@@ -25,6 +26,7 @@ app.use('/api/manageIOT',manageIOTRouter)
 app.use('/api/mic',micRouter)
 app.use('/api/profile',profileRouter)
 app.use('/api/registerClass',registerClassRouter)
+app.use('/api/login',loginRouter)
 
 app.listen(port,()=>{
     console.log('hello')
