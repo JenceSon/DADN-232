@@ -1,15 +1,47 @@
-import React from "react";
-import { Button, Text, TouchableOpacity, View, Image, ScrollView } from "react-native";
-import { FontAwesome } from '@expo/vector-icons';
+import React, { useCallback, useRef, useState } from "react";
+import { Text, TouchableOpacity, View, Image, ScrollView, TextInput, Modal } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { colors } from "../../style/global";
 import { setName } from "../../features/user/userSlice";
+import { LottieView } from "lottie-react-native/src/LottieView";
+import CusModal from "../../components/CusModal";
 export function Profile({ navigation }) {
     const user = useSelector(state => state.user); //vao cac states chua trong store, lua ra state ten "user"
-    const nameArr = user.name.split(" ");
-    const shortName = nameArr[nameArr.length - 2] + " " + nameArr[nameArr.length - 1]
     const dispatch = useDispatch();
+    const [updateProfile, setUpdateProfile] = useState(false)
+    
+    //field that user can update
+    // const [userName, setUsername] = useState("");
+    const userNameUpdate = useRef("")
+    
+    const UpdateProfileModal = () => {
+        return (
+            <>
+                <CusModal title={"Update Profile"} isVisible={updateProfile} setVisibleState={() => setUpdateProfile(preState => preState = !preState)}
+                handleSubmit={() => { dispatch(setName(userNameUpdate.text)) }}
+                >
+                    <View className="flex flex-col gap-2 ">
+                        <View className="bg-slate-200 rounded-2xl p-2">
+                            <TextInput
+                                ref={userNameUpdate}
+                                className="mx-auto text-lg"
+                                placeholder="Type new name"
+                                onChangeText={newText => userNameUpdate.text = newText}
+                            />
+                        </View>
+                        <View className="bg-slate-200 rounded-2xl p-2">
+                            <TextInput
+                                className="mx-auto text-lg"
+                                placeholder="Type new class"
+                            />
+                        </View>
+                    </View>
+                </CusModal>
+            </>
+        )
+    }
+
     function AnaHeader(params) {
         return (
             <View
@@ -17,8 +49,10 @@ export function Profile({ navigation }) {
                     backgroundColor: "#82e2fa",
                     flexDirection: "row",
                     justifyContent: "space-between",
+                    gap: 5,
                     paddingHorizontal: 12,
-                    paddingBottom: 12
+                    paddingBottom: 0
+
                 }}
             >
                 <View
@@ -52,42 +86,43 @@ export function Profile({ navigation }) {
                         <View
                             style={{
                                 flexDirection: "row",
+                                justifyContent: "space-between",
                                 marginLeft: 10,
+                                gap: 30,
+                                marginEnd: 2,
                                 marginTop: 5,
                             }}
                         >
-                            <MaterialCommunityIcons
-                                name="badge-account-horizontal"
-                                size={24}
-                                color="white"
-                            />
-                            <Text
-                                style={{
-                                    fontSize: 14,
-                                    color: "white",
-                                    marginLeft: 10,
-                                    marginTop: 5,
+                            <View className="flex flex-row">
+                                <MaterialCommunityIcons
+                                    name="badge-account-horizontal"
+                                    size={24}
+                                    color="white"
+                                />
+                                <Text
+                                    style={{
+                                        fontSize: 14,
+                                        color: "white",
+                                        marginLeft: 10,
+                                        marginTop: 5,
+                                    }}
+                                >
+                                    Role: {user.role}
+                                </Text>
+                            </View>
+                            <TouchableOpacity
+                                className="m-0 p-0"
+                                onPress={() => {
+                                    setUpdateProfile(true)
                                 }}
                             >
-                                Role: {user.role}
-                            </Text>
+                                <LottieView source={require("../../assets/setting_profile.json")} style={{ width: 100, height: 60 }} autoPlay loop />
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </View>
 
-                <TouchableOpacity
-                    onPress={() => {
-                        console.log("Notification");
-                        //TODO: View notification list
-                    }}
-                >
 
-                    <FontAwesome name="pencil-square-o" style={{
-                        marginTop: 30,
-                    }}
-                        size={28}
-                        color="black" />
-                </TouchableOpacity>
             </View>
 
 
@@ -95,6 +130,8 @@ export function Profile({ navigation }) {
     }
     return (
         <ScrollView style={{ backgroundColor: colors.bgColor }} className="mx-0">
+            {updateProfile &&
+                <UpdateProfileModal />}
             <AnaHeader />
             <Container type={"row"}>
                 <View className="basis-1/3">
@@ -119,10 +156,9 @@ export function Profile({ navigation }) {
                     <ContanerElemenRow label={"Status"} value={"On learning"} />
                     <ContanerElemenRow label={"Type"} value={"Formal"} />
                 </Container>
-                <Button title="Change name" onPress={() => {dispatch(setName("Dương Khương Duy"))}}/>
             </View>
-            
-        </ScrollView>
+
+        </ScrollView >
     )
 }
 function Label({ labeName }) {
@@ -133,7 +169,6 @@ function Label({ labeName }) {
 }
 function Container({ children, type, name }) {
     return (
-        // <View className={(type == "row" ? "flex flex-row" : "flex flex-col") + " container justify-between gap-3 mb-10 border border-gray-400 p-4 rounded-2xl"}>
         <View className={"mx-3 my-4 border border-blue-500 px-2 rounded-2xl"}>
             {
                 (name != null) &&

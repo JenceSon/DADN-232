@@ -1,5 +1,6 @@
 import { addDoc, collection, setDoc,doc, getDoc, deleteDoc} from "firebase/firestore";
 import db from "../utils/firebase.js";
+import {getDocs} from "@firebase/firestore";
 const User = {
   add: async (id, email, name, phone, role) => {
     try {
@@ -30,6 +31,7 @@ const User = {
         return docSnap.data() ;
         } catch (e) {
         console.error("Error getting document:", e);
+        throw e;
         }
     },
     update: async (id, email, name, phone, role) => {
@@ -44,6 +46,7 @@ const User = {
         return true;
         } catch (e) {
         console.error("Error updating document:", e);
+        throw e;
         }
     },
     delete: async (id) => {
@@ -54,5 +57,15 @@ const User = {
         console.error("Error removing document: ", e);
         }
     },
+    all: async () => {
+      try {
+          const snapshot = await getDocs(collection(db, 'User'));
+          return snapshot.docs.map(doc => doc.data());
+      }
+      catch (e) {
+          console.error("Fail to get all user doc: " + e.message)
+          throw e;
+      }
+    }
 };
 export default User;
