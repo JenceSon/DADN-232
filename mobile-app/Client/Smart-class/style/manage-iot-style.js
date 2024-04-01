@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
+import { colors } from "./global";
 
 export const manageIOTStyles = StyleSheet.create({
     container:{
@@ -77,7 +78,7 @@ export const manageIOTStyles = StyleSheet.create({
         width : '20%',
         aspectRatio : 1,
         marginVertical : '2%',
-        backgroundColor : '#3DB2FF',
+        backgroundColor :  '#3DB2FF',
         alignItems : 'center',
         justifyContent : 'center',
         flexDirection : 'column',
@@ -95,4 +96,25 @@ export const manageIOTStyles = StyleSheet.create({
         fontWeight : 'bold',
         color : '#0074CE',
     },
+
+    //Modal side
+    containerModal:{
+        //flex : 1,
+        //width : '80%',
+        //aspectRatio: 0.5,
+        backgroundColor : colors.primary40,
+        alignItems : 'center',
+        justifyContent : 'center',
+        width : '80%',
+        marginVertical : '20%',
+        //aspectRatio : 0.2,
+        alignSelf : 'center',
+        //flexDirection : 'row',
+
+    },
+    modalCloseBtn:{
+        width : 50,
+        aspectRatio :1,
+        color : colors.white,
+    }
 });

@@ -57,6 +57,8 @@ export function Login() {
                     onPress={() => {
                         let object = CheckLogin(bkid = form.bkid, pwd = form.password);
                         //do transaction screen here
+                        console.log(form.bkid)
+                        //console.log(form.password)
                         navigation.navigate("Main teacher", { teacher: object });
                     }
                     }

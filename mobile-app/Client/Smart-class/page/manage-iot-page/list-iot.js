@@ -1,12 +1,17 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
-import React from "react";
+import React, { useState } from "react";
 import { View, FlatList, Text, Pressable } from "react-native";
+import Modal from "react-native-modal"
 import { manageIOTStyles } from "../../style/manage-iot-style";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { colors, globalStyles } from "../../style/global";
 
 
 export function ListIOT() {
+    const [modalVisible, setModalVisible] = useState(false)
+    const [curModal, setCurModal] = useState({
+        id: 'fff'
+    })
     const route = useRoute()
     const navigation = useNavigation()
     const { nameRoom } = route.params
@@ -58,8 +63,26 @@ export function ListIOT() {
             ]
         },
     ]
+
+    const toggleModal = () => {
+        setModalVisible(!modalVisible)
+    }
     return (
         <View style={manageIOTStyles.container}>
+            <Modal
+                isVisible={modalVisible}
+                //animationIn={'fadeInDown'}
+                style = {manageIOTStyles.containerModal}
+            >
+                    <Text>
+                        {curModal.id}
+                    </Text>
+                    <Pressable
+                        style={manageIOTStyles.modalCloseBtn}
+                        onPress={toggleModal}
+                    >
+                    </Pressable>
+            </Modal>
             <Text style={manageIOTStyles.headerRoom}>
                 {nameRoom}
             </Text>
@@ -72,8 +95,9 @@ export function ListIOT() {
                         <FlatList
                             numColumns={4}
                             key={'listDevice_' + type.type}
+                            keyExtractor={(item) => item.id}
                             data={type.listDevice}
-                            contentContainerStyle={{ flexDirection : 'column' }}
+                            contentContainerStyle={{ flexDirection: 'column' }}
                             columnWrapperStyle={{ justifyContent: 'space-around' }}
                             renderItem={({ item }) => {
                                 let iconName = 'leaf'
@@ -83,8 +107,8 @@ export function ListIOT() {
                                     <Pressable
                                         style={manageIOTStyles.deviceBtn}
                                         onPress={() => { //TODO
-                                            //-=====
-
+                                            setModalVisible(true)
+                                            setCurModal(item)
                                         }}
                                         id={item.id}
                                     >
@@ -99,6 +123,7 @@ export function ListIOT() {
                     </View>
                 ))
             }
+
         </View>
     )
 }
