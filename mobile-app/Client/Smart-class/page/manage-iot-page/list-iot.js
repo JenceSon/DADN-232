@@ -73,13 +73,11 @@ export function ListIOT() {
     const toggleModalAccept = () => {
         setModalVisible(!modalVisible)
         //call api to save or reject
-        toggleDevice()
+        toggleDevice(nameRoom,isEnable)
         //
     }
     const toggleModalCancel = () => {
         setModalVisible(!modalVisible)
-        //call api
-        toggleDevice()
         //set default switch
         setisEnable(false)
         
