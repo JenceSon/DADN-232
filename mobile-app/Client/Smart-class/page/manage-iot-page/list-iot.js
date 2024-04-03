@@ -72,16 +72,24 @@ export function ListIOT() {
             <Modal
                 isVisible={modalVisible}
                 //animationIn={'fadeInDown'}
-                style = {manageIOTStyles.containerModal}
+                style={manageIOTStyles.containerModal}
+
             >
-                    <Text>
-                        {curModal.id}
-                    </Text>
+                <Text style={manageIOTStyles.headerModal}>
+                    {curModal.id}
+                </Text>
+                <View style={manageIOTStyles.modalContainerBtn}>
                     <Pressable
-                        style={manageIOTStyles.modalCloseBtn}
+                        style={manageIOTStyles.modalCanCelBtn}
                         onPress={toggleModal}
                     >
                     </Pressable>
+                    <Pressable
+                        style={manageIOTStyles.modalAcceptBtn}
+                        onPress={toggleModal}
+                    >
+                    </Pressable>
+                </View>
             </Modal>
             <Text style={manageIOTStyles.headerRoom}>
                 {nameRoom}
