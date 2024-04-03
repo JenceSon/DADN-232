@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
+import { colors } from "./global";
 
 export const manageIOTStyles = StyleSheet.create({
     container:{
@@ -21,7 +22,13 @@ export const manageIOTStyles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingHorizontal : '5%',
         borderRadius : 12,
-        flexDirection : 'row'
+        flexDirection : 'row',
+        shadowColor : '#171717',
+        shadowOffset: { width: 4, height: 8 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 5,
+        shadowOpacity : 20,
     },
     button2Room:{
         aspectRatio : 6,
@@ -32,6 +39,12 @@ export const manageIOTStyles = StyleSheet.create({
         paddingHorizontal : '5%',
         borderRadius : 12,
         flexDirection : 'row',
+        shadowColor : '#171717',
+        shadowOffset: { width: 4, height: 8 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 5,
+        shadowOpacity : 20,
     },
     buttonText1:{
         fontSize : RFPercentage(3),
@@ -77,11 +90,17 @@ export const manageIOTStyles = StyleSheet.create({
         width : '20%',
         aspectRatio : 1,
         marginVertical : '2%',
-        backgroundColor : '#3DB2FF',
+        backgroundColor :  '#3DB2FF',
         alignItems : 'center',
         justifyContent : 'center',
         flexDirection : 'column',
         borderRadius : 12,
+        shadowColor : '#171717',
+        shadowOffset: { width: 4, height: 8 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 5,
+        shadowOpacity : 20,
     },
     idText:{
         fontSize : RFPercentage(2),
@@ -94,5 +113,79 @@ export const manageIOTStyles = StyleSheet.create({
         marginVertical : '5%',
         fontWeight : 'bold',
         color : '#0074CE',
+    },
+
+    //Modal side
+    containerModal:{
+        //flex : 1,
+        //width : '80%',
+        //aspectRatio: 0.5,
+        backgroundColor : colors.white,
+        //alignItems : 'center',
+        //justifyContent : 'center',
+        width : '80%',
+        marginVertical : '80%',
+        //aspectRatio : 0.2,
+        alignSelf : 'center',
+        flexDirection : 'column',
+        justifyContent : 'space-between',
+        paddingHorizontal : '5%',
+        paddingVertical : '5%',
+        borderRadius : 12,
+
+    },
+    modalCanCelBtn:{
+        width : '30%',
+        aspectRatio :2,
+        backgroundColor : colors.primary100,
+        shadowColor : '#171717',
+        shadowOffset: { width: 4, height: 8 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 5,
+        shadowOpacity : 20,
+        borderRadius : 12,
+        //alignSelf : 'flex-end',
+        alignItems : 'center',
+        justifyContent : 'center',
+        
+    },
+    modalAcceptBtn:{
+        width : '30%',
+        aspectRatio :2,
+        backgroundColor : 'red',
+        shadowColor : '#171717',
+        shadowOffset: { width: 4, height: 8 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 5,
+        shadowOpacity : 20,
+        borderRadius : 12,
+       //alignSelf : 'flex-start',
+        alignItems : 'center',
+        justifyContent : 'center',
+        
+    },
+    modalContainerBtn:{
+        //width : '100%',
+        //aspectRatio : 5,
+        width : '100%',
+        flexDirection : 'row',
+        alignSelf : 'center',
+        justifyContent : 'space-between',
+        alignItems : 'center',
+        //bottom : '10%',
+    },
+    headerModal:{
+        fontSize : RFPercentage(5),
+        color : colors.primary60,
+        fontWeight : 'bold',
+        alignSelf : 'center',
+
+    },
+    modalBtnTxt:{
+        fontSize : RFPercentage(3),
+        color : colors.white,
+        fontWeight : 'bold',
     },
 });
