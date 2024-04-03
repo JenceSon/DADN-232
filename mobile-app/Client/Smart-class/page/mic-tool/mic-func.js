@@ -30,21 +30,6 @@ export function Mic() {
     };
     function ModalError() {
         return (
-            // <Modal
-            //     animationType="slice"
-            //     transparent={true}
-            //     visible={modalRpError}
-            //     onRequestClose={() => {
-            //         Alert.alert('Modal has been closed.');
-            //         setModalRpError(!modalRpError);
-            //     }}>
-            //     <View className="flex flex-1 justify-center items-center">
-            //         <View className="w-64 rounded-3xl p-3.5" style={{ backgroundColor: "#82e2fa" }}>
-            //             <Text className="text-white font-bold text-lg mx-auto">Report Micro Error</Text>
-
-            //         </View>
-            //     </View>
-            // </Modal> 
             <CusModal title={"Report Micro Error"} isVisible={modalRpError} setVisibleState={() => setModalRpError(state => state = !state)} >
                 <View className="flex flex-col gap-4 justify-center mb-4">
                     <View className="bg-slate-200 rounded-3xl">
