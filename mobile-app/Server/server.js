@@ -5,8 +5,13 @@ import profileRouter from './routes/profileRouter.js'
 import registerClassRouter from './routes/registerClassRouter.js'
 import loginRouter from './routes/loginRouter.js'
 import express from 'express'
+import cors from 'cors'
 const app  = express()
+//server config
 const port = 3000
+app.use(cors({
+    origin : 'exp://localhost:8081'
+}));
 
 //test
 app.get('/',(req,res)=>{

@@ -5,7 +5,7 @@ import { getListClassByUser, getInfoClass, getNoti,getNumberStu,postCallRoll } f
 const router = Router();
 
 router.get('/getListClassByUser',getListClassByUser)
-router.get('/etInfoClass',getInfoClass)
+router.get('/getInfoClass',getInfoClass)
 router.get('/getNoti',getNoti)
 router.get('/getNumberStu',getNumberStu)
 router.post('/postCallRoll',postCallRoll)

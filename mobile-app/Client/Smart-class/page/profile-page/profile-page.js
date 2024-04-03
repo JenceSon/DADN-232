@@ -73,15 +73,16 @@ export function Profile({ navigation }) {
                     <View>
 
                         <Text
+                            className = "tracking-widest"
                             style={{
                                 fontSize: 20,
-                                fontWeight: "bold",
+                                fontWeight: "semibold",
                                 color: "white",
 
                                 marginLeft: 10,
                             }}
                         >
-                            {user.name}
+                            {user.Name}
                         </Text>
                         <View
                             style={{
@@ -100,6 +101,7 @@ export function Profile({ navigation }) {
                                     color="white"
                                 />
                                 <Text
+                                    className = "tracking-widest basis-1/2"
                                     style={{
                                         fontSize: 14,
                                         color: "white",
@@ -107,17 +109,18 @@ export function Profile({ navigation }) {
                                         marginTop: 5,
                                     }}
                                 >
-                                    Role: {user.role}
+                                    Role: {user.Role}
                                 </Text>
+                                <TouchableOpacity
+                                    className="m-0 p- basis-1/3 "
+                                    onPress={() => {
+                                        setUpdateProfile(true)
+                                    }}
+                                >
+                                    <LottieView source={require("../../assets/setting_profile.json")} style={{ width: 100, height: 60 }} autoPlay loop />
+                                </TouchableOpacity>
                             </View>
-                            <TouchableOpacity
-                                className="m-0 p-0"
-                                onPress={() => {
-                                    setUpdateProfile(true)
-                                }}
-                            >
-                                <LottieView source={require("../../assets/setting_profile.json")} style={{ width: 100, height: 60 }} autoPlay loop />
-                            </TouchableOpacity>
+
                         </View>
                     </View>
                 </View>
@@ -135,26 +138,26 @@ export function Profile({ navigation }) {
             <AnaHeader />
             <Container type={"row"}>
                 <View className="basis-1/3">
-                    <Text>CSE</Text>
+                    <Text>{user.Faculty}</Text>
                     <Label labeName={"Falcuty"} />
                 </View>
                 <View className="basis-1/3">
-                    <Text>MTKH02</Text>
-                    <Label labeName={"Class"} />
+                    <Text>{user.Type}</Text>
+                    <Label labeName={"Type"} />
                 </View>
                 <View className="basis-1/3">
-                    <Text>2110913</Text>
+                    <Text>{user.id}</Text>
                     <Label labeName={"ID"} />
                 </View>
             </Container>
             <View>
                 {/* <View className="flex flex-col gap-2 mt-1"> */}
                 <Container type={"col"} name={"Information"}>
-                    <ContanerElemenRow label={"Full Name"} value={"Nguyễn 'Ego' Khánh Hoà"} />
-                    <ContanerElemenRow label={"Phone"} value={"0910090999"} />
-                    <ContanerElemenRow label={"Email"} value={"hoa.dathu@hcmut.edu.vn"} />
-                    <ContanerElemenRow label={"Status"} value={"On learning"} />
-                    <ContanerElemenRow label={"Type"} value={"Formal"} />
+                    <ContanerElemenRow label={"Full Name"} value={user.Name} />
+                    <ContanerElemenRow label={"Phone"} value={user.Phone} />
+                    <ContanerElemenRow label={"Email"} value={user.Email} />
+                    <ContanerElemenRow label={"Status"} value={user.Status} />
+                    <ContanerElemenRow label={"Type"} value={user.Type} />
                 </Container>
             </View>
 
