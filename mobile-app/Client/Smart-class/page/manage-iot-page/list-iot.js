@@ -1,10 +1,12 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
-import { View, FlatList, Text, Pressable } from "react-native";
+import { View, FlatList, Text, Pressable, Switch } from "react-native";
 import Modal from "react-native-modal"
 import { manageIOTStyles } from "../../style/manage-iot-style";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { colors, globalStyles } from "../../style/global";
+import { RFPercentage } from "react-native-responsive-fontsize";
+import { toggleDevice } from "./manage-iot-func";
 
 
 export function ListIOT() {
@@ -12,8 +14,12 @@ export function ListIOT() {
     const [curModal, setCurModal] = useState({
         id: 'fff'
     })
+    const [isEnable,setisEnable] = useState(false)
+
     const route = useRoute()
     const navigation = useNavigation()
+
+    //call api to get the device
     const { nameRoom } = route.params
     const listIOT = [
         {
@@ -63,9 +69,20 @@ export function ListIOT() {
             ]
         },
     ]
-
-    const toggleModal = () => {
+    //
+    const toggleModalAccept = () => {
         setModalVisible(!modalVisible)
+        //call api to save or reject
+        toggleDevice()
+        //
+    }
+    const toggleModalCancel = () => {
+        setModalVisible(!modalVisible)
+        //call api
+        toggleDevice()
+        //set default switch
+        setisEnable(false)
+        
     }
     return (
         <View style={manageIOTStyles.container}>
@@ -78,16 +95,35 @@ export function ListIOT() {
                 <Text style={manageIOTStyles.headerModal}>
                     {curModal.id}
                 </Text>
+                <View style = {manageIOTStyles.modalContainerBtn}>
+                    <Text style = {{fontSize : RFPercentage(3), color : colors.black}}>
+                        Status :                        
+                    </Text>
+                    <Switch
+                        trackColor={{false : 'grey', true : 'green'}}
+                        value = {isEnable} //get the item status
+                        onValueChange={()=>{
+                            setisEnable(!isEnable)
+                        }}   
+                    >
+                    </Switch>
+                </View>
                 <View style={manageIOTStyles.modalContainerBtn}>
                     <Pressable
                         style={manageIOTStyles.modalCanCelBtn}
-                        onPress={toggleModal}
+                        onPress={toggleModalAccept}
                     >
+                        <Text style={manageIOTStyles.modalBtnTxt}>
+                            Accept
+                        </Text>
                     </Pressable>
                     <Pressable
                         style={manageIOTStyles.modalAcceptBtn}
-                        onPress={toggleModal}
+                        onPress={toggleModalCancel}
                     >
+                        <Text style={manageIOTStyles.modalBtnTxt}>
+                            Cancle
+                        </Text>
                     </Pressable>
                 </View>
             </Modal>

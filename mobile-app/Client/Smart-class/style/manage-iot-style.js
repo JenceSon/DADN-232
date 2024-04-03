@@ -124,7 +124,7 @@ export const manageIOTStyles = StyleSheet.create({
         //alignItems : 'center',
         //justifyContent : 'center',
         width : '80%',
-        marginVertical : '20%',
+        marginVertical : '80%',
         //aspectRatio : 0.2,
         alignSelf : 'center',
         flexDirection : 'column',
@@ -135,7 +135,7 @@ export const manageIOTStyles = StyleSheet.create({
 
     },
     modalCanCelBtn:{
-        width : '40%',
+        width : '30%',
         aspectRatio :2,
         backgroundColor : colors.primary100,
         shadowColor : '#171717',
@@ -146,10 +146,12 @@ export const manageIOTStyles = StyleSheet.create({
         shadowOpacity : 20,
         borderRadius : 12,
         //alignSelf : 'flex-end',
+        alignItems : 'center',
+        justifyContent : 'center',
         
     },
     modalAcceptBtn:{
-        width : '40%',
+        width : '30%',
         aspectRatio :2,
         backgroundColor : 'red',
         shadowColor : '#171717',
@@ -160,6 +162,8 @@ export const manageIOTStyles = StyleSheet.create({
         shadowOpacity : 20,
         borderRadius : 12,
        //alignSelf : 'flex-start',
+        alignItems : 'center',
+        justifyContent : 'center',
         
     },
     modalContainerBtn:{
@@ -169,6 +173,7 @@ export const manageIOTStyles = StyleSheet.create({
         flexDirection : 'row',
         alignSelf : 'center',
         justifyContent : 'space-between',
+        alignItems : 'center',
         //bottom : '10%',
     },
     headerModal:{
@@ -177,5 +182,10 @@ export const manageIOTStyles = StyleSheet.create({
         fontWeight : 'bold',
         alignSelf : 'center',
 
-    }
+    },
+    modalBtnTxt:{
+        fontSize : RFPercentage(3),
+        color : colors.white,
+        fontWeight : 'bold',
+    },
 });
