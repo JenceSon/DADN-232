@@ -10,6 +10,8 @@ import db from "../utils/firebase.js";
 
 const ClassRoom = {
   add: async (id, size, building) => {
+    //Example:
+    // ClassRoom.add("H6-201", 10, "H6");
     try {
       const re = await setDoc(doc(db, "Building/"+ building + "/ClassRooms",id), {
         size: size,

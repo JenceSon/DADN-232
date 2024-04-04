@@ -9,6 +9,8 @@ import {
 import db from "../utils/firebase.js";
 const Fan = {
   add: async (id, status, building, classroom) => {
+    //Example:
+    // Fan.add("Fan0001", "ON", "H6", "H6-201");
     try {
       const re = await setDoc(doc(db, "Fan/" + id), {
         Status: status,
