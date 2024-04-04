@@ -1,10 +1,8 @@
-import { Router } from "express";
-import { getVoiceString,postOnOff } from "../controllers/micController.js";
+import {Router} from "express";
+import {reqSpeech2text, addAudio} from "../controllers/micController.js";
 
 const router = Router();
 
-router.get('/getVoiceString',getVoiceString)
-router.post('/postOnOff',postOnOff)
-
-
+router.post('/speech2text', reqSpeech2text)
+router.post("/send-audio", addAudio);
 export default router;
