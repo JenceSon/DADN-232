@@ -1,6 +1,6 @@
 import axios from 'axios';
-
-const baseUrl = "http://192.168.1.101:3000"; //IP phong toi, ae dung dua cho hacker
+import { ip } from './ip';
+const baseUrl = ip; //IP phong toi, ae dung dua cho hacker
 const api = axios.create({
     baseURL: baseUrl,
     headers: {

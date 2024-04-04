@@ -117,7 +117,7 @@ function ListBuilding() {
                 key={'listBuilding'}
                 numColumns={2}
                 data={listBuilding}
-                keyExtractor={(item, index)=> index}
+                keyExtractor={(item)=> item.name}
                 contentContainerStyle={{ justifyContent:'flex-start'}}
                 columnWrapperStyle={{justifyContent:'space-around' }}
                 // contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}

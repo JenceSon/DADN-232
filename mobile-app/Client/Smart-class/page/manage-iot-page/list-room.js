@@ -7,6 +7,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ListIOT } from "./list-iot";
 
+
+
 export function ListRoom() {
     const route = useRoute()
     const { listRoom } = route.params
@@ -42,6 +44,7 @@ export function Display(){
                 data={listRoom}
                 contentContainerStyle = {manageIOTStyles.containerFlat}
                 //contentContainerStyle = {'20%'}
+                keyExtractor={(item)=> item.name}
                 renderItem={({ item }) => (
                     <Pressable
                         style={() => {
@@ -58,7 +61,7 @@ export function Display(){
                             navigation.navigate(item.name, { listIOT: item.listIOT, nameRoom: item.name });
                         }
                         }
-                        id= {item.name}
+                        //id= {item.name}
                     >
                         <Text
                             style={buttonText}
