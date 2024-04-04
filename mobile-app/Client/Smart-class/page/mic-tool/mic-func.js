@@ -1,36 +1,24 @@
-import React, {useRef, useState} from "react";
-import {View, Text, TouchableOpacity, Alert, Modal, Pressable, TextInput, Button} from "react-native";
-import {Picker} from "@react-native-picker/picker";
-import {MaterialIcons} from '@expo/vector-icons';
-import {colors} from "../../style/global";
+import React, { useRef, useState } from "react";
+import { View, Text, TouchableOpacity, TextInput } from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import { MaterialIcons } from '@expo/vector-icons';
+import { colors } from "../../style/global";
 import LottieView from "lottie-react-native";
 import CusModal from "../../components/CusModal";
-import {Audio} from "expo-av";
-import {useSelector} from "react-redux";
-import {FFmpegKit, FFprobeKit, ReturnCode} from "ffmpeg-kit-react-native";
-import { makeDirectoryAsync, getInfoAsync, cacheDirectory } from "expo-file-system";
+import { Audio } from "expo-av";
+import { useSelector } from "react-redux";
+import { formRequest } from "../../api/api";
 
 export function Mic() {
     const [isMicOn, setIsMicOn] = useState(false);
+    const [recording, setRecording] = useState(null);
     const [modalRpError, setModalRpError] = useState(false);
     const [micError, setMicError] = useState("");
     const micRef = useRef(null)
     const [permissRes, requestPermiss] = Audio.usePermissions();
-    const [recording, setRecording] = useState(null);
+    const [rcText, setRcText] = useState("");
     const user = useSelector(state => state.user);
-    const getResultPath = async () => {
-        const audioDir = `${cacheDirectory}video/`;
 
-        async function ensureDirExists() {
-            const dirInfo = await getInfoAsync(audioDir);
-            if (!dirInfo.exists) {
-                console.log("tmp directory doesn't exist, creates one");
-                await makeDirectoryAsync(audioDir, {intermediates: true});
-            }
-        }
-        await ensureDirExists();
-        `${audioDir}file_recorded.wav`;
-    }
     const toggleMic = async () => {
         if (!isMicOn) {
             micRef.current.play();
@@ -48,7 +36,7 @@ export function Mic() {
                 }
 
                 console.log("Start recording...");
-                const {recording} = await Audio.Recording.createAsync(
+                const { recording } = await Audio.Recording.createAsync(
                     {
                         android: {
                             extension: '.m4a',
@@ -69,7 +57,7 @@ export function Mic() {
                 );
                 setRecording(recording);
                 console.log("Recording started success");
-
+                setIsMicOn(prevState => !prevState);
             } catch (e) {
                 console.log("Recording fail: " + e.message);
             }
@@ -79,59 +67,39 @@ export function Mic() {
             //reset animation micro
             micRef.current.reset();
             console.log("Stopping recording");
-            // setRecording(undefined);
             await recording.stopAndUnloadAsync();
             const uri = recording.getURI();
-             
-            //convert to wav
-            // const pathArr = uri.split("/");
-            // pathArr.pop();
-            // const path = pathArr.join("");
-            // const newUri = path + "/recorded.wav"
-            // console.log("new uri: " + newUri)
-            const {sound} = await new Audio.Sound.createAsync(
-                {uri: uri,},
-                {shouldPlay: false}
-            );
-            const resultAudio = getResultPath();
-            console.log("Local uri:" + sound);
-            const ffmpegSession = await FFmpegKit
-            .execute(`-i ${sound} -vn -acodec pcm_s16le -ar 24000 -ac 1 -y ${resultAudio}`)
-            const result = await ffmpegSession.getReturnCode();
-            if (ReturnCode.isSuccess(result)) {
-                console.log(sound);
-                console.log(resultAudio);
-            }
-            
-            // setRecording(null);
-            // console.log('Recording stopped and stored ad', uri);
-            // const {sound} = new Audio.Sound.createAsync(
-            //     {uri: newUri,},
-            //     {shouldPlay: true}
-            // );
-            // const fileExt = uri.split(".")[1];
-            // const recordedAudio = {
-            //     uri,
-            //     name: `recording-${user.id + Date.now()}.` + fileExt,
-            //     type: "audio/" + fileExt
-            // };
-            // const fd = new FormData();
-            // fd.append("file_recorded", recordedAudio);
-            // try {
-            //     const reps = await formRequest.post("/api/mic/send-audio", fd);
-            //     console.log(reps.data);
-            //
-            // } catch (e) {
-            //     console.error("Fail to translate to text: " + e.message);
-            // }
+            setRecording(null);
+            console.log('Recording stopped and stored ad', uri);
+            const recordedAudio = {
+                uri,
+                name: `recording-${user.id + Date.now()}.` + "m4a",
+                type: "audio/" + "m4a"
+            };
+            await speech2text(recordedAudio);
+            setIsMicOn(prevState => !prevState);
         }
-        setIsMicOn(prevState => !prevState);
     };
-
+    async function speech2text(recordedAudio) {
+        const fd = new FormData();
+        fd.append("file_recorded", recordedAudio);
+        try {
+            const reps = await formRequest.post("/api/mic/send-audio", fd);
+            console.log(reps.data);
+            if (reps.data["transcription"] != null) {
+                setRcText(reps.data["transcription"]);
+            }
+            else {
+                setRcText(null);
+            }
+        } catch (e) {
+            console.error("Fail to translate to text: " + e.message);
+        }
+    }
     function ModalError() {
         return (
             <CusModal title={"Report Micro Error"} isVisible={modalRpError}
-                      setVisibleState={() => setModalRpError(state => state = !state)}>
+                setVisibleState={() => setModalRpError(state => state = !state)}>
                 <View className="flex flex-col gap-4 justify-center mb-4">
                     <View className="bg-slate-200 rounded-3xl">
                         <Picker
@@ -142,8 +110,8 @@ export function Mic() {
                             }
                             className="text-lg"
                         >
-                            <Picker.Item label="Micro cannot record my voice" value="Không ghi nhận được giọng nói"/>
-                            <Picker.Item label="I cannot turn on micro" value="Không mở được mic"/>
+                            <Picker.Item label="Micro cannot record my voice" value="Không ghi nhận được giọng nói" />
+                            <Picker.Item label="I cannot turn on micro" value="Không mở được mic" />
                         </Picker>
                     </View>
                     <View className="bg-slate-200 rounded-2xl p-2">
@@ -160,38 +128,43 @@ export function Mic() {
 
     return (
         <>
-            <ModalError/>
+            <ModalError />
 
-            <View className="flex-row justify-end" style={{backgroundColor: colors.bgColor}}>
-                <View className="flex-row items-center gap-2">
-                    <Text className="text-base">Report Error</Text>
-                    <TouchableOpacity onPress={() => setModalRpError(true)}>
-                        <MaterialIcons name="error-outline" size={40} color="black"/>
-                    </TouchableOpacity>
+            <View className="h-full" style={{ backgroundColor: colors.bgColor }}>
+                <View className="flex-row justify-end" >
+                    <View className="flex-row items-center gap-2">
+                        <Text className="text-base">Report Error</Text>
+                        <TouchableOpacity onPress={() => setModalRpError(true)}>
+                            <MaterialIcons name="error-outline" size={40} color="black" />
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
-            <View className="flex flex-col  justify-center items-center" style={{backgroundColor: colors.bgColor}}>
-                <View className="mx-auto flex flex-row justify-center">
-                    <Text className={" my-4 font-bold "} style={{fontSize: 30, fontWeight: 500, color: colors.bgColor}}>
-                        {isMicOn ? 'Recording' : 'Idling'}
-                    </Text>
-                </View>
-                <View className="mx-0 flex flex-row justify-center gap-2">
-                    <View className={"p-6 rounded-3xl"} style={{backgroundColor: colors.primary40}}>
-                        <View>
+                <View className="flex flex-col items-center">
+                    <View className="mx-auto flex flex-row justify-center">
+                        <Text className={" my-4 font-bold "} style={{ fontSize: 30, fontWeight: 500 }}>
+                            {isMicOn ? 'Recording' : 'Idling'}
+                        </Text>
+                    </View>
+                    <View className="mx-0 flex flex-row justify-center gap-2">
+                        <View className={"p-6 rounded-3xl"} style={{ backgroundColor: colors.primary40 }}>
+                            <View>
 
-                            <TouchableOpacity onPress={() => {
-                                toggleMic()
-                            }}
-                            >
-                                <LottieView ref={micRef} source={require("../../assets/micro_anim.json")}
-                                            style={{width: "90%", aspectRatio: 1}}
-                                            className="mx-auto"
-                                />
-                            </TouchableOpacity>
+                                <TouchableOpacity onPress={() => {
+                                    toggleMic()
+                                }}
+                                >
+                                    <LottieView ref={micRef} source={require("../../assets/micro_anim.json")}
+                                        style={{ width: "90%", aspectRatio: 1 }}
+                                        className="mx-auto"
+                                    />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
-
+                    <View className="p-2 mx-2 gap-2 flex flex-row flex-wrap justify-begin items-end">
+                        <Text className="text-lg text-blue-600 font-bold">Recorded text: </Text>
+                        <Text className="text-lg text-blue-600 font-semibold">{rcText}</Text>
+                    </View>
                 </View>
             </View>
         </>
