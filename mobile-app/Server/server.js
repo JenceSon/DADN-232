@@ -9,9 +9,11 @@ import cors from 'cors'
 const app  = express()
 //server config
 const port = 3000
-app.use(cors({
-    origin : 'exp://localhost:8081'
-}));
+app.use(cors(
+    {
+        origin : "exp://localhost:8081"
+    }
+));
 
 //test
 app.get('/',(req,res)=>{

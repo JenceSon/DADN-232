@@ -1,4 +1,4 @@
-import { addDoc, collection, setDoc,doc, getDoc, deleteDoc,} from "firebase/firestore";
+import { addDoc, collection, setDoc,doc, getDoc, deleteDoc, getDocs,} from "firebase/firestore";
 import db from "../utils/firebase.js";
 const Building = {
     add: async (id,  location ) => {
@@ -56,6 +56,21 @@ const Building = {
             console.error("Error removing document: ", e);
         }
     },
+    all: async ()=>{
+        try{
+            const docRef = collection(db,'Building');
+            const docSnap = await getDocs(docRef);
+            return docSnap.docs.map(doc=> {
+                let note = {
+                    name : doc.id,
+                    attribute : doc.data(),
+                };
+                return note
+            });
+        } catch(e){
+            console.error("Error getting list buildings",e);
+        }
+    }
 
 }
 export default Building;
