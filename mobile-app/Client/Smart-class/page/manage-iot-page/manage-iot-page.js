@@ -59,7 +59,7 @@ const listRoom = [
 
 export function ManageIOT() {
     const [listBuilding, setlistBuilding] = useState([])
-    const [fetchData, setFetchData] = useState(false)
+    //const [fetchData, setFetchData] = useState(false)
     const navigation = useNavigation()
     const Stack = createNativeStackNavigator()
 

@@ -35,7 +35,7 @@ async function getAllBuilding(req,res){
     const body = req.body;
     try {
         let buildings = await Building.all();
-        res.send(buildings.data)
+        res.send(buildings)
     }
     catch (e){
         res.send("Error in finding list buildings")
