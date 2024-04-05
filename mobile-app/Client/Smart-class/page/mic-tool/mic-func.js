@@ -8,6 +8,7 @@ import CusModal from "../../components/CusModal";
 import { Audio } from "expo-av";
 import { useSelector } from "react-redux";
 import { formRequest } from "../../api/api";
+import commandParser from "./cmd-utils";
 
 export function Mic() {
     const [isMicOn, setIsMicOn] = useState(false);
@@ -18,6 +19,7 @@ export function Mic() {
     const micRef = useRef(null)
     const [permissRes, requestPermiss] = Audio.usePermissions();
     const [rcText, setRcText] = useState("");
+    const [parsedCmd, setParsedCmd] = useState("");
     const user = useSelector(state => state.user);
 
     const toggleMic = async () => {
@@ -101,6 +103,13 @@ export function Mic() {
             console.error("Fail to translate to text: " + e.message);
         }
         setFetchP2TDone(prevState => !prevState);
+        try {
+            const parsedCmd = commandParser(rcText);
+            setParsedCmd(parsedCmd);
+
+        } catch (error) {
+            console.log(error.message);
+        }
     }
     function ModalError() {
         return (
@@ -172,8 +181,10 @@ export function Mic() {
                     <View className="mx-1 gap-2 flex flex-col justify-start flex-wrap">
                         <Text className="text-lg text-blue-600 font-bold">Recorded text:</Text>
                         {!fetchP2TDone && <LottieView source={require("../../assets/loading_dot.json")} autoPlay loop
-                            style={{ height: 100, width: 200}} />}
+                            style={{ height: 100, width: 200 }} />}
                         <Text className="text-lg text-blue-600 font-semibold">{rcText}</Text>
+                        <Text className="text-lg text-blue-600 font-bold">Parsed command:</Text>
+                        <Text className="text-lg text-blue-600 font-semibold">{parsedCmd}</Text>
                     </View>
                 </View>
             </View>
