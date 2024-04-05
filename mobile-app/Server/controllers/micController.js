@@ -1,4 +1,5 @@
 import speech2text, {upload} from "../services/micService.js";
+import fs from "fs";
 
 async function reqSpeech2text(req, res) {
     //testing
@@ -16,19 +17,20 @@ async function addAudio(req, res) {
                 console.log("Error: " + err.message)
                 res.send({message: err.message})
             } else {
-                console.log("save file success");
+                try {
+                    speech2text(req["file"]["originalname"]).then(rs => {
+                        console.log("Result:", rs);
+                        res.send(rs);
+                    }).catch(e => {
+                        console.log("Fail to text 2 speech:" + e.message)
+                    });
+                } catch (e) {
+                    const rt_msg = {message: "Fail to translate to text: " + e.message};
+                    console.log(rt_msg);
+                    res.send(rt_msg);
+                }
             }
         })
-        try {
-            speech2text().then(rs => {
-                console.log("Result:", rs);
-                res.send(rs);
-            }).catch(e => {console.log("Fail to text 2 speech:" + e.message)});
-        } catch (e) {
-            const rt_msg = {message: "Fail to translate to text: " + e.message};
-            console.log(rt_msg);
-            res.send(rt_msg);
-        }
     } catch (e) {
         console.log("Fail to speech 2 text recorded file: " + e.message)
     }

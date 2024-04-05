@@ -12,6 +12,7 @@ import { formRequest } from "../../api/api";
 export function Mic() {
     const [isMicOn, setIsMicOn] = useState(false);
     const [recording, setRecording] = useState(null);
+    const [fetchP2TDone, setFetchP2TDone] = useState(true); //true: fetch done, false: await fetching
     const [modalRpError, setModalRpError] = useState(false);
     const [micError, setMicError] = useState("");
     const micRef = useRef(null)
@@ -68,19 +69,23 @@ export function Mic() {
             micRef.current.reset();
             console.log("Stopping recording");
             await recording.stopAndUnloadAsync();
+            setIsMicOn(prevState => !prevState);
+            setFetchP2TDone(prevState => !prevState);
             const uri = recording.getURI();
             setRecording(null);
             console.log('Recording stopped and stored ad', uri);
+            const date = new Date();
+            const timeStamp = `-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
             const recordedAudio = {
                 uri,
-                name: `recording-${user.id + Date.now()}.` + "m4a",
+                name: `recorded-${user.id + timeStamp}.` + "m4a",
                 type: "audio/" + "m4a"
             };
             await speech2text(recordedAudio);
-            setIsMicOn(prevState => !prevState);
         }
     };
     async function speech2text(recordedAudio) {
+        console.log("recorded audio:", recordedAudio);
         const fd = new FormData();
         fd.append("file_recorded", recordedAudio);
         try {
@@ -95,6 +100,7 @@ export function Mic() {
         } catch (e) {
             console.error("Fail to translate to text: " + e.message);
         }
+        setFetchP2TDone(prevState => !prevState);
     }
     function ModalError() {
         return (
@@ -161,8 +167,12 @@ export function Mic() {
                             </View>
                         </View>
                     </View>
-                    <View className="p-2 mx-2 gap-2 flex flex-row flex-wrap justify-begin items-end">
-                        <Text className="text-lg text-blue-600 font-bold">Recorded text: </Text>
+                    {!fetchP2TDone && <LottieView source={require("../../assets/loading_anim.json")} autoPlay loop
+                        style={{ height: "80", aspectRatio: 1 }} />}
+                    <View className="mx-1 gap-2 flex flex-col justify-start flex-wrap">
+                        <Text className="text-lg text-blue-600 font-bold">Recorded text:</Text>
+                        {!fetchP2TDone && <LottieView source={require("../../assets/loading_dot.json")} autoPlay loop
+                            style={{ height: 100, width: 200}} />}
                         <Text className="text-lg text-blue-600 font-semibold">{rcText}</Text>
                     </View>
                 </View>

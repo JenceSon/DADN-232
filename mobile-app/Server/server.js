@@ -33,6 +33,7 @@ app.use('/api/profile',profileRouter)
 app.use('/api/registerClass',registerClassRouter)
 app.use('/api/login',loginRouter)
 
+
 app.listen(port,()=>{
     console.log('hello')
 })
