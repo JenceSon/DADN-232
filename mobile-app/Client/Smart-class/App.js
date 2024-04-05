@@ -12,7 +12,7 @@ import store from './store';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
-
+  
   return (
     <NavigationContainer>
       <Provider store={store}>
