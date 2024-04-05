@@ -8,58 +8,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ListRoom } from "./list-room";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import api from "../../api/api";
-const listRoom = [
-    {
-        //id: "H1-101",
-        name: "H1-101",
-        listIOT: [],
-    },
-    {
-        // id: "H1-102",
-        name: "H1-102",
-        listIOT: [],
-    },
-    {
-        //id: "H1-103",
-        name: "H1-103",
-        listIOT: [],
-    },
-    {
-        //id: "H1-104",
-        name: "H1-104",
-        listIOT: [],
-    },
-    {
-        //id: "H1-105",
-        name: "H1-105",
-        listIOT: [],
-    },
-    {
-        //id: "H1-106",
-        name: "H1-106",
-        listIOT: [],
-    },
-    {
-        //id: "H1-107",
-        name: "H1-107",
-        listIOT: [],
-    },
-    {
-        //id: "H1-108",
-        name: "H1-108",
-        listIOT: [],
-    },
-    {
-        //id: "H1-109",
-        name: "H1-109",
-        listIOT: [],
-    },
-]
+
 //let listBuilding = async () =>{await getAllBuilding()}
 
 export function ManageIOT() {
     const [listBuilding, setlistBuilding] = useState([])
-    //const [fetchData, setFetchData] = useState(false)
+    const [fetchData, setFetchData] = useState(false)
     const navigation = useNavigation()
     const Stack = createNativeStackNavigator()
 
@@ -73,7 +27,7 @@ export function ManageIOT() {
 
     useEffect(() => {
         getAllBuilding();
-    }, [])
+    }, [fetchData])
 
 
     function ListBuilding() {
@@ -93,7 +47,7 @@ export function ManageIOT() {
                         <Pressable
                             style={manageIOTStyles.buildingBtn}
                             onPress={() => {
-                                navigation.navigate(item.name, { listRoom: listRoom });
+                                navigation.navigate(item.name, { nameBuilding :  item.name});
                             }
                             }
                         //id= {item.name}
@@ -129,7 +83,7 @@ export function ManageIOT() {
                 <Stack.Screen name="List Building" component={ListBuilding}/>
                 {
                     listBuilding.map(item => (
-                        <Stack.Screen name={item.name} component={ListRoom} initialParams={{ listRoom: listRoom }} />
+                        <Stack.Screen name={item.name} component={ListRoom} initialParams={{nameBuilding : item.name}} />
                     ))
                 }
             </Stack.Navigator>

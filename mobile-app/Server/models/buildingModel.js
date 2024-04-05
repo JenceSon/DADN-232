@@ -60,13 +60,15 @@ const Building = {
         try{
             const docRef = collection(db,'Building');
             const docSnap = await getDocs(docRef);
-            return docSnap.docs.map(doc=> {
+            const res =  docSnap.docs.map(doc=> {
                 let note = {
                     name : doc.id,
                     attribute : doc.data(),
                 };
                 return note
             });
+            if (res == undefined) return []
+            return res
         } catch(e){
             console.error("Error getting list buildings",e);
         }
