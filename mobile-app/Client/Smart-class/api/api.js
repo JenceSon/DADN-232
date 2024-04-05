@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { ip } from './ip';
-const baseUrl = ip; //IP phong toi, ae dung dua cho hacker
+// import { ip } from './ip';
+// const baseUrl = ip; //IP phong toi, ae dung dua cho hacker
+const baseUrl = "http://10.43.131.207:3000"  // lay gia tri bien moi truong tu file env
 const api = axios.create({
     baseURL: baseUrl,
     headers: {

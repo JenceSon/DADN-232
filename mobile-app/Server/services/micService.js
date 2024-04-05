@@ -2,28 +2,42 @@ import axios from "axios";
 import FFmpeg from 'fluent-ffmpeg'
 import multer from "multer";
 import fs from 'fs'
+import {config} from 'dotenv'
+export default async function speech2text(filename) {
+    const fileArr = filename.split(".");
+    const fileExt = fileArr.pop();
+    const fileDes = fileArr.join("") + ".wav"
+    return new Promise(async (resolve, reject) => {
+        if (fileExt !== "wav") {
+            FFmpeg().input("audio/" + filename)
+                .outputOptions([
+                    '-acodec pcm_s16le',
+                    '-vn',
+                    '-ac 1',
+                    '-ar 16k',
+                    '-map_metadata -1'
+                ])
+                .save("audio/" + fileDes)
+                .on('end', async () => {
+                        fs.unlinkSync('audio/' + filename);
+                        const result = await startSendApi(fileDes);
+                        resolve(result);
+                    }
+                ).on('error', (err) => {
+                reject(new Error("FFmpeg error: " + err.message));
+            });
+        } else {
+            try {
+                const result = await startSendApi(filename);
+                resolve(result);
+            } catch (e) {
+                console.log("Fail to send api text 2 speech:" + e.message);
+            }
+        }
 
-export default async function speech2text() {
-    return new Promise((resolve, reject) => {
-        FFmpeg().input("audio/file_recorded.m4a")
-            .outputOptions([
-                '-acodec pcm_s16le',
-                '-vn',
-                '-ac 1',
-                '-ar 16k',
-                '-map_metadata -1'
-            ])
-            .save("audio/file_recorded.wav")
-            .on('end', async () => {
-                    fs.unlinkSync('audio/file_recorded.m4a');
-                    const result = await startSendApi();
-                    resolve(result);
-                }
-            ).on('error', (err) => {
-            reject(new Error("FFmpeg error: " + err.message));
-        });
     })
-    async function startSendApi() {
+
+    async function startSendApi(filename) {
         const apiKey = "AIzaSyD3ztZzLJLyYNybDcIY8wY18z13WjNA9jg";
         const endpoint = "https://speech.googleapis.com/v1/speech:recognize?key=" + apiKey;
 
@@ -37,7 +51,7 @@ export default async function speech2text() {
             model: "latest_short",
         }
         const audio = {
-            content: fs.readFileSync(`audio/file_recorded.wav`).toString('base64')
+            content: fs.readFileSync(`audio/${filename}`).toString('base64')
         }
         const request = {
             config: config,
@@ -50,7 +64,8 @@ export default async function speech2text() {
                     return rs.alternatives[0].transcript;
                 })
                 .join('\n');
-            fs.unlinkSync("audio/file_recorded.wav");
+            //xoa file ghi dc
+            // fs.unlinkSync(`audio/${filename}`);
             return {"transcription": transcription, message: "speech 2 text success"};
         } else {
             return {"transcription": "", message: "speech 2 text success but no result text"};
@@ -63,7 +78,7 @@ const storage = multer.diskStorage({
         cb(null, "audio/")
     },
     filename: function (req, file, cb) {
-        cb(null, file.fieldname + '.m4a');
+        cb(null, file.originalname);
     }
 })
 export const upload = multer({storage: storage});
