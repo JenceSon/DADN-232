@@ -105,7 +105,7 @@ const Schedule = {
     } catch (error) {
       console.error("Error get schedule: ", error);
     }
-  }
+  },
 
   all: async () => {
     try {
