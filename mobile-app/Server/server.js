@@ -6,12 +6,10 @@ import registerClassRouter from './routes/registerClassRouter.js'
 import loginRouter from './routes/loginRouter.js'
 import express from 'express'
 import cors from 'cors'
-import 'dotenv/config'
-
 
 const app  = express()
 //server config
-const port = process.env.PORT
+const port = 3000
 app.use(cors({
     origin : 'exp://localhost:8081'
 }));
