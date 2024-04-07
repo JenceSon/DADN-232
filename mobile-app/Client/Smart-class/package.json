@@ -20,7 +20,6 @@
     "expo": "~50.0.13",
     "expo-av": "~13.10.5",
     "expo-status-bar": "~1.11.1",
-    "fs": "^0.0.1-security",
     "lottie-react-native": "^6.5.1",
     "nativewind": "^2.0.11",
     "react": "18.2.0",
