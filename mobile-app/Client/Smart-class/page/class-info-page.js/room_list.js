@@ -1,7 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Calendar, CalendarList, LocaleConfig } from "react-native-calendars";
-import { Text, View, ScrollView, FlatList, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  ScrollView,
+  FlatList,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import Modal from "react-native-modal";
+import * as ImagePicker from "expo-image-picker";
+import api from "../../api/api";
 
 export function RoomList() {
   const DATA = [
@@ -52,11 +61,53 @@ export function RoomList() {
     {
       id: "12",
       title: "Twelfth Item",
-    }
+    },
   ];
+  
+  
+  
+  const [lissclass, setListClass] = useState([]);
+  useEffect( () => {
+    async function fetchData() {
+      try {
+        const response = await api.get("/api/classInfo/getListClassByUser",{
+          params: {
+            id: "2110101",
+          },
+        });
+        console.log(response.data);
+        setListClass(response.data);
+  
+      } catch (error) {
+        console.log("Error fetching data: " + error);
+      }
+    }
+    fetchData();
+
+  }, []);
+
+  
+  
+  
+  
+
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState("");
-
+  const OpenCamera = async () => {
+    try {
+      await ImagePicker.requestCameraPermissionsAsync();
+      let result = await ImagePicker.launchCameraAsync({
+        quality: 1,
+        base64: true,
+      });
+      if (!result.cancelled) {
+        let type = result.assets[0].mimeType;
+        console.log("Type: " + type);
+      }
+    } catch (error) {
+      console.log("Error in OpenCamera: " + error);
+    }
+  };
   const renderItem = ({ item }) => {
     return (
       <Pressable
@@ -90,7 +141,10 @@ export function RoomList() {
             color: "gray",
           }}
         >
-          {item.title}
+          {item.classRoom}
+        </Text>
+        <Text>
+          From: {item.from} - To: {item.to}
         </Text>
       </Pressable>
     );
@@ -158,10 +212,9 @@ export function RoomList() {
               Max: 32 ° Min: 32 °
             </Text>
           </View>
-
-          <View
+          <TouchableOpacity
             style={{
-              flexDirection: "column",
+              flexDirection: "row",
               justifyContent: "center",
               backgroundColor: "white",
               alignItems: "center",
@@ -176,16 +229,20 @@ export function RoomList() {
               shadowRadius: 3,
               elevation: 5,
             }}
+            onPress={OpenCamera}
           >
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: "bold",
-              }}
-            >
-              Attendance
-            </Text>
-          </View>
+            <View>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                }}
+              >
+                Attendance
+              </Text>
+            </View>
+          </TouchableOpacity>
+
           <View
             style={{
               flexDirection: "row",
@@ -251,9 +308,9 @@ export function RoomList() {
         }}
       >
         <FlatList
-          data={DATA}
+          data={lissclass}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.from}
           style={{
             height: 320,
           }}

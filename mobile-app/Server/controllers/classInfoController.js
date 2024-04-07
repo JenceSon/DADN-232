@@ -4,18 +4,45 @@ import ClassRoom from "../models/classModel.js";
 import Light from "../models/lightModel.js";
 import Fan from "../models/fanModel.js";
 import Schedule from "../models/scheduleModel.js";
+import {
+  addDoc,
+  collection,
+  setDoc,
+  doc,
+  getDoc,
+  deleteDoc,
+  getDocs,
+  query,
+} from "firebase/firestore";
 async function getListClassByUser(req, res) {
   try {
-    const re = Schedule.add(
-      "2",
-      "2024-04-10T11:00:00",
-      "H6",
-      "H6-201",
-      10,
-      "2024-04-10T11:00:00",
-      "2111401"
-    );
-    res.status(200).json({ message: "Success" });
+    const  userId  =req.query.id? req.query.id: "2110101"
+    const user = await User.getRef(userId);
+    const listClass = await Schedule.getByUserRef(user);
+    //for each schedule, get the class room, building, light, fan
+    let listClassWithInfo = [];
+
+    for await (const schedule of listClass) {
+      const classRoom = await getDoc(schedule.Location);
+      const from = schedule.From.toDate().toLocaleString();
+      const to = schedule.To.toDate().toLocaleString();
+      listClassWithInfo.push({
+        classRoom: classRoom.id,
+        from: from,
+        to: to,
+      
+      });
+      
+    }
+    
+    const date= listClass[0].From.toDate()   
+    console.log(date)  
+    const localDate = date.toLocaleString();  
+    console.log(localDate)
+
+    console.log(listClassWithInfo);
+    res.status(200).json(listClassWithInfo);
+    
   } catch (e) {
     console.error("Error getting list class:", e);
     res.status(500).json({ message: "Error getting list class" });
