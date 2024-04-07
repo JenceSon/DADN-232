@@ -1,6 +1,7 @@
 import { query } from "express";
 import Building from "../models/buildingModel.js";
 import Schedule from "../models/scheduleModel.js";
+import Fan from "../models/fanModel.js";
 
 //admin
 async function getListRoomByBuilding(req,res){
@@ -18,7 +19,14 @@ async function getListRoomByBuilding(req,res){
     }
 }
 async function getIOTByRoom(req,res){
-    //no need, dlt later
+    const body = req.query;
+    try {
+        let fans = await Fan.getAll();
+        res.send(fans)
+        
+    } catch (error) {
+        res.send({msg : "Error loading IOT device"})
+    }
 }
 
 async function adjustInfoDevice(req,res){
@@ -38,10 +46,13 @@ async function getAllBuilding(req,res){
     const body = req.body;
     try {
         let buildings = await Building.all();
-        res.send(buildings)
+        if (buildings == undefined) {
+            res.send([])
+        }
+        else res.send(buildings)
     }
     catch (e){
-        res.send("Error in finding list buildings")
+        res.send({msg : "Error in finding list buildings"})
     }
 }
 //user only
@@ -60,12 +71,12 @@ async function getRoomByUser(req,res){
         rooms = [...new Set(rooms)]
         console.log(rooms)
         if (rooms == undefined){
-            console.error("null list")
+            //console.error("null list")
             res.send([])
         } 
         else res.send(rooms)
     } catch (error) {
-        res.send("Error in finding schedules")
+        res.send({msg : "Error in finding schedules"})
     }
 }
 

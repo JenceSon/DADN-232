@@ -5,6 +5,7 @@ import {
   doc,
   getDoc,
   deleteDoc,
+  getDocs,
 } from "firebase/firestore";
 import db from "../utils/firebase.js";
 const Fan = {
@@ -56,5 +57,23 @@ const Fan = {
       console.error("Error removing document: ", e);
     }
   },
+  getAll: async () =>{
+    try {
+      const docRef = collection(db,'Fan')
+      const docSnap = await getDocs(docRef)
+      const res = docSnap.docs.map((doc) =>{
+        let note = {
+          Type : "FAN",
+          Status : doc.data().Status,
+          Location : doc.data().Location._key.path.segments[8]
+        }
+        return note
+      })
+      if (res == undefined) return []
+      else return res
+    } catch (error) {
+      console.error("Error get list of lights", error)
+    }
+  }
 };
 export default Fan;

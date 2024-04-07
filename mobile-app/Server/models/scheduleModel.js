@@ -9,7 +9,6 @@ import {
   query,
   Timestamp,
 } from "firebase/firestore";
-import { Timestamp } from "firebase/firestore";
 import db from "../utils/firebase.js";
 const Schedule = {
   add: async (id, From, building, classroom, NoStu, To, userID) => {

@@ -18,11 +18,23 @@ export function ManageIOT() {
     const Stack = createNativeStackNavigator()
 
     getAllBuilding = async () => {
-        let newList = await api.get("/api/manageIOT/getAllBuilding");
+        try {
+            let newList = await api.get("/api/manageIOT/getAllBuilding");
 
-        newList = await newList.data
-        console.log(newList)
-        setlistBuilding(newList)
+            newList = await newList.data
+
+            if (newList.msg) {
+                console.log("Error fetch data in api")
+                setlistBuilding([])
+            }
+            else {
+                console.log(newList)
+                setlistBuilding(newList)
+            }
+        } catch (error) {
+            console.error("Error getting buildings : ", error)
+        }
+
     }
 
     useEffect(() => {
@@ -47,7 +59,7 @@ export function ManageIOT() {
                         <Pressable
                             style={manageIOTStyles.buildingBtn}
                             onPress={() => {
-                                navigation.navigate(item.name, { nameBuilding :  item.name});
+                                navigation.navigate(item.name, { nameBuilding: item.name });
                             }
                             }
                         //id= {item.name}
@@ -80,10 +92,10 @@ export function ManageIOT() {
                     },
                 })}
             >
-                <Stack.Screen name="List Building" component={ListBuilding}/>
+                <Stack.Screen name="List Building" component={ListBuilding} />
                 {
                     listBuilding.map(item => (
-                        <Stack.Screen name={item.name} component={ListRoom} initialParams={{nameBuilding : item.name}} />
+                        <Stack.Screen name={item.name} component={ListRoom} initialParams={{ nameBuilding: item.name }} />
                     ))
                 }
             </Stack.Navigator>
