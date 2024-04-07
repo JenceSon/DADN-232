@@ -6,14 +6,15 @@ import registerClassRouter from './routes/registerClassRouter.js'
 import loginRouter from './routes/loginRouter.js'
 import express from 'express'
 import cors from 'cors'
+import 'dotenv/config'
+
+
 const app  = express()
 //server config
-const port = 3000
-app.use(cors(
-    {
-        origin : "exp://localhost:8081"
-    }
-));
+const port = process.env.PORT
+app.use(cors({
+    origin : 'exp://localhost:8081'
+}));
 
 //test
 app.get('/',(req,res)=>{
@@ -34,6 +35,7 @@ app.use('/api/mic',micRouter)
 app.use('/api/profile',profileRouter)
 app.use('/api/registerClass',registerClassRouter)
 app.use('/api/login',loginRouter)
+
 
 app.listen(port,()=>{
     console.log('hello')

@@ -2,6 +2,8 @@ import { addDoc, collection, setDoc,doc, getDoc, deleteDoc, getDocs,} from "fire
 import db from "../utils/firebase.js";
 const Building = {
     add: async (id,  location ) => {
+        //Example:
+        // Building.add("H6", "CS1");
         try {
             const re = await setDoc(doc(db, "Building",id), {
                 

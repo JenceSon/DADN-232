@@ -6,7 +6,16 @@ import Fan from "../models/fanModel.js";
 import Schedule from "../models/scheduleModel.js";
 async function getListClassByUser(req, res) {
   try {
-    const re = Schedule.add("1", "12:00:00 PM 2022-12-12", "H6", "H6-201", "2111401");
+    const re = Schedule.add(
+      "2",
+      "2024-04-10T11:00:00",
+      "H6",
+      "H6-201",
+      10,
+      "2024-04-10T11:00:00",
+      "2111401"
+    );
+    res.status(200).json({ message: "Success" });
   } catch (e) {
     console.error("Error getting list class:", e);
     res.status(500).json({ message: "Error getting list class" });

@@ -1,36 +1,111 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { View, Text, TouchableOpacity, Alert, Modal, Pressable, TextInput } from "react-native";
+import React, { useRef, useState } from "react";
+import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import { MaterialIcons } from '@expo/vector-icons';
 import { colors } from "../../style/global";
 import LottieView from "lottie-react-native";
-import { styled } from "nativewind";
 import CusModal from "../../components/CusModal";
+import { Audio } from "expo-av";
+import { useSelector } from "react-redux";
+import { formRequest } from "../../api/api";
 
 export function Mic() {
     const [isMicOn, setIsMicOn] = useState(false);
-    const [rcDone, setRcDone] = useState(false);
+    const [recording, setRecording] = useState(null);
+    const [fetchP2TDone, setFetchP2TDone] = useState(true); //true: fetch done, false: await fetching
     const [modalRpError, setModalRpError] = useState(false);
     const [micError, setMicError] = useState("");
     const micRef = useRef(null)
+    const [permissRes, requestPermiss] = Audio.usePermissions();
+    const [rcText, setRcText] = useState("");
+    const user = useSelector(state => state.user);
 
-    const toggleMic = () => {
+    const toggleMic = async () => {
         if (!isMicOn) {
-            setRcDone(false);
             micRef.current.play();
-        }
+            //recording voice 
+            try {
+                if (permissRes.status !== 'granted') {
+                    console.log('Requesting permission for recording voice...');
+                    await requestPermiss();
+                }
+                if (permissRes) {
+                    await Audio.setAudioModeAsync({
+                        allowsRecordingIOS: true,
+                        playsInSilentModeIOS: true
+                    })
+                }
 
-        else {
-            setRcDone(true)
-            micRef.current.reset();
-            Alert.alert("Micro recorded", "Ban do rat vui", [{ text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-            { text: 'OK', onPress: () => { console.log('Ok Pressed') }, style: 'default' }]);
+                console.log("Start recording...");
+                const { recording } = await Audio.Recording.createAsync(
+                    {
+                        android: {
+                            extension: '.m4a',
+                            outputFormat: Audio.AndroidOutputFormat.MPEG_4,
+                            audioEncoder: Audio.AndroidAudioEncoder.AAC,
+                            sampleRate: 24000,
+                            numberOfChannels: 1,
+                            bitRate: 320000
+                        },
+                        ios: {
+                            bitRate: 320000,
+                            numberOfChannels: 1,
+                            extension: '.m4a',
+                            sampleRate: 24000,
+                            outputFormat: Audio.IOSOutputFormat.MPEG4AAC
+                        }
+                    }
+                );
+                setRecording(recording);
+                console.log("Recording started success");
+                setIsMicOn(prevState => !prevState);
+            } catch (e) {
+                console.log("Recording fail: " + e.message);
+            }
         }
-        setIsMicOn(prevState => !prevState);
+        //stop recording
+        else {
+            //reset animation micro
+            micRef.current.reset();
+            console.log("Stopping recording");
+            await recording.stopAndUnloadAsync();
+            setIsMicOn(prevState => !prevState);
+            setFetchP2TDone(prevState => !prevState);
+            const uri = recording.getURI();
+            setRecording(null);
+            console.log('Recording stopped and stored ad', uri);
+            const date = new Date();
+            const timeStamp = `-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
+            const recordedAudio = {
+                uri,
+                name: `recorded-${user.id + timeStamp}.` + "m4a",
+                type: "audio/" + "m4a"
+            };
+            await speech2text(recordedAudio);
+        }
     };
+    async function speech2text(recordedAudio) {
+        console.log("recorded audio:", recordedAudio);
+        const fd = new FormData();
+        fd.append("file_recorded", recordedAudio);
+        try {
+            const reps = await formRequest.post("/api/mic/send-audio", fd);
+            console.log(reps.data);
+            if (reps.data["transcription"] != null) {
+                setRcText(reps.data["transcription"]);
+            }
+            else {
+                setRcText(null);
+            }
+        } catch (e) {
+            console.error("Fail to translate to text: " + e.message);
+        }
+        setFetchP2TDone(prevState => !prevState);
+    }
     function ModalError() {
         return (
-            <CusModal title={"Report Micro Error"} isVisible={modalRpError} setVisibleState={() => setModalRpError(state => state = !state)} >
+            <CusModal title={"Report Micro Error"} isVisible={modalRpError}
+                setVisibleState={() => setModalRpError(state => state = !state)}>
                 <View className="flex flex-col gap-4 justify-center mb-4">
                     <View className="bg-slate-200 rounded-3xl">
                         <Picker
@@ -56,39 +131,51 @@ export function Mic() {
             </CusModal>
         );
     }
+
     return (
         <>
             <ModalError />
 
-            <View className="flex-row justify-end" style={{ backgroundColor: colors.bgColor }}>
-                <View className="flex-row items-center gap-2" >
-                    <Text className="text-base">Report Error</Text>
-                    <TouchableOpacity onPress={() => setModalRpError(true)}>
-                        <MaterialIcons name="error-outline" size={40} color="black" />
-                    </TouchableOpacity>
+            <View className="h-full" style={{ backgroundColor: colors.bgColor }}>
+                <View className="flex-row justify-end" >
+                    <View className="flex-row items-center gap-2">
+                        <Text className="text-base">Report Error</Text>
+                        <TouchableOpacity onPress={() => setModalRpError(true)}>
+                            <MaterialIcons name="error-outline" size={40} color="black" />
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
-            <View className="flex flex-col  justify-center items-center" style={{ backgroundColor: colors.bgColor }}>
-                <View className="mx-auto flex flex-row justify-center">
-                    <Text className={" my-4 font-bold "} style={{ fontSize: 30, fontWeight: 500, color: colors.bgColor }} >
-                        {isMicOn ? 'Recording' : 'Idling'}
-                    </Text>
-                </View>
-                <View className="mx-0 flex flex-row justify-center gap-2">
-                    <View className={"p-6 rounded-3xl"} style={{ backgroundColor: colors.primary40 }}>
-                        <View>
+                <View className="flex flex-col items-center">
+                    <View className="mx-auto flex flex-row justify-center">
+                        <Text className={" my-4 font-bold "} style={{ fontSize: 30, fontWeight: 500 }}>
+                            {isMicOn ? 'Recording' : 'Idling'}
+                        </Text>
+                    </View>
+                    <View className="mx-0 flex flex-row justify-center gap-2">
+                        <View className={"p-6 rounded-3xl"} style={{ backgroundColor: colors.primary40 }}>
+                            <View>
 
-                            <TouchableOpacity onPress={() => { toggleMic() }}
-                            >
-                                <LottieView ref={micRef} source={require("../../assets/micro_anim.json")} style={{ width: "90%", aspectRatio: 1 }}
-                                    className="mx-auto"
-                                />
-                            </TouchableOpacity>
+                                <TouchableOpacity onPress={() => {
+                                    toggleMic()
+                                }}
+                                >
+                                    <LottieView ref={micRef} source={require("../../assets/micro_anim.json")}
+                                        style={{ width: "90%", aspectRatio: 1 }}
+                                        className="mx-auto"
+                                    />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
-
+                    {!fetchP2TDone && <LottieView source={require("../../assets/loading_anim.json")} autoPlay loop
+                        style={{ height: "80", aspectRatio: 1 }} />}
+                    <View className="mx-1 gap-2 flex flex-col justify-start flex-wrap">
+                        <Text className="text-lg text-blue-600 font-bold">Recorded text:</Text>
+                        {!fetchP2TDone && <LottieView source={require("../../assets/loading_dot.json")} autoPlay loop
+                            style={{ height: 100, width: 200}} />}
+                        <Text className="text-lg text-blue-600 font-semibold">{rcText}</Text>
+                    </View>
                 </View>
-
             </View>
         </>
     );
