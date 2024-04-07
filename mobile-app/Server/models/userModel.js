@@ -59,6 +59,15 @@ const User = {
       throw e;
     }
   },
+  getRef: async (id) => {
+    try {
+      const docRef = doc(db, "User", id);
+      return docRef;
+    } catch (e) {
+      console.error("Error getting document:", e);
+      throw e;
+    }
+  },
   update: async (id, email, name, phone, role) => {
     try {
       const docRef = doc(db, "User", id);
