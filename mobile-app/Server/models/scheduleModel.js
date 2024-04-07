@@ -5,8 +5,10 @@ import {
   doc,
   getDoc,
   deleteDoc,
+  getDocs,
+  query,
 } from "firebase/firestore";
-import { Timestamp } from "firebase/firestore";
+import { Timestamp,where } from "firebase/firestore";
 import db from "../utils/firebase.js";
 const Schedule = {
   add: async (id, From, building, classroom, NoStu, To, userID) => {
@@ -70,6 +72,25 @@ const Schedule = {
       return true;
     } catch (e) {
       console.error("Error removing document: ", e);
+    }
+  },
+  all: async () => {
+    try {
+      const snapshot = await getDocs(collection(db, "Schedule"));
+      return snapshot.docs.map((doc) => doc.data());
+    } catch (e) {
+      console.error("Error getting documents: ", e);
+    }
+  },
+  getByUserRef: async (userRef) => {
+    try {
+      const scheduleRef = collection(db, "Schedule");
+      const q= query(scheduleRef, where("User", "==", userRef));
+      const querySnapshot = await getDocs(q);
+      
+      return querySnapshot.docs.map((doc) => doc.data());
+    } catch (e) {
+      console.error("Error getting document:", e);
     }
   },
 };
