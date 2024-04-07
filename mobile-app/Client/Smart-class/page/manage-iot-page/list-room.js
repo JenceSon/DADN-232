@@ -22,16 +22,29 @@ export function ListRoom() {
     const [listRoom, setListRoom] = useState([])
 
     async function getRooms() {
-        console.log({ id: user.id, nameBuilding: nameBuilding })
-        let newList = await api.get("/api/manageIOT/getRoomByUser",{params: {
-            id: (user.id ? user.id : ""),
-            nameBuilding: (nameBuilding ? nameBuilding : ""),
-        }})
-        newList = await newList.data
-        console.log(newList)
-        setListRoom(newList)
+        try {
+            console.log({ id: user.id, nameBuilding: nameBuilding })
+            let newList = await api.get("/api/manageIOT/getRoomByUser", {
+                params: {
+                    id: (user.id ? user.id : ""),
+                    nameBuilding: (nameBuilding ? nameBuilding : ""),
+                }
+            })
+            newList = await newList.data
+            if (newList.msg) {
+                console.log("Error fetch data in api")
+                setListRoom([])
+            }
+            else {
+                console.log(newList)
+                setListRoom(newList)
+            }
+        } catch (error) {
+            console.error("Error getting rooms : ", error)
+        }
+
     }
-    
+
     useEffect(() => {
         getRooms();
     }, [fetchData])
