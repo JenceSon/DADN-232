@@ -1,5 +1,5 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, FlatList, Text, Pressable, Switch } from "react-native";
 import Modal from "react-native-modal"
 import { manageIOTStyles } from "../../style/manage-iot-style";
@@ -7,81 +7,58 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { colors, globalStyles } from "../../style/global";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { toggleDevice } from "./manage-iot-func";
+import api from "../../api/api";
 
 
 export function ListIOT() {
     const [modalVisible, setModalVisible] = useState(false)
     const [curModal, setCurModal] = useState({
-        id: 'fff'
+        id : "",
+        Status : false,
     })
     const [isEnable,setisEnable] = useState(false)
+    const [fetchData,setFetchData] = useState(false)
+    const [listIOT,setListIOT] = useState([])
 
     const route = useRoute()
     const navigation = useNavigation()
-
-    //call api to get the device
     const { nameRoom } = route.params
-    const listIOT = [
-        {
-            type: 'FAN',
-            listDevice: [
-                {
-                    id: 'FA01',
-                    //
-                },
-                {
-                    id: 'FAN02',
-                    //
-                },
-                {
-                    id: 'FAN03',
-                    //
-                },
-                {
-                    id: 'FAN04',
-                    //
-                },
-                {
-                    id: 'FAN05',
-                    //
-                },
-            ]
-        },
-        {
-            type: 'LIGHT',
-            listDevice: [
-                {
-                    id: 'LIG01',
-                    //
-                },
-                {
-                    id: 'LIG02',
-                    //
-                },
-                {
-                    id: 'LIG03',
-                    //
-                },
-                {
-                    id: 'LIG04',
-                    //
-                },
-            ]
-        },
-    ]
-    //
     const toggleModalAccept = () => {
         setModalVisible(!modalVisible)
         //call api to save or reject
-        toggleDevice(nameRoom,isEnable)
-        //
+        toggleDevice(curModal.id,curModal.Status)
+        //setCurModal(pre => ({...pre,Status: isEnable}))
+        setFetchData(!fetchData)
     }
     const toggleModalCancel = () => {
         setModalVisible(!modalVisible)
         //set default switch
-        setisEnable(false)
-        
+        setCurModal(pre => ({...pre,Status: isEnable}))
     }
+    async function getIOT(){
+        try {
+            let newList = await api.get("/api/manageIOT/getIOTByRoom",{
+                params:{
+                    nameRoom : nameRoom,
+                }
+            })
+            newList = await newList.data
+            if (newList.msg){
+                console.log("Error fetch data in api")
+                setListIOT([])
+            }
+            else{
+                console.log(newList)
+                setListIOT(newList)
+            }
+        } catch (error) {
+            console.error("Error getting IOT : ", error)
+        }
+    }
+    useEffect(()=>{
+        getIOT();
+    }, [fetchData])
+
     return (
         <View style={manageIOTStyles.container}>
             <Modal
@@ -99,10 +76,10 @@ export function ListIOT() {
                     </Text>
                     <Switch
                         trackColor={{false : 'grey', true : 'green'}}
-                        value = {isEnable} //get the item status
-                        onValueChange={()=>{
-                            setisEnable(!isEnable)
-                        }}   
+                        value = {curModal.Status} //get the item status 
+                        onValueChange={() =>{
+                            setCurModal(pre => ({...pre,Status: !curModal.Status}))
+                        }}
                     >
                     </Switch>
                 </View>
@@ -151,6 +128,8 @@ export function ListIOT() {
                                         onPress={() => { //TODO
                                             setModalVisible(true)
                                             setCurModal(item)
+                                            setisEnable(curModal.Status)
+                                            //console.log(curModal.Status)
                                         }}
                                         id={item.id}
                                     >

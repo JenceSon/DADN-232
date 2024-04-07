@@ -63,6 +63,7 @@ const Fan = {
       const docSnap = await getDocs(docRef)
       const res = docSnap.docs.map((doc) =>{
         let note = {
+          id : doc.id,
           Type : "FAN",
           Status : doc.data().Status,
           Location : doc.data().Location._key.path.segments[8]

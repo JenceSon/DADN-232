@@ -2,6 +2,7 @@ import { query } from "express";
 import Building from "../models/buildingModel.js";
 import Schedule from "../models/scheduleModel.js";
 import Fan from "../models/fanModel.js";
+import Light from "../models/lightModel.js";
 
 //admin
 async function getListRoomByBuilding(req,res){
@@ -22,7 +23,16 @@ async function getIOTByRoom(req,res){
     const body = req.query;
     try {
         let fans = await Fan.getAll();
-        res.send(fans)
+        let lights = await Light.getAll();
+        fans = {
+            type : "FAN",
+            listDevice : fans.filter(item => item.Location == body.nameRoom)
+        }
+        lights = {
+            type : "LIGHT",
+            listDevice : lights.filter(item => item.Location == body.nameRoom)
+        }
+        res.send([fans,lights])
         
     } catch (error) {
         res.send({msg : "Error loading IOT device"})

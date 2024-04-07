@@ -1,6 +1,7 @@
 import axios from 'axios';
-import 'dotenv/config'
-const baseUrl = process.env.IPSV
+import { ip } from './ip';
+
+const baseUrl = ip
 
 const api = axios.create({
     baseURL: baseUrl,
