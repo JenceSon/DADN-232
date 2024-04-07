@@ -40,6 +40,7 @@ async function getListClassByUser(req, res) {
     const localDate = date.toLocaleString();  
     console.log(localDate)
 
+    console.log(listClassWithInfo);
     res.status(200).json(listClassWithInfo);
     
   } catch (e) {
