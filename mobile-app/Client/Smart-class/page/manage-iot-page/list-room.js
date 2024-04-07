@@ -23,14 +23,11 @@ export function ListRoom() {
 
     async function getRooms() {
         console.log({ id: user.id, nameBuilding: nameBuilding })
-        let newList = await api.get("/api/manageIOT/getRoomBySchedule", {
-            "id": (user.id ? user.id : ""),
-            "nameBuilding": (nameBuilding ? nameBuilding : ""),
-        })
-
+        let newList = await api.get("/api/manageIOT/getRoomByUser",{params: {
+            id: (user.id ? user.id : ""),
+            nameBuilding: (nameBuilding ? nameBuilding : ""),
+        }})
         newList = await newList.data
-        newList = newList.map(item => item.Location)
-        newList = [...new Set(newList)]
         console.log(newList)
         setListRoom(newList)
     }

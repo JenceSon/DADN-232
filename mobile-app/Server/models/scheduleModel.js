@@ -75,8 +75,8 @@ const Schedule = {
           ToTime : ToTime,
           Date : FromDate,
           NoStu : parseInt(doc.data().NoStu),
-          Location : doc.data().Location._key.path.segments[8],
-          User : doc.data().User._key.path.segments[6]
+          Location : String(doc.data().Location._key.path.segments[8]),
+          User : String(doc.data().User._key.path.segments[6]),
         }
         return note
       })

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { adjustInfoDevice,addDevice,delDevice,getIOTByRoom,getListRoomByBuilding, getAllBuilding, getRoomBySchedule } from "../controllers/manageIOTController.js";
+import { adjustInfoDevice,addDevice,delDevice,getIOTByRoom,getListRoomByBuilding, getAllBuilding, getRoomByUser } from "../controllers/manageIOTController.js";
 
 const router = Router();
 
@@ -9,7 +9,7 @@ router.post('/delDevice',delDevice)
 router.get('/getIOTByRoom',getIOTByRoom)
 router.get('/getListRoomByBuilding',getListRoomByBuilding)
 router.get('/getAllBuilding',getAllBuilding)
-router.get('/getRoomBySchedule',getRoomBySchedule)
+router.get('/getRoomByUser',getRoomByUser)
 
 
 export default router;

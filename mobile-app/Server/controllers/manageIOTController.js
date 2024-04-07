@@ -1,3 +1,4 @@
+import { query } from "express";
 import Building from "../models/buildingModel.js";
 import Schedule from "../models/scheduleModel.js";
 
@@ -44,18 +45,25 @@ async function getAllBuilding(req,res){
     }
 }
 //user only
-async function getRoomBySchedule(req,res){
-    const body = req.body;
+async function getRoomByUser(req,res){
+    //const body = req.body;
     try {
-        console.log(body)
+        console.log(req.query)
         let schedules = await Schedule.getAll();
         //take of comment after fixbug
-        //if (body != null) schedules = schedules.filter((item) => item.User == req.body.id && item.Location.subString(0,3) == req.body.nameBuilding)
-        if (schedules == undefined){
+        schedules = schedules.filter(
+            (item) => (item.User == req.query.id && 
+            item.Location.substring(0,2) == req.query.nameBuilding
+        
+            ))
+        let rooms = schedules.map(item=>item.Location)
+        rooms = [...new Set(rooms)]
+        console.log(rooms)
+        if (rooms == undefined){
             console.error("null list")
             res.send([])
         } 
-        else res.send(schedules)
+        else res.send(rooms)
     } catch (error) {
         res.send("Error in finding schedules")
     }
@@ -68,5 +76,5 @@ export {
     getIOTByRoom,
     getListRoomByBuilding,
     getAllBuilding,
-    getRoomBySchedule,
+    getRoomByUser,
 }
