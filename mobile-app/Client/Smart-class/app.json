@@ -37,6 +37,14 @@
         {
           "microphonePermission": "Allow Smart Class to access your microphone."
         }
+
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Smart Class to access your gallery.",
+          "cameraPermission": "Allow Smart Class to access your camera."
+        }
       ]
     ]
   }

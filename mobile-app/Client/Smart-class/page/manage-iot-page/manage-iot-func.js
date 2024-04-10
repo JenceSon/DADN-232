@@ -1,6 +1,7 @@
 import React from "react";
+import api from "../../api/api";
 
 
-export function toggleDevice({id}, {value}){
+export async function toggleDevice({id}, {value}){
     //call api
 }

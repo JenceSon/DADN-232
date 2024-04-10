@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList, Pressable, ScrollView, Text, View } from "react-native";
 import { colors, globalStyles } from "../../style/global";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -7,81 +7,77 @@ import { Header } from "react-native/Libraries/NewAppScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ListRoom } from "./list-room";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import api from "../../api/api";
 
+//let listBuilding = async () =>{await getAllBuilding()}
 
-const listBuilding = [
-    {
-        //id: "H1",
-        name : "H1",
-        listRoom: [],
-    },
-    {
-        //id: "H2",
-        name : "H2",
-        listRoom: [],
-    },
-    {
-        //id: "H3",
-        name : "H3",
-        listRoom: [],
-    },
-    {
-        //id: "H4",
-        name : "H6",
-        listRoom: [],
-    },
-]
-const listRoom = [
-    {
-        //id: "H1-101",
-        name : "H1-101",
-        listIOT: [],
-    },
-    {
-       // id: "H1-102",
-        name : "H1-102",
-        listIOT: [],
-    },
-    {
-        //id: "H1-103",
-        name : "H1-103",
-        listIOT: [],
-    },
-    {
-        //id: "H1-104",
-        name : "H1-104",
-        listIOT: [],
-    },
-    {
-        //id: "H1-105",
-        name : "H1-105",
-        listIOT: [],
-    },
-    {
-        //id: "H1-106",
-        name : "H1-106",
-        listIOT: [],
-    },
-    {
-        //id: "H1-107",
-        name : "H1-107",
-        listIOT: [],
-    },
-    {
-        //id: "H1-108",
-        name : "H1-108",
-        listIOT: [],
-    },
-    {
-        //id: "H1-109",
-        name : "H1-109",
-        listIOT: [],
-    },
-]
 export function ManageIOT() {
-
+    const [listBuilding, setlistBuilding] = useState([])
+    const [fetchData, setFetchData] = useState(false)
     const navigation = useNavigation()
     const Stack = createNativeStackNavigator()
+
+    getAllBuilding = async () => {
+        try {
+            let newList = await api.get("/api/manageIOT/getAllBuilding");
+
+            newList = await newList.data
+
+            if (newList.msg) {
+                console.log("Error fetch data in api")
+                setlistBuilding([])
+            }
+            else {
+                console.log(newList)
+                setlistBuilding(newList)
+            }
+        } catch (error) {
+            console.error("Error getting buildings : ", error)
+        }
+
+    }
+
+    useEffect(() => {
+        getAllBuilding();
+    }, [fetchData])
+
+
+    function ListBuilding() {
+        const route = useRoute()
+        const navigation = useNavigation()
+        return (
+            <View style={manageIOTStyles.container}>
+                <FlatList
+                    key={'listBuilding'}
+                    numColumns={2}
+                    data={listBuilding}
+                    keyExtractor={(item) => item.name}
+                    contentContainerStyle={{ justifyContent: 'flex-start' }}
+                    columnWrapperStyle={{ justifyContent: 'space-around' }}
+                    // contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
+                    renderItem={({ item }) => (
+                        <Pressable
+                            style={manageIOTStyles.buildingBtn}
+                            onPress={() => {
+                                navigation.navigate(item.name, { nameBuilding: item.name });
+                            }
+                            }
+                        //id= {item.name}
+                        //key={item.name}
+                        >
+                            <Ionicons name='home' color={'#0074CE'} size={80} />
+                            <Text
+                                style={manageIOTStyles.buildingText}
+                            >
+                                {item.name}
+                            </Text>
+                        </Pressable>
+                    )}
+                />
+            </View>
+        )
+    }
+
     return (
         <View style={manageIOTStyles.container}>
             <Stack.Navigator
@@ -96,10 +92,10 @@ export function ManageIOT() {
                     },
                 })}
             >
-                <Stack.Screen name = "List Building" component={ListBuilding} initialParams={{listBuilding : listBuilding}} />
+                <Stack.Screen name="List Building" component={ListBuilding} />
                 {
-                    listBuilding.map(item=>(
-                        <Stack.Screen name = {item.name} component={ListRoom} initialParams={{listRoom : listRoom}}/>
+                    listBuilding.map(item => (
+                        <Stack.Screen name={item.name} component={ListRoom} initialParams={{ nameBuilding: item.name }} />
                     ))
                 }
             </Stack.Navigator>
@@ -107,39 +103,3 @@ export function ManageIOT() {
     )
 }
 
-function ListBuilding() {
-    const route = useRoute()
-    const navigation = useNavigation()
-    const { listBuilding } = route.params
-    return (
-        <View style={manageIOTStyles.container}>
-            <FlatList
-                key={'listBuilding'}
-                numColumns={2}
-                data={listBuilding}
-                keyExtractor={(item)=> item.name}
-                contentContainerStyle={{ justifyContent:'flex-start'}}
-                columnWrapperStyle={{justifyContent:'space-around' }}
-                // contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}
-                renderItem={({ item }) => (
-                    <Pressable
-                        style={manageIOTStyles.buildingBtn}
-                        onPress={() => {
-                            navigation.navigate(item.name, { listRoom: listRoom });
-                        }
-                        }
-                        //id= {item.name}
-                        //key={item.name}
-                    >
-                        <Ionicons name='home' color={'#0074CE'} size = {80}/>
-                        <Text
-                            style={manageIOTStyles.buildingText}
-                        >
-                            {item.name}
-                        </Text>
-                    </Pressable>
-                )}
-            />
-        </View>
-    )
-}

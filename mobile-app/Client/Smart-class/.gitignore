@@ -2,7 +2,7 @@
 
 # dependencies
 node_modules/
-
+android/
 
 # Expo
 .expo/
@@ -37,3 +37,4 @@ yarn-error.*
 
 package-lock.json
 /api/ip.js
+.idea/

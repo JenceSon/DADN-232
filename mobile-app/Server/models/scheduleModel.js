@@ -5,8 +5,11 @@ import {
   doc,
   getDoc,
   deleteDoc,
+
+  getDocs,
+  query,
 } from "firebase/firestore";
-import { Timestamp } from "firebase/firestore";
+import { Timestamp,where } from "firebase/firestore";
 import db from "../utils/firebase.js";
 const Schedule = {
   add: async (id, From, building, classroom, NoStu, To, userID) => {
@@ -48,6 +51,7 @@ const Schedule = {
       console.error("Error getting document:", e);
     }
   },
+  
   update: async (id, From, building, classroom, NoStu, To, userID) => {
     try {
       const docRef = doc(db, "Schedule", id);
@@ -63,13 +67,61 @@ const Schedule = {
       console.error("Error updating document:", e);
     }
   },
-  
   delete: async (id) => {
     try {
       await deleteDoc(doc(db, "Schedule", id));
       return true;
     } catch (e) {
       console.error("Error removing document: ", e);
+    }
+  },
+  getAll: async () => {
+    try {
+      const docRef = collection(db, 'Schedule')
+      const docSnap = await getDocs(docRef)
+      let key = 0
+      const res =  docSnap.docs.map((doc)=>{
+        let From = new Timestamp(doc.data().From.seconds,doc.data().From.nanoseconds)
+        const FromTime = From.toDate().toTimeString()
+        const FromDate = From.toDate().toDateString()
+        let To = new Timestamp(doc.data().To.seconds,doc.data().To.nanoseconds)
+        const ToTime = To.toDate().toTimeString()
+        let note = {
+          FromTime : FromTime ,
+          ToTime : ToTime,
+          Date : FromDate,
+          NoStu : parseInt(doc.data().NoStu),
+          Location : String(doc.data().Location._key.path.segments[8]),
+          User : String(doc.data().User._key.path.segments[6]),
+        }
+        return note
+      })
+      //const q = query(docRef,where())
+      if (res == undefined) return []
+      return res
+
+    } catch (error) {
+      console.error("Error get schedule: ", error);
+    }
+  },
+
+  all: async () => {
+    try {
+      const snapshot = await getDocs(collection(db, "Schedule"));
+      return snapshot.docs.map((doc) => doc.data());
+    } catch (e) {
+      console.error("Error getting documents: ", e);
+    }
+  },
+  getByUserRef: async (userRef) => {
+    try {
+      const scheduleRef = collection(db, "Schedule");
+      const q= query(scheduleRef, where("User", "==", userRef));
+      const querySnapshot = await getDocs(q);
+      
+      return querySnapshot.docs.map((doc) => doc.data());
+    } catch (e) {
+      console.error("Error getting document:", e);
     }
   },
 };
