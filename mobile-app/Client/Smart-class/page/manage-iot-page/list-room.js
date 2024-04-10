@@ -32,7 +32,7 @@ export function ListRoom() {
             })
             newList = await newList.data
             if (newList.msg) {
-                console.log("Error fetch data in api")
+                console.log(newList.msg)
                 setListRoom([])
             }
             else {
@@ -40,7 +40,7 @@ export function ListRoom() {
                 setListRoom(newList)
             }
         } catch (error) {
-            console.error("Error getting rooms : ", error)
+            console.error("Error Call API : ", error)
         }
 
     }

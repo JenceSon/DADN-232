@@ -35,12 +35,24 @@ async function getIOTByRoom(req,res){
         res.send([fans,lights])
         
     } catch (error) {
-        res.send({msg : "Error loading IOT device"})
+        res.send({msg : "Error loading IOT device : " + error})
     }
 }
 
 async function adjustInfoDevice(req,res){
-
+    const body = req.body;
+    try {
+        console.log(body)
+        if (body.type == "Fan"){
+            await Fan.update(body.id,body.status,body.building,body.classroom)
+        }
+        else {
+            await Light.update(body.id,body.status,body.building,body.classroom)
+        }
+        res.send({success : "Update " + body.id+" sucessfully" })
+    } catch (error) {
+        res.send({msg : "Error update IOT device : "+ error})
+    }
 }
 
 //admin only
@@ -62,7 +74,7 @@ async function getAllBuilding(req,res){
         else res.send(buildings)
     }
     catch (e){
-        res.send({msg : "Error in finding list buildings"})
+        res.send({msg : "Error in finding list buildings : "+ e})
     }
 }
 //user only
@@ -86,7 +98,7 @@ async function getRoomByUser(req,res){
         } 
         else res.send(rooms)
     } catch (error) {
-        res.send({msg : "Error in finding schedules"})
+        res.send({msg : "Error in finding schedules : " + error})
     }
 }
 
