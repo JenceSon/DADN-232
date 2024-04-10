@@ -1,27 +1,42 @@
 export default function commandParser(text) {
-    //text -> cmd: {command} {arg}
-    const cmdDevice = ["light", "mic"];
-    const cmdArg = ["on", "off"];
     const textClean = text.trim().toLowerCase();
-    const textArr = textClean.split(" ");
-    let rt_cmdDevice = "";
-    let rt_cmdArg = "";
+    let textArr = textClean.split(" ");
+    textArr = textArr.filter(w => w !== "")
+    let rt_cmdDevice = [];
+    let rt_cmdArg = [];
     for (let i = 0; i < textArr.length; i++) {
         const element = textArr[i];
-        if (cmdDevice.includes(element)) {
-            rt_cmdDevice = element;
+        if (element in preDefineValidCmds) {
+            rt_cmdDevice.push(element);
         }
-        if (cmdArg.includes(element)) {
-            rt_cmdArg = element;
+        if (preDefineValidArgs.includes(element)) {
+            rt_cmdArg.push(element);
         }
     }
-    if (rt_cmdArg === "" || rt_cmdDevice === "") throw new Error("Can not parse cammand");
-    return rt_cmdDevice + " " + rt_cmdArg;
+    const validCmd = [];
+    if (rt_cmdArg.length === 0 || rt_cmdDevice.length === 0) throw new Error("Can not parse command");
+    rt_cmdDevice.forEach(cmd => {
+        rt_cmdArg.forEach(arg => {
+            console.log("[-] candidate cmd:" + cmd + " " + arg)
+            if (arg in preDefineValidCmds[cmd]) {
+                //invoke
+                preDefineValidCmds[cmd][arg]();
+                validCmd.push(cmd + " " + arg);
+            }
+        });
+    });
+    console.log(validCmd);
+    return validCmd;
 }
-export function commandInvoker({ cmd }) {
-    //invoke action from a cmd
-    const cmdArr = cmd.split(" ");
-    if (cmdArr[0] == "light") {
-        //fire action 
-    }
+///////
+const preDefineValidArgs = ["on", "off", "start", "end"]
+const preDefineValidCmds = {
+    "light": {
+        "on": () => console.log("LIGHT ON"),
+        "off": () => console.log("LIGHT OFF")
+    },
+    "fan": {
+        "on": () => console.log("FAN ON"),
+        "off": () => console.log("FAN OFF")
+    },
 }

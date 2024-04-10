@@ -2,7 +2,7 @@ import axios from "axios";
 import FFmpeg from 'fluent-ffmpeg'
 import multer from "multer";
 import fs from 'fs'
-import {config} from 'dotenv'
+import { config } from 'dotenv'
 export default async function speech2text(filename) {
     const fileArr = filename.split(".");
     const fileExt = fileArr.pop();
@@ -19,16 +19,18 @@ export default async function speech2text(filename) {
                 ])
                 .save("audio/" + fileDes)
                 .on('end', async () => {
-                        fs.unlinkSync('audio/' + filename);
-                        const result = await startSendApi(fileDes);
-                        resolve(result);
-                    }
+                    fs.unlinkSync('audio/' + filename);
+                    const result = await startSendApi(fileDes);
+                    fs.unlinkSync(`audio/${fileDes}`);
+                    resolve(result);
+                }
                 ).on('error', (err) => {
-                reject(new Error("FFmpeg error: " + err.message));
-            });
+                    reject(new Error("FFmpeg error: " + err.message));
+                });
         } else {
             try {
                 const result = await startSendApi(filename);
+                fs.unlinkSync(`audio/${filename}`);
                 resolve(result);
             } catch (e) {
                 console.log("Fail to send api text 2 speech:" + e.message);
@@ -64,11 +66,9 @@ export default async function speech2text(filename) {
                     return rs.alternatives[0].transcript;
                 })
                 .join('\n');
-            //xoa file ghi dc
-            // fs.unlinkSync(`audio/${filename}`);
-            return {"transcription": transcription, message: "speech 2 text success"};
+            return { "transcription": transcription, message: "speech 2 text success" };
         } else {
-            return {"transcription": "", message: "speech 2 text success but no result text"};
+            return { "transcription": "", message: "speech 2 text success but no result text" };
         }
     }
 
@@ -81,4 +81,4 @@ const storage = multer.diskStorage({
         cb(null, file.originalname);
     }
 })
-export const upload = multer({storage: storage});
+export const upload = multer({ storage: storage });

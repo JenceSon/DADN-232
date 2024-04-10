@@ -1,13 +1,13 @@
-import React, { useRef, useState } from "react";
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
-import { Picker } from "@react-native-picker/picker";
-import { MaterialIcons } from '@expo/vector-icons';
-import { colors } from "../../style/global";
+import React, {useRef, useState} from "react";
+import {View, Text, TouchableOpacity, TextInput, ScrollView} from "react-native";
+import {Picker} from "@react-native-picker/picker";
+import {MaterialIcons} from '@expo/vector-icons';
+import {colors} from "../../style/global";
 import LottieView from "lottie-react-native";
 import CusModal from "../../components/CusModal";
-import { Audio } from "expo-av";
-import { useSelector } from "react-redux";
-import { formRequest } from "../../api/api";
+import {Audio} from "expo-av";
+import {useSelector} from "react-redux";
+import {formRequest} from "../../api/api";
 import commandParser from "./cmd-utils";
 
 export function Mic() {
@@ -24,6 +24,8 @@ export function Mic() {
 
     const toggleMic = async () => {
         if (!isMicOn) {
+            setParsedCmd("");
+            setRcText("");
             micRef.current.play();
             //recording voice 
             try {
@@ -39,7 +41,7 @@ export function Mic() {
                 }
 
                 console.log("Start recording...");
-                const { recording } = await Audio.Recording.createAsync(
+                const {recording} = await Audio.Recording.createAsync(
                     {
                         android: {
                             extension: '.m4a',
@@ -86,6 +88,7 @@ export function Mic() {
             await speech2text(recordedAudio);
         }
     };
+
     async function speech2text(recordedAudio) {
         console.log("recorded audio:", recordedAudio);
         const fd = new FormData();
@@ -94,27 +97,30 @@ export function Mic() {
             const reps = await formRequest.post("/api/mic/send-audio", fd);
             console.log(reps.data);
             if (reps.data["transcription"] != null) {
-                setRcText(reps.data["transcription"]);
-            }
-            else {
-                setRcText(null);
+                setRcText(prevStat => prevStat = reps.data["transcription"]);
+                try {
+                    const parsedCmdLst = commandParser(reps.data["transcription"]);
+                    let parsedCmdStr = "";
+                    parsedCmdLst.forEach(cmd => parsedCmdStr += cmd + " | ");
+                    setParsedCmd(parsedCmdStr);
+
+                } catch (error) {
+                    console.log(error.message);
+                }
+            } else {
+                setRcText(prevState => prevState = "");
             }
         } catch (e) {
             console.error("Fail to translate to text: " + e.message);
         }
         setFetchP2TDone(prevState => !prevState);
-        try {
-            const parsedCmd = commandParser(rcText);
-            setParsedCmd(parsedCmd);
 
-        } catch (error) {
-            console.log(error.message);
-        }
     }
+
     function ModalError() {
         return (
             <CusModal title={"Report Micro Error"} isVisible={modalRpError}
-                setVisibleState={() => setModalRpError(state => state = !state)}>
+                      setVisibleState={() => setModalRpError(state => state = !state)}>
                 <View className="flex flex-col gap-4 justify-center mb-4">
                     <View className="bg-slate-200 rounded-3xl">
                         <Picker
@@ -125,8 +131,8 @@ export function Mic() {
                             }
                             className="text-lg"
                         >
-                            <Picker.Item label="Micro cannot record my voice" value="Không ghi nhận được giọng nói" />
-                            <Picker.Item label="I cannot turn on micro" value="Không mở được mic" />
+                            <Picker.Item label="Micro cannot record my voice" value="Không ghi nhận được giọng nói"/>
+                            <Picker.Item label="I cannot turn on micro" value="Không mở được mic"/>
                         </Picker>
                     </View>
                     <View className="bg-slate-200 rounded-2xl p-2">
@@ -143,51 +149,58 @@ export function Mic() {
 
     return (
         <>
-            <ModalError />
+            <ScrollView>
 
-            <View className="h-full" style={{ backgroundColor: colors.bgColor }}>
-                <View className="flex-row justify-end" >
-                    <View className="flex-row items-center gap-2">
-                        <Text className="text-base">Report Error</Text>
-                        <TouchableOpacity onPress={() => setModalRpError(true)}>
-                            <MaterialIcons name="error-outline" size={40} color="black" />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View className="flex flex-col items-center">
-                    <View className="mx-auto flex flex-row justify-center">
-                        <Text className={" my-4 font-bold "} style={{ fontSize: 30, fontWeight: 500 }}>
-                            {isMicOn ? 'Recording' : 'Idling'}
-                        </Text>
-                    </View>
-                    <View className="mx-0 flex flex-row justify-center gap-2">
-                        <View className={"p-6 rounded-3xl"} style={{ backgroundColor: colors.primary40 }}>
-                            <View>
+                <ModalError/>
 
-                                <TouchableOpacity onPress={() => {
-                                    toggleMic()
-                                }}
-                                >
-                                    <LottieView ref={micRef} source={require("../../assets/micro_anim.json")}
-                                        style={{ width: "90%", aspectRatio: 1 }}
-                                        className="mx-auto"
-                                    />
-                                </TouchableOpacity>
-                            </View>
+                <View className="h-screen" style={{backgroundColor: colors.bgColor}}>
+                    <View className="flex-row justify-end">
+                        <View className="flex-row items-center gap-2">
+                            <Text className="text-base">Report Error</Text>
+                            <TouchableOpacity onPress={() => setModalRpError(true)}>
+                                <MaterialIcons name="error-outline" size={40} color="black"/>
+                            </TouchableOpacity>
                         </View>
                     </View>
-                    {!fetchP2TDone && <LottieView source={require("../../assets/loading_anim.json")} autoPlay loop
-                        style={{ height: "80", aspectRatio: 1 }} />}
-                    <View className="mx-1 gap-2 flex flex-col justify-start flex-wrap">
-                        <Text className="text-lg text-blue-600 font-bold">Recorded text:</Text>
-                        {!fetchP2TDone && <LottieView source={require("../../assets/loading_dot.json")} autoPlay loop
-                            style={{ height: 100, width: 200 }} />}
-                        <Text className="text-lg text-blue-600 font-semibold">{rcText}</Text>
-                        <Text className="text-lg text-blue-600 font-bold">Parsed command:</Text>
-                        <Text className="text-lg text-blue-600 font-semibold">{parsedCmd}</Text>
+                    <View className="flex flex-col items-center">
+                        <View className="mx-auto flex flex-row justify-center">
+                            <Text className={" my-4 font-bold "} style={{fontSize: 30, fontWeight: 500}}>
+                                {isMicOn ? 'Recording' : 'Idling'}
+                            </Text>
+                        </View>
+                        <View className="mx-0 flex flex-row justify-center gap-2">
+                            <View className={"p-6 rounded-3xl"} style={{backgroundColor: colors.primary40}}>
+                                <View>
+
+                                    <TouchableOpacity onPress={() => {
+                                        toggleMic()
+                                    }}
+                                    >
+                                        <LottieView ref={micRef} source={require("../../assets/micro_anim.json")}
+                                                    style={{width: "90%", aspectRatio: 1}}
+                                                    className="mx-auto"
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                        {!fetchP2TDone && <LottieView source={require("../../assets/loading_anim.json")} autoPlay loop
+                                                      style={{height: "80", aspectRatio: 1}}/>}
+                        <View className="mx-1 gap-1 flex flex-col justify-start">
+                            <Text className="text-lg text-blue-600 font-bold">Recorded text:</Text>
+                            {!fetchP2TDone ?
+                                <LottieView source={require("../../assets/loading_dot.json")} autoPlay loop
+                                            style={{height: 60, width: 200}}/> :
+                                <Text className="text-xl text-gray-400 font-medium">{rcText}</Text>}
+                            <Text className="text-lg  font-bold">Parsed command:</Text>
+                            {!fetchP2TDone ?
+                                <LottieView source={require("../../assets/loading_dot.json")} autoPlay loop
+                                            style={{height: 60, width: 200}}/> :
+                                <Text className="text-lg text-gray-400 font-bold">{parsedCmd}</Text>}
+                        </View>
                     </View>
                 </View>
-            </View>
+            </ScrollView>
         </>
     );
 } 
