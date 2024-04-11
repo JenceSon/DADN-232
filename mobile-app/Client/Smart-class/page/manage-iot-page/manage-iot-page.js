@@ -24,7 +24,7 @@ export function ManageIOT() {
             newList = await newList.data
 
             if (newList.msg) {
-                console.log("Error fetch data in api")
+                console.log(newList.msg)
                 setlistBuilding([])
             }
             else {
@@ -32,7 +32,7 @@ export function ManageIOT() {
                 setlistBuilding(newList)
             }
         } catch (error) {
-            console.error("Error getting buildings : ", error)
+            console.error("Error Call API : ", error)
         }
 
     }

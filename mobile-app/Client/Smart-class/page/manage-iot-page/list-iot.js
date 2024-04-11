@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { View, FlatList, Text, Pressable, Switch } from "react-native";
+import { View, FlatList, Text, Pressable, Switch, Alert } from "react-native";
 import Modal from "react-native-modal"
 import { manageIOTStyles } from "../../style/manage-iot-style";
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -13,49 +13,82 @@ import api from "../../api/api";
 export function ListIOT() {
     const [modalVisible, setModalVisible] = useState(false)
     const [curModal, setCurModal] = useState({
-        id : "",
-        Status : false,
+        id: "",
+        Status: false,
     })
-    const [isEnable,setisEnable] = useState(false)
-    const [fetchData,setFetchData] = useState(false)
-    const [listIOT,setListIOT] = useState([])
+    const [isEnable, setisEnable] = useState(false)
+    const [fetchData, setFetchData] = useState(false)
+    const [listIOT, setListIOT] = useState([])
 
     const route = useRoute()
     const navigation = useNavigation()
     const { nameRoom } = route.params
-    const toggleModalAccept = () => {
+    const toggleModalAccept = async () => {
         setModalVisible(!modalVisible)
         //call api to save or reject
-        toggleDevice(curModal.id,curModal.Status)
+        const res = await toggleDevice({
+           type: curModal.id.substring(0,3),
+           id: curModal.id, 
+           status: curModal.Status, 
+           building: nameRoom.substring(0, 2),
+           classroom: nameRoom,
+        })
         //setCurModal(pre => ({...pre,Status: isEnable}))
+        console.log(res)
+        if (res.success) {
+            Alert.alert("Notification", res.success, [{
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel'
+            },
+            {
+                text: 'OK',
+                onPress: () => console.log('OK pressed'),
+            }
+            ])
+        }
+        else {
+            Alert.alert("Notification", res.msg, [{
+                text: 'Cancel',
+                onPress: () => console.log('Cancel Pressed'),
+                style: 'cancel'
+            },
+            {
+                text: 'OK',
+                onPress: () => console.log('OK pressed'),
+            }
+            ])
+            setCurModal(pre => ({ ...pre, Status: isEnable }))
+        }
+
         setFetchData(!fetchData)
     }
     const toggleModalCancel = () => {
         setModalVisible(!modalVisible)
         //set default switch
-        setCurModal(pre => ({...pre,Status: isEnable}))
+        setCurModal(pre => ({ ...pre, Status: isEnable }))
     }
-    async function getIOT(){
+    async function getIOT() {
         try {
-            let newList = await api.get("/api/manageIOT/getIOTByRoom",{
-                params:{
-                    nameRoom : nameRoom,
+            let newList = await api.get("/api/manageIOT/getIOTByRoom", {
+                params: {
+                    nameRoom: nameRoom,
                 }
             })
             newList = await newList.data
-            if (newList.msg){
-                console.log("Error fetch data in api")
+            if (newList.msg) {
+                console.log(newList.msg)
                 setListIOT([])
             }
-            else{
+            else {
                 console.log(newList)
                 setListIOT(newList)
             }
         } catch (error) {
-            console.error("Error getting IOT : ", error)
+            console.error("Error Call API : ", error)
         }
     }
-    useEffect(()=>{
+    useEffect(() => {
         getIOT();
     }, [fetchData])
 
@@ -70,15 +103,15 @@ export function ListIOT() {
                 <Text style={manageIOTStyles.headerModal}>
                     {curModal.id}
                 </Text>
-                <View style = {manageIOTStyles.modalContainerBtn}>
-                    <Text style = {{fontSize : RFPercentage(3), color : colors.black}}>
-                        Status :                        
+                <View style={manageIOTStyles.modalContainerBtn}>
+                    <Text style={{ fontSize: RFPercentage(3), color: colors.black }}>
+                        Status :
                     </Text>
                     <Switch
-                        trackColor={{false : 'grey', true : 'green'}}
-                        value = {curModal.Status} //get the item status 
-                        onValueChange={() =>{
-                            setCurModal(pre => ({...pre,Status: !curModal.Status}))
+                        trackColor={{ false: 'grey', true: 'green' }}
+                        value={curModal.Status} //get the item status 
+                        onValueChange={() => {
+                            setCurModal(pre => ({ ...pre, Status: !curModal.Status }))
                         }}
                     >
                     </Switch>

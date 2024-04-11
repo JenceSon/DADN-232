@@ -1,5 +1,6 @@
 import json
 import requests
+import ultralytics
 
 def get_payload_and_url(text):
     if len(text)<1:

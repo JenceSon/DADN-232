@@ -11,7 +11,7 @@ import db from "../utils/firebase.js";
 const Fan = {
   add: async (id, status, building, classroom) => {
     //Example:
-    // Fan.add("Fan0001", "ON", "H6", "H6-201");
+    // Fan.add("Fan0001", true, "H6", "H6-201");
     try {
       const re = await setDoc(doc(db, "Fan/" + id), {
         Status: status,
@@ -44,6 +44,8 @@ const Fan = {
         Status: status,
         Location: doc(db, "Building/" + building + "/ClassRooms/", classroom),
       });
+      //call API to update adafruit db
+      //
       return true;
     } catch (e) {
       console.error("Error updating document:", e);
@@ -73,7 +75,7 @@ const Fan = {
       if (res == undefined) return []
       else return res
     } catch (error) {
-      console.error("Error get list of lights", error)
+      console.error("Error get list of fans", error)
     }
   }
 };
