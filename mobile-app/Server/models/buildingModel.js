@@ -74,6 +74,22 @@ const Building = {
         } catch(e){
             console.error("Error getting list buildings",e);
         }
+    },
+    getClass: async (id)=>{
+        try {
+            const docRef = collection(db,'Building/'+id+'/ClassRooms')
+            const docSnap = await getDocs(docRef);
+            const res = docSnap.docs.map(doc=>{
+                let note = {
+                    name : doc.id,
+                    status : true,
+                }
+                return note
+            })
+            return res            
+        } catch (error) {
+            console.error("Error getting rooms")
+        }
     }
 
 }

@@ -82,10 +82,10 @@ const Schedule = {
       let key = 0
       const res =  docSnap.docs.map((doc)=>{
         let From = new Timestamp(doc.data().From.seconds,doc.data().From.nanoseconds)
-        const FromTime = From.toDate().toTimeString()
+        const FromTime = From.toDate()
         const FromDate = From.toDate().toDateString()
         let To = new Timestamp(doc.data().To.seconds,doc.data().To.nanoseconds)
-        const ToTime = To.toDate().toTimeString()
+        const ToTime = To.toDate()
         let note = {
           FromTime : FromTime ,
           ToTime : ToTime,
