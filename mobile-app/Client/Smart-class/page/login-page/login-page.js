@@ -92,9 +92,10 @@ export function Login() {
 
                                     }
                                 ))
-
-                                //do transaction screen here
-                                navigation.navigate("Main teacher", {teacher: login_rs});
+                                if(login_rs.Role == "Admin"){
+                                    navigation.navigate("Main admin", {admin : login_rs})
+                                }
+                                else navigation.navigate("Main teacher", {teacher: login_rs});
                             }
                         }
                         }
