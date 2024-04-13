@@ -8,6 +8,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ListIOT } from "./list-iot";
 import api from "../../api/api";
 import { useSelector } from "react-redux";
+import { ListIOTAdmin } from "./list-iot-admin";
 
 
 
@@ -120,7 +121,7 @@ export function ListRoomAdmin() {
                 <Stack.Screen name="Display" component={Display} />
                 {
                     listRoom.map(item => (
-                        <Stack.Screen name={item.name} component={ListIOT} />
+                        <Stack.Screen name={item.name} component={ListIOTAdmin} />
                     ))
                 }
             </Stack.Navigator>
