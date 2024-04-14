@@ -15,7 +15,7 @@ try:
     imgData = sys.argv[1]
 except:
     imgData = defaultBase64
-print(len(imgData))
+#print(len(imgData))
 decodedData  = base64.b64decode(imgData)
 imgFile = open("./test-img/detectImg.png",'wb')
 imgFile.write(decodedData)
