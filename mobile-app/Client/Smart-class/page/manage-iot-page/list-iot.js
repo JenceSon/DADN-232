@@ -6,7 +6,7 @@ import { manageIOTStyles } from "../../style/manage-iot-style";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { colors, globalStyles } from "../../style/global";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import { toggleDevice } from "./manage-iot-func";
+import { ToggleDevice } from "./manage-iot-func";
 import api from "../../api/api";
 
 
@@ -26,7 +26,7 @@ export function ListIOT() {
     const toggleModalAccept = async () => {
         setModalVisible(!modalVisible)
         //call api to save or reject
-        const res = await toggleDevice({
+        const res = await ToggleDevice({
            type: curModal.id.substring(0,3),
            id: curModal.id, 
            status: curModal.Status, 

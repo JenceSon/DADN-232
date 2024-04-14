@@ -1,3 +1,4 @@
+import {PythonShell} from 'python-shell';
 import User from "../models/userModel.js";
 import Building from "../models/buildingModel.js";
 import ClassRoom from "../models/classModel.js";
@@ -14,6 +15,7 @@ import {
   getDocs,
   query,
 } from "firebase/firestore";
+
 async function getListClassByUser(req, res) {
   try {
     const  userId  =req.query.id? req.query.id: "2110101"
@@ -55,7 +57,40 @@ async function getInfoClass(req, res) {}
 async function getNoti(req, res) {}
 
 //call AI api
-async function getNumberStu(req, res) {}
+async function getNumberStu(req, res) {
+  const body = req.query;
+  try {
+    if (body.base64String){
+
+      PythonShell.run("detectHuman.py",options = {args : [body.base64String]}).then((result)=>{
+       
+        if (result.length != 3 ) {
+          res.send({message : result})
+        }
+
+        else {
+          res.send({noStu : parseInt(result[2])})
+        }
+      })
+    }
+    else{
+      PythonShell.run("detectHuman.py", null).then((result)=>{
+        if (result.length != 3) {
+          res.send({message : result})
+        }
+
+        else {
+          res.send({message : "Null input data, get the default image", default: parseInt(result[2]) })
+        }
+      })
+      
+    }
+    
+  } catch (error) {
+    console.error("Error detecting person in image : ", error)
+    res.status(500).json({message: "Error detecting person in image : "+ error})
+  }
+}
 
 //student only
 async function postCallRoll(req, res) {}
