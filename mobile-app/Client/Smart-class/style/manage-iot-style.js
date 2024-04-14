@@ -137,7 +137,7 @@ export const manageIOTStyles = StyleSheet.create({
     modalCanCelBtn:{
         width : '30%',
         aspectRatio :2,
-        backgroundColor : colors.primary100,
+        backgroundColor : 'grey',
         shadowColor : '#171717',
         shadowOffset: { width: 4, height: 8 },
         shadowOpacity: 0.3,
@@ -153,7 +153,7 @@ export const manageIOTStyles = StyleSheet.create({
     modalAcceptBtn:{
         width : '30%',
         aspectRatio :2,
-        backgroundColor : 'red',
+        backgroundColor : colors.primary100,
         shadowColor : '#171717',
         shadowOffset: { width: 4, height: 8 },
         shadowOpacity: 0.3,
@@ -188,4 +188,17 @@ export const manageIOTStyles = StyleSheet.create({
         color : colors.white,
         fontWeight : 'bold',
     },
+
+    //add form
+    modalContainerAdd:{
+        backgroundColor : colors.white,
+        width : '80%',
+        marginVertical : '60%',
+        alignSelf : 'center',
+        flexDirection : 'column',
+        justifyContent : 'space-between',
+        paddingHorizontal : '5%',
+        paddingVertical : '5%',
+        borderRadius : 12,
+    }
 });

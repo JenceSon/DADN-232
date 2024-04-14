@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, Text, View, Pressable } from "react-native";
+import { FlatList, Text, View, Pressable, Alert } from "react-native";
 import { globalStyles, colors } from "../../style/global";
 import { manageIOTStyles } from "../../style/manage-iot-style";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -32,7 +32,7 @@ export function ListRoom() {
             })
             newList = await newList.data
             if (newList.msg) {
-                console.log("Error fetch data in api")
+                console.log(newList.msg)
                 setListRoom([])
             }
             else {
@@ -40,7 +40,7 @@ export function ListRoom() {
                 setListRoom(newList)
             }
         } catch (error) {
-            console.error("Error getting rooms : ", error)
+            console.error("Error Call API : ", error)
         }
 
     }
@@ -53,40 +53,118 @@ export function ListRoom() {
     function Display() {
         let buttonText = manageIOTStyles.buttonText1
         let iconColor = 'white'
+        let disPlayList = listRoom.map(item => {
+            let note = {
+                name: item.name,
+                iconStatus: (item.status) ? 'checkmark-circle-sharp' : 'close-circle-sharp',
+                iconStatusColor: (item.status) ? 'green' : 'red',
+                status: item.status,
+            }
+            return note
+        })
+        if (disPlayList == undefined) disPlayList = []
+        let disPlayListOn = disPlayList.filter((item) => item.status == true)
+        let disPlayListOff = disPlayList.filter((item) => item.status == false)
         return (
             <View style={manageIOTStyles.container}>
-                <FlatList
-                    data={listRoom}
-                    contentContainerStyle={manageIOTStyles.containerFlat}
-                    //contentContainerStyle = {'20%'}
-                    keyExtractor={(item) => item}
-                    renderItem={({ item }) => (
-                        <Pressable
-                            style={() => {
-                                if (listRoom.indexOf(item) % 2 == 0) {
-                                    buttonText = manageIOTStyles.buttonText2
-                                    iconColor = 'black'
-                                    return manageIOTStyles.button1Room
+                <View>
+                    <Text style={manageIOTStyles.typeText}>
+                        On classes
+                    </Text>
+                    <FlatList
+                        data={disPlayListOn}
+                        contentContainerStyle={manageIOTStyles.containerFlat}
+                        //contentContainerStyle = {'20%'}
+                        keyExtractor={(item) => item.name}
+                        renderItem={({ item }) => (
+                            <Pressable
+                                style={() => {
+                                    if (disPlayList.indexOf(item) % 2 == 0) {
+                                        buttonText = manageIOTStyles.buttonText2
+                                        iconColor = 'black'
+                                        return manageIOTStyles.button1Room
+                                    }
+                                    buttonText = manageIOTStyles.buttonText1
+                                    iconColor = 'white'
+                                    return manageIOTStyles.button2Room
+                                }}
+                                onPress={() => {
+                                    if (item.status) {
+                                        navigation.navigate(item.name, { nameRoom: item.name });
+                                    }
+                                    else {
+                                        Alert.alert("Notification", item.name + " is not working rightnow !", [
+                                            {
+                                                onPress: console.log("OK pressed !")
+                                            }
+                                        ])
+                                    }
                                 }
-                                buttonText = manageIOTStyles.buttonText1
-                                iconColor = 'white'
-                                return manageIOTStyles.button2Room
-                            }}
-                            onPress={() => {
-                                navigation.navigate(item, { nameRoom: item });
-                            }
-                            }
-                        //id= {item.name}
-                        >
-                            <Text
-                                style={buttonText}
+                                }
+                            //id= {item.name}
                             >
-                                {item}
-                            </Text>
-                            <Ionicons name='arrow-forward' size={20} color={iconColor} />
-                        </Pressable>
-                    )}
-                />
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Ionicons name={item.iconStatus} size={20} color={item.iconStatusColor} />
+                                    <Text
+                                        style={buttonText}
+                                    >
+                                        {item.name}
+                                    </Text>
+                                </View>
+                                <Ionicons name='arrow-forward' size={20} color={iconColor} />
+                            </Pressable>
+                        )}
+                    />
+                </View>
+                <View>
+                    <Text style={manageIOTStyles.typeText}>
+                        Off classes
+                    </Text>
+                    <FlatList
+                        data={disPlayListOff}
+                        contentContainerStyle={manageIOTStyles.containerFlat}
+                        //contentContainerStyle = {'20%'}
+                        keyExtractor={(item) => item.name}
+                        renderItem={({ item }) => (
+                            <Pressable
+                                style={() => {
+                                    if (disPlayList.indexOf(item) % 2 == 0) {
+                                        buttonText = manageIOTStyles.buttonText2
+                                        iconColor = 'black'
+                                        return manageIOTStyles.button1Room
+                                    }
+                                    buttonText = manageIOTStyles.buttonText1
+                                    iconColor = 'white'
+                                    return manageIOTStyles.button2Room
+                                }}
+                                onPress={() => {
+                                    if (item.status) {
+                                        navigation.navigate(item.name, { nameRoom: item.name });
+                                    }
+                                    else {
+                                        Alert.alert("Notification", item.name + " is not working rightnow !", [
+                                            {
+                                                onPress: console.log("OK pressed !")
+                                            }
+                                        ])
+                                    }
+                                }
+                                }
+                            //id= {item.name}
+                            >
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Ionicons name={item.iconStatus} size={20} color={item.iconStatusColor} />
+                                    <Text
+                                        style={buttonText}
+                                    >
+                                        {item.name}
+                                    </Text>
+                                </View>
+                                <Ionicons name='arrow-forward' size={20} color={iconColor} />
+                            </Pressable>
+                        )}
+                    />
+                </View>
             </View>
         )
     }
@@ -99,10 +177,10 @@ export function ListRoom() {
                     headerShown: false,
                 })}
             >
-                <Stack.Screen name="Display" component={Display} initialParams={{ listRoom: listRoom }} />
+                <Stack.Screen name="Display" component={Display} />
                 {
                     listRoom.map(item => (
-                        <Stack.Screen name={item} component={ListIOT} />
+                        <Stack.Screen name={item.name} component={ListIOT} />
                     ))
                 }
             </Stack.Navigator>
