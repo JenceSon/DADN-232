@@ -58,57 +58,113 @@ export function ListRoom() {
                 name: item.name,
                 iconStatus: (item.status) ? 'checkmark-circle-sharp' : 'close-circle-sharp',
                 iconStatusColor: (item.status) ? 'green' : 'red',
-                status : item.status,
+                status: item.status,
             }
             return note
         })
         if (disPlayList == undefined) disPlayList = []
+        let disPlayListOn = disPlayList.filter((item) => item.status == true)
+        let disPlayListOff = disPlayList.filter((item) => item.status == false)
         return (
             <View style={manageIOTStyles.container}>
-                <FlatList
-                    data={disPlayList}
-                    contentContainerStyle={manageIOTStyles.containerFlat}
-                    //contentContainerStyle = {'20%'}
-                    keyExtractor={(item) => item.name}
-                    renderItem={({ item }) => (
-                        <Pressable
-                            style={() => {
-                                if (disPlayList.indexOf(item) % 2 == 0) {
-                                    buttonText = manageIOTStyles.buttonText2
-                                    iconColor = 'black'
-                                    return manageIOTStyles.button1Room
+                <View>
+                    <Text style={manageIOTStyles.typeText}>
+                        On classes
+                    </Text>
+                    <FlatList
+                        data={disPlayListOn}
+                        contentContainerStyle={manageIOTStyles.containerFlat}
+                        //contentContainerStyle = {'20%'}
+                        keyExtractor={(item) => item.name}
+                        renderItem={({ item }) => (
+                            <Pressable
+                                style={() => {
+                                    if (disPlayList.indexOf(item) % 2 == 0) {
+                                        buttonText = manageIOTStyles.buttonText2
+                                        iconColor = 'black'
+                                        return manageIOTStyles.button1Room
+                                    }
+                                    buttonText = manageIOTStyles.buttonText1
+                                    iconColor = 'white'
+                                    return manageIOTStyles.button2Room
+                                }}
+                                onPress={() => {
+                                    if (item.status) {
+                                        navigation.navigate(item.name, { nameRoom: item.name });
+                                    }
+                                    else {
+                                        Alert.alert("Notification", item.name + " is not working rightnow !", [
+                                            {
+                                                onPress: console.log("OK pressed !")
+                                            }
+                                        ])
+                                    }
                                 }
-                                buttonText = manageIOTStyles.buttonText1
-                                iconColor = 'white'
-                                return manageIOTStyles.button2Room
-                            }}
-                            onPress={() => {
-                                if(item.status){
-                                    navigation.navigate(item.name, { nameRoom: item.name });
                                 }
-                                else{
-                                    Alert.alert("Notification",item.name + " is not working rightnow !",[
-                                        {
-                                            onPress : console.log("OK pressed !")
-                                        }
-                                    ])
+                            //id= {item.name}
+                            >
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Ionicons name={item.iconStatus} size={20} color={item.iconStatusColor} />
+                                    <Text
+                                        style={buttonText}
+                                    >
+                                        {item.name}
+                                    </Text>
+                                </View>
+                                <Ionicons name='arrow-forward' size={20} color={iconColor} />
+                            </Pressable>
+                        )}
+                    />
+                </View>
+                <View>
+                    <Text style={manageIOTStyles.typeText}>
+                        Off classes
+                    </Text>
+                    <FlatList
+                        data={disPlayListOff}
+                        contentContainerStyle={manageIOTStyles.containerFlat}
+                        //contentContainerStyle = {'20%'}
+                        keyExtractor={(item) => item.name}
+                        renderItem={({ item }) => (
+                            <Pressable
+                                style={() => {
+                                    if (disPlayList.indexOf(item) % 2 == 0) {
+                                        buttonText = manageIOTStyles.buttonText2
+                                        iconColor = 'black'
+                                        return manageIOTStyles.button1Room
+                                    }
+                                    buttonText = manageIOTStyles.buttonText1
+                                    iconColor = 'white'
+                                    return manageIOTStyles.button2Room
+                                }}
+                                onPress={() => {
+                                    if (item.status) {
+                                        navigation.navigate(item.name, { nameRoom: item.name });
+                                    }
+                                    else {
+                                        Alert.alert("Notification", item.name + " is not working rightnow !", [
+                                            {
+                                                onPress: console.log("OK pressed !")
+                                            }
+                                        ])
+                                    }
                                 }
-                            }
-                            }
-                        //id= {item.name}
-                        >
-                            <View style={{ flexDirection: 'row' , alignItems : 'center'}}>
-                                <Ionicons name={item.iconStatus} size={20} color={item.iconStatusColor} />
-                                <Text
-                                    style={buttonText}
-                                >
-                                    {item.name}
-                                </Text>
-                            </View>
-                            <Ionicons name='arrow-forward' size={20} color={iconColor} />
-                        </Pressable>
-                    )}
-                />
+                                }
+                            //id= {item.name}
+                            >
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Ionicons name={item.iconStatus} size={20} color={item.iconStatusColor} />
+                                    <Text
+                                        style={buttonText}
+                                    >
+                                        {item.name}
+                                    </Text>
+                                </View>
+                                <Ionicons name='arrow-forward' size={20} color={iconColor} />
+                            </Pressable>
+                        )}
+                    />
+                </View>
             </View>
         )
     }

@@ -53,6 +53,51 @@ async function adjustInfoDevice(req,res){
 }
 
 //admin only
+async function autoGenIdDevice(req,res){
+    const body = req.query;
+    try {
+        if (body.type == "Fan"){
+            let listFanId = (await Fan.getAll()).map(item => item.id);
+            
+            if (listFanId == undefined){
+                res.send({id:"Fan0000"})
+            } 
+            else{
+                listFanId = listFanId.map(item => parseInt(item.substring(3,7)))
+                console.log(listFanId)
+                let newID = Math.max(...listFanId) + 1
+                console.log(newID)
+                newID = newID.toString()
+                while (newID.length < 4) {
+                    newID = "0" + newID
+                }
+                res.send({id : "Fan" + newID})
+            }
+            
+        }
+        else{
+            let listLightId = (await Light.getAll()).map(item => item.id);
+            console.log(listLightId)
+            if (listLightId == undefined){
+                res.send({id:"Light0000"})
+            } 
+            else{
+                listLightId = listLightId.map(item => parseInt(item.substring(5,9)))
+                console.log(listLightId)
+                let newID = Math.max(...listLightId) + 1
+                console.log(newID)
+                newID = newID.toString()
+                while (newID.length < 4) {
+                    newID = "0" + newID
+                }
+                res.send({id : "Light" + newID})
+            }
+        }
+        
+    } catch (error) {
+        res.send({msg : "Error gen ID : " + error})
+    }
+}
 async function addDevice(req,res){
     //type and id
     const body = req.body;
@@ -173,4 +218,5 @@ export {
     getListRoomByBuilding,
     getAllBuilding,
     getRoomByUser,
+    autoGenIdDevice,
 }
