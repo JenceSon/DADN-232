@@ -5759,7 +5759,6 @@ react-native-date-picker@^5.0.0:
   version "5.0.1"
   resolved "https://registry.npmjs.org/react-native-date-picker/-/react-native-date-picker-5.0.1.tgz"
   integrity sha512-0AzGE94jugCPGQM3YOgH3lF85QDOiN1/5KAY30rgQB3c6UI1pQNoU9txyxj9UdcRdcAxc1BSy30OEekL0+3ZQw==
-
 react-native-gesture-handler@^2.16.0:
   version "2.16.0"
   resolved "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-2.16.0.tgz"
