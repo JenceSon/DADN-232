@@ -118,7 +118,7 @@ export function ListIOT() {
                 </View>
                 <View style={manageIOTStyles.modalContainerBtn}>
                     <Pressable
-                        style={manageIOTStyles.modalCanCelBtn}
+                        style={manageIOTStyles.modalAcceptBtn}
                         onPress={toggleModalAccept}
                     >
                         <Text style={manageIOTStyles.modalBtnTxt}>
@@ -126,7 +126,7 @@ export function ListIOT() {
                         </Text>
                     </Pressable>
                     <Pressable
-                        style={manageIOTStyles.modalAcceptBtn}
+                        style={manageIOTStyles.modalCanCelBtn}
                         onPress={toggleModalCancel}
                     >
                         <Text style={manageIOTStyles.modalBtnTxt}>
@@ -177,7 +177,6 @@ export function ListIOT() {
                     </View>
                 ))
             }
-
         </View>
     )
 }

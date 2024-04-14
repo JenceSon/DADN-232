@@ -8,6 +8,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ListRoom } from "./list-room";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import api from "../../api/api";
+import { useSelector } from "react-redux";
+import { ListRoomAdmin } from "./list-room-admin";
 
 //let listBuilding = async () =>{await getAllBuilding()}
 
@@ -16,6 +18,7 @@ export function ManageIOT() {
     const [fetchData, setFetchData] = useState(false)
     const navigation = useNavigation()
     const Stack = createNativeStackNavigator()
+    const user = useSelector(state => state.user)
 
     getAllBuilding = async () => {
         try {
@@ -95,7 +98,7 @@ export function ManageIOT() {
                 <Stack.Screen name="List Building" component={ListBuilding} />
                 {
                     listBuilding.map(item => (
-                        <Stack.Screen name={item.name} component={ListRoom} initialParams={{ nameBuilding: item.name }} />
+                        <Stack.Screen name={item.name} component={(user.Role == "Admin")? ListRoomAdmin : ListRoom} initialParams={{ nameBuilding: item.name }} />
                     ))
                 }
             </Stack.Navigator>
