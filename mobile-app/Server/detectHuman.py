@@ -7,25 +7,28 @@ import os
 
 #set up default img
 defaultBase64 = None
-with open("./test-img/test.jpg", "rb") as image2string: 
-    defaultBase64 = base64.b64encode(image2string.read()) 
+with open("./test-img/test.png", "rb") as image2string: 
+    defaultBase64 = base64.b64encode(image2string.read())
+    #print(defaultBase64)
 
-
-imgData = sys.argv[0]
-if imgData is None: imgData = defaultBase64
-decodedData  = base64.b64decode((imgData))
-imgFile = open("./test-img/detectImg.jpg",'wb')
+try:
+    imgData = sys.argv[1]
+except:
+    imgData = defaultBase64
+print(len(imgData))
+decodedData  = base64.b64decode(imgData)
+imgFile = open("./test-img/detectImg.png",'wb')
 imgFile.write(decodedData)
 imgFile.close()
 
-filename = "detectImg.jpg"
+filename = "detectImg.png"
 error = False
 if Path('./test-img/'+filename).exists():
     pass
 else :
     error = True
     print("No image detected")
-    filename = "test.jpg"
+    filename = "test.png"
 
 model = ul.YOLO("yolov8n.pt")
 result = model.predict(source='./test-img/'+filename)[0]
