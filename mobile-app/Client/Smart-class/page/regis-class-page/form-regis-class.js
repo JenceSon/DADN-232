@@ -156,7 +156,7 @@ export function RegisterClassModal({ close }) {
                 )}
               </View>
             </View>
-            <Pressable style={formRegisClassStyle.btnStyle} onPress={close}>
+            <Pressable style={formRegisClassStyle.btnStyle} onPress={()=>console.log(form)}>
               <Text style={{ color: "white", fontWeight: "500", fontSize: 16 }}>
                 Register
               </Text>
