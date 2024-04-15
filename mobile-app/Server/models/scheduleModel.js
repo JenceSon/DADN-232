@@ -124,6 +124,9 @@ const Schedule = {
           User: String(doc.data().User._key.path.segments[6]),
           Course: String(doc.data().Course),
           Class: String(doc.data().Class),
+          //use only for demo and interval
+          id : doc.id,
+          endDate : To.toDate.toDateString(),
         };
         return note;
       });
@@ -149,7 +152,9 @@ const Schedule = {
       const q = query(scheduleRef, where("User", "==", userRef));
       const querySnapshot = await getDocs(q);
 
-      return querySnapshot.docs.map((doc) => doc.data());
+      let res = querySnapshot.docs.map((doc) => doc.data());
+      if (res == undefined) return []
+      else return res
     } catch (e) {
       console.error("Error getting document:", e);
     }
