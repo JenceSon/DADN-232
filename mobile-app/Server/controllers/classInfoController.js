@@ -15,6 +15,7 @@ import {
   getDocs,
   query,
 } from "firebase/firestore";
+import fs from 'fs';
 
 async function getListClassByUser(req, res) {
   try {
@@ -54,21 +55,38 @@ async function getListClassByUser(req, res) {
 async function getInfoClass(req, res) {}
 
 //used to  get notification when there are student being absent from class
-async function getNoti(req, res) {}
+async function getNoti(req, res) {
+  res.send("getNoti");
+}
 
 //call AI api
 async function getNumberStu(req, res) {
-  const body = req.query;
+  console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAA");
+  const body = req.body;
+ 
   try {
     if (body.base64String){
+      console.log("BBBBBBBBBBBBBBBBBBBBBBB");
 
-      PythonShell.run("detectHuman.py",options = {args : [body.base64String]}).then((result)=>{
+      let base64Image= body.base64String.split(';base64,').pop();
+      fs.writeFile('image.png', base64Image, {encoding: 'base64'}, function(err) {
+        console.log('File created');
+    });
+    let options = {
+        
+      args: ["image.png"]
+  };
+
+      PythonShell.run("detectHuman.py",options).then((result)=>{
        
         if (result.length != 3 ) {
+          console.log("CCCCCCCCCCCCCCCCC")
           res.send({message : result})
+
         }
 
         else {
+          console.log("DDDDDDDDDDDDDDDDDD")
           res.send({noStu : parseInt(result[2])})
         }
       })
