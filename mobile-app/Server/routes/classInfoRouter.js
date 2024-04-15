@@ -7,7 +7,7 @@ const router = Router();
 router.get('/getListClassByUser',getListClassByUser)
 router.get('/getInfoClass',getInfoClass)
 router.get('/getNoti',getNoti)
-router.get('/getNumberStu',getNumberStu)
+router.post('/getNumberStu',getNumberStu)
 router.post('/postCallRoll',postCallRoll)
 
 

@@ -11,10 +11,15 @@ with open("./test-img/test.png", "rb") as image2string:
     defaultBase64 = base64.b64encode(image2string.read())
     #print(defaultBase64)
 
-try:
-    imgData = sys.argv[1]
-except:
-    imgData = defaultBase64
+with open(sys.argv[1], "rb") as image2string2: 
+    try:
+        imgData =  base64.b64encode(image2string2.read())
+    except:
+        imgData = defaultBase64
+    
+    #print(defaultBase64)
+
+
 #print(len(imgData))
 decodedData  = base64.b64decode(imgData)
 imgFile = open("./test-img/detectImg.png",'wb')
