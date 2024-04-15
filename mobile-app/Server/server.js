@@ -6,6 +6,7 @@ import registerClassRouter from './routes/registerClassRouter.js'
 import loginRouter from './routes/loginRouter.js'
 import express from 'express'
 import cors from 'cors'
+import bodyParser from 'body-parser'
 
 const app  = express()
 //server config
@@ -25,7 +26,9 @@ app.get('/',(req,res)=>{
 
 //add route
 
-app.use(express.json());
+app.use(bodyParser.json({limit: '200mb'}));
+app.use(bodyParser.urlencoded({limit: '200mb', extended: true}));
+app.use(bodyParser.text({ limit: '200mb' }));
 
 app.use('/api/classInfo',classInfoRouter)
 app.use('/api/manageIOT',manageIOTRouter)

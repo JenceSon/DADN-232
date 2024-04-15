@@ -11,71 +11,53 @@ import {
 import Modal from "react-native-modal";
 import * as ImagePicker from "expo-image-picker";
 import api from "../../api/api";
+import {useSelector} from 'react-redux'
+function parseDatefromString(date_str) {
+  //string is in format 4/11/2024, 12:00:00 AM
+  const nowDate = new Date();
+  const date = date_str.split(",")[0];
+  const time = date_str.split(",")[1];
 
+  let year = date.split("/")[2];
+  let month = date.split("/")[0];
+  let day = date.split("/")[1];
+
+  let hour = time.split(":")[0];
+  let minute = time.split(":")[1];
+  let second = time.split(":")[2];
+  //delete last 3 characters of second
+  second = second.slice(0, -3);
+  const newDate = new Date(year, month, day, hour, minute, second);
+  console.log("Now date: " + nowDate);
+  console.log("New date: " + newDate);
+
+  if (nowDate.getDate() < newDate.getDate()) {
+    console.log("Now date is less than new date");
+    return true;
+    
+  }
+  console.log("Now date is greater than new date");
+  return false;
+
+
+}
 export function RoomList() {
-  const DATA = [
-    {
-      id: "1",
-      title: "First Item",
-    },
-    {
-      id: "2",
-      title: "Second Item",
-    },
-    {
-      id: "3",
-      title: "Third Item",
-    },
-    {
-      id: "4",
-      title: "Fourth Item",
-    },
-    {
-      id: "5",
-      title: "Fifth Item",
-    },
-    {
-      id: "6",
-      title: "Sixth Item",
-    },
-    {
-      id: "7",
-      title: "Seventh Item",
-    },
-    {
-      id: "8",
-      title: "Eighth Item",
-    },
-    {
-      id: "9",
-      title: "Ninth Item",
-    },
-    {
-      id: "10",
-      title: "Tenth Item",
-    },
-    {
-      id: "11",
-      title: "Eleventh Item",
-    },
-    {
-      id: "12",
-      title: "Twelfth Item",
-    },
-  ];
   
   
   
+  const user = useSelector((state) => state.user);
   const [lissclass, setListClass] = useState([]);
   useEffect( () => {
     async function fetchData() {
       try {
         const response = await api.get("/api/classInfo/getListClassByUser",{
           params: {
-            id: "2110101",
+            id: user.id,
           },
         });
-        console.log(response.data);
+        console.log("Response: " + response.data);
+
+
         setListClass(response.data);
   
       } catch (error) {
@@ -93,6 +75,7 @@ export function RoomList() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState("");
+  const [noStu, setNoStu] = useState("Undefined, click to take picture");
   const OpenCamera = async () => {
     try {
       await ImagePicker.requestCameraPermissionsAsync();
@@ -101,8 +84,18 @@ export function RoomList() {
         base64: true,
       });
       if (!result.cancelled) {
+        setNoStu("Processing...");
         let type = result.assets[0].mimeType;
-        console.log("Type: " + type);
+        let base64String = "data:"+type+";base64,"+result.assets[0].base64
+        
+        
+        
+
+        //send base64String to server
+        const response = await api.post("/api/classInfo/getNumberStu", {base64String: base64String});
+        let data= await response.data;
+        console.log(data.noStu);
+        setNoStu(data.noStu);
       }
     } catch (error) {
       console.log("Error in OpenCamera: " + error);
@@ -144,8 +137,32 @@ export function RoomList() {
           {item.classRoom}
         </Text>
         <Text>
-          From: {item.from} - To: {item.to}
+          From: {item.from} {"\n"}To: {item.to}
         </Text>
+        <View
+        style ={{
+          flexDirection: "row",
+          
+          width: "100%",
+          marginTop: 10,
+        
+        }}>
+        <Text>
+        Status:  
+        </Text>
+        {parseDatefromString(item.from) ? <Text style={{
+
+          color: "green",
+
+        }}> Available</Text> : <Text
+        style={{
+          color: "red",
+        
+        }}
+        
+        > Class is over</Text>}
+        </View>
+
       </Pressable>
     );
   };
@@ -231,14 +248,24 @@ export function RoomList() {
             }}
             onPress={OpenCamera}
           >
-            <View>
+            <View style={{
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: "100%",
+            
+            }}>
               <Text
                 style={{
                   fontSize: 16,
                   fontWeight: "bold",
                 }}
               >
-                Attendance
+                Attendance:
+              </Text>
+              <Text>
+              {noStu}
               </Text>
             </View>
           </TouchableOpacity>
@@ -312,7 +339,7 @@ export function RoomList() {
           renderItem={renderItem}
           keyExtractor={(item) => item.from}
           style={{
-            height: 320,
+            height: 321,
           }}
           contentContainerStyle={{
             flexDirection: "column",

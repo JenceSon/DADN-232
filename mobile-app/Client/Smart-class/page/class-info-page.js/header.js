@@ -9,8 +9,10 @@ import {
   Pressable,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {useSelector} from 'react-redux'
 
 export function Header({ navigation }) {
+  const user = useSelector((state) => state.user);
   return (
     <View
       style={{
@@ -58,7 +60,7 @@ export function Header({ navigation }) {
               marginLeft: 10,
             }}
           >
-            Chan Hung
+            {user.Name}
           </Text>
           <View
             style={{
@@ -80,7 +82,7 @@ export function Header({ navigation }) {
                 marginTop: 5,
               }}
             >
-              Role: Teacher
+              Role: {user.Role}
             </Text>
           </View>
         </View>
