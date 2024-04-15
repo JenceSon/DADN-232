@@ -77,35 +77,35 @@ export function Login() {
           <TouchableOpacity
             style={loginStyles.button}
             onPress={async () => {
-            //   setFetchData(true);
-            //   const login_rs = await CheckLogin({
-            //     bkid: form.bkid,
-            //     password: form.password,
-            //   });
-            //   setTimeout(() => {
-            //     setFetchData(false);
-            //   }, 500);
-            //   if (!login_rs.id) {
-            //     console.log("login fail");
-            //   } else {
-            //     //set new user redux state
-            //     dispatch(
-            //       initUser({
-            //         id: login_rs.id,
-            //         Phone: login_rs.Phone ? login_rs.Phone : "",
-            //         Role: login_rs.Role,
-            //         Email: login_rs.Email,
-            //         Faculty: login_rs.Faculty ? login_rs.Faculty : "",
-            //         Name: login_rs.Name,
-            //         Status: login_rs.Status,
-            //         Type: login_rs.Type,
-            //       })
-            //     );
-            //     if (login_rs.Role == "Admin") {
-            //       navigation.navigate("Main admin", { admin: login_rs });
-            //     } else
-                  navigation.navigate("Main teacher", { teacher: null });
-            //   }
+              setFetchData(true);
+              const login_rs = await CheckLogin({
+                bkid: form.bkid,
+                password: form.password,
+              });
+              setTimeout(() => {
+                setFetchData(false);
+              }, 500);
+              if (!login_rs.id) {
+                console.log("login fail");
+              } else {
+                //set new user redux state
+                dispatch(
+                  initUser({
+                    id: login_rs.id,
+                    Phone: login_rs.Phone ? login_rs.Phone : "",
+                    Role: login_rs.Role,
+                    Email: login_rs.Email,
+                    Faculty: login_rs.Faculty ? login_rs.Faculty : "",
+                    Name: login_rs.Name,
+                    Status: login_rs.Status,
+                    Type: login_rs.Type,
+                  })
+                );
+                if (login_rs.Role == "Admin") {
+                  navigation.navigate("Main admin", { admin: login_rs });
+                } else
+                  navigation.navigate("Main teacher", { teacher: login_rs });
+              }
             }}
           >
             <Text style={loginStyles.buttonText}>Sign in</Text>
