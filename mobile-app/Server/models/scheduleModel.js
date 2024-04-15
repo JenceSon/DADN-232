@@ -109,7 +109,7 @@ const Schedule = {
           doc.data().From.nanoseconds
         );
         const FromTime = From.toDate();
-        const FromDate = From.toDate().toDateString();
+        const FromDate = From.toDate().toLocaleDateString();
         let To = new Timestamp(
           doc.data().To.seconds,
           doc.data().To.nanoseconds
@@ -126,7 +126,7 @@ const Schedule = {
           Class: String(doc.data().Class),
           //use only for demo and interval
           id : doc.id,
-          endDate : To.toDate.toDateString(),
+          endDate : To.toDate().toLocaleDateString(),
         };
         return note;
       });
