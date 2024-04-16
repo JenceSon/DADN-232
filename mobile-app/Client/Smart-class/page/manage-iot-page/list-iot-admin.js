@@ -147,7 +147,19 @@ export function ListIOTAdmin() {
                             Accept
                         </Text>
                     </Pressable>
-                    <Pressable onPress={delDevice}>
+                    <Pressable onPress={()=>{
+                        Alert.alert("Warning !","Are you sure to delete " + curModal.id + " device",[
+                            {
+                                text : 'Yes',
+                                onPress : delDevice,
+                            },
+                            {
+                                text : 'Cancel',
+                                onPress : ()=> setModalVisible(true),
+                                style : 'cancel',
+                            }
+                        ])
+                    }}>
                         <Ionicons name="trash-bin-sharp" color={'red'} size={20} />
                     </Pressable>
                     <Pressable

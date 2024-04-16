@@ -5,14 +5,23 @@ import {
   doc,
   getDoc,
   deleteDoc,
-
   getDocs,
   query,
 } from "firebase/firestore";
-import { Timestamp,where } from "firebase/firestore";
+import { Timestamp, where } from "firebase/firestore";
 import db from "../utils/firebase.js";
 const Schedule = {
-  add: async (id, From, building, classroom, NoStu, To, userID) => {
+  add: async (
+    id,
+    From,
+    building,
+    classroom,
+    NoStu,
+    To,
+    userID,
+    Course,
+    Class
+  ) => {
     //Example:
     // Schedule.add(
     //   "2",
@@ -30,6 +39,8 @@ const Schedule = {
         NoStu: NoStu,
         To: Timestamp.fromDate(new Date(To)),
         User: doc(db, "User", userID),
+        Course: Course,
+        Class: Class,
       });
 
       return true;
@@ -51,8 +62,18 @@ const Schedule = {
       console.error("Error getting document:", e);
     }
   },
-  
-  update: async (id, From, building, classroom, NoStu, To, userID) => {
+
+  update: async (
+    id,
+    From,
+    building,
+    classroom,
+    NoStu,
+    To,
+    userID,
+    Class,
+    Course
+  ) => {
     try {
       const docRef = doc(db, "Schedule", id);
       await setDoc(docRef, {
@@ -61,6 +82,8 @@ const Schedule = {
         NoStu: NoStu,
         To: Timestamp.fromDate(new Date(To)),
         User: doc(db, "User", userID),
+        Course: Course,
+        Class: Class,
       });
       return true;
     } catch (e) {
@@ -77,29 +100,39 @@ const Schedule = {
   },
   getAll: async () => {
     try {
-      const docRef = collection(db, 'Schedule')
-      const docSnap = await getDocs(docRef)
-      let key = 0
-      const res =  docSnap.docs.map((doc)=>{
-        let From = new Timestamp(doc.data().From.seconds,doc.data().From.nanoseconds)
-        const FromTime = From.toDate()
-        const FromDate = From.toDate().toDateString()
-        let To = new Timestamp(doc.data().To.seconds,doc.data().To.nanoseconds)
-        const ToTime = To.toDate()
+      const docRef = collection(db, "Schedule");
+      const docSnap = await getDocs(docRef);
+      let key = 0;
+      const res = docSnap.docs.map((doc) => {
+        let From = new Timestamp(
+          doc.data().From.seconds,
+          doc.data().From.nanoseconds
+        );
+        const FromTime = From.toDate();
+        const FromDate = From.toDate().toLocaleDateString();
+        let To = new Timestamp(
+          doc.data().To.seconds,
+          doc.data().To.nanoseconds
+        );
+        const ToTime = To.toDate();
         let note = {
-          FromTime : FromTime ,
-          ToTime : ToTime,
-          Date : FromDate,
-          NoStu : parseInt(doc.data().NoStu),
-          Location : String(doc.data().Location._key.path.segments[8]),
-          User : String(doc.data().User._key.path.segments[6]),
-        }
-        return note
-      })
+          FromTime: FromTime,
+          ToTime: ToTime,
+          Date: FromDate,
+          NoStu: parseInt(doc.data().NoStu),
+          Location: String(doc.data().Location._key.path.segments[8]),
+          User: String(doc.data().User._key.path.segments[6]),
+          Course: String(doc.data().Course),
+          Class: String(doc.data().Class),
+          //use only for demo and interval
+          id : doc.id,
+          endDate : To.toDate().toLocaleDateString(),
+        };
+        return note;
+      });
       //const q = query(docRef,where())
-      if (res == undefined) return []
-      return res
-
+      if (res == undefined) return [];
+      return res;
     } catch (error) {
       console.error("Error get schedule: ", error);
     }
@@ -116,10 +149,12 @@ const Schedule = {
   getByUserRef: async (userRef) => {
     try {
       const scheduleRef = collection(db, "Schedule");
-      const q= query(scheduleRef, where("User", "==", userRef));
+      const q = query(scheduleRef, where("User", "==", userRef));
       const querySnapshot = await getDocs(q);
-      
-      return querySnapshot.docs.map((doc) => doc.data());
+
+      let res = querySnapshot.docs.map((doc) => doc.data());
+      if (res == undefined) return []
+      else return res
     } catch (e) {
       console.error("Error getting document:", e);
     }

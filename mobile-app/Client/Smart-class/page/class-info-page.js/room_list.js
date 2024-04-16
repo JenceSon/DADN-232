@@ -42,56 +42,7 @@ function parseDatefromString(date_str) {
 
 }
 export function RoomList() {
-  const DATA = [
-    {
-      id: "1",
-      title: "First Item",
-    },
-    {
-      id: "2",
-      title: "Second Item",
-    },
-    {
-      id: "3",
-      title: "Third Item",
-    },
-    {
-      id: "4",
-      title: "Fourth Item",
-    },
-    {
-      id: "5",
-      title: "Fifth Item",
-    },
-    {
-      id: "6",
-      title: "Sixth Item",
-    },
-    {
-      id: "7",
-      title: "Seventh Item",
-    },
-    {
-      id: "8",
-      title: "Eighth Item",
-    },
-    {
-      id: "9",
-      title: "Ninth Item",
-    },
-    {
-      id: "10",
-      title: "Tenth Item",
-    },
-    {
-      id: "11",
-      title: "Eleventh Item",
-    },
-    {
-      id: "12",
-      title: "Twelfth Item",
-    },
-  ];
+  
   
   
   const user = useSelector((state) => state.user);
@@ -104,6 +55,7 @@ export function RoomList() {
             id: user.id,
           },
         });
+        console.log("Response: " + response.data);
 
 
         setListClass(response.data);
@@ -123,6 +75,7 @@ export function RoomList() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState("");
+  const [noStu, setNoStu] = useState("Undefined, click to take picture");
   const OpenCamera = async () => {
     try {
       await ImagePicker.requestCameraPermissionsAsync();
@@ -131,8 +84,18 @@ export function RoomList() {
         base64: true,
       });
       if (!result.cancelled) {
+        setNoStu("Processing...");
         let type = result.assets[0].mimeType;
-        console.log("Type: " + type);
+        let base64String = "data:"+type+";base64,"+result.assets[0].base64
+        
+        
+        
+
+        //send base64String to server
+        const response = await api.post("/api/classInfo/getNumberStu", {base64String: base64String});
+        let data= await response.data;
+        console.log(data.noStu);
+        setNoStu(data.noStu);
       }
     } catch (error) {
       console.log("Error in OpenCamera: " + error);
@@ -285,14 +248,24 @@ export function RoomList() {
             }}
             onPress={OpenCamera}
           >
-            <View>
+            <View style={{
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: "100%",
+            
+            }}>
               <Text
                 style={{
                   fontSize: 16,
                   fontWeight: "bold",
                 }}
               >
-                Attendance
+                Attendance:
+              </Text>
+              <Text>
+              {noStu}
               </Text>
             </View>
           </TouchableOpacity>

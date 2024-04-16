@@ -111,8 +111,10 @@ async function addDevice(req,res){
                 res.send({msg : "The id of device has already existed !"})
             }
             else{
-                await Fan.add(body.id,body.status,body.building,body.classroom)
-                res.send({success : "Add " + body.id+ " successfully !"})
+                if(await Fan.add(body.id,body.status,body.building,body.classroom) == true){
+                    res.send({success : "Add " + body.id+ " successfully !"})
+                }
+                else res.send({msg : "Error add IOT device in firebase"})
             }
         }
         else{
@@ -122,8 +124,10 @@ async function addDevice(req,res){
                 res.send({msg : "The id of device has already existed !"})
             }
             else{
-                await Light.add(body.id,body.status,body.building,body.classroom)
-                res.send({success : "Add " + body.id+ " successfully !"})
+                if(await Light.add(body.id,body.status,body.building,body.classroom)==true){
+                    res.send({success : "Add " + body.id+ " successfully !"})
+                }
+                else res.send({msg : "Error add IOT device in firebase"})
             }
         }
         
@@ -144,8 +148,10 @@ async function delDevice(req,res){
                 res.send({msg : "Invalid IOT device !"})
             }
             else{
-                await Fan.delete(body.id)
-                res.send({success : "Delete " + body.id+ " successfully !"})
+                if(await Fan.delete(body.id) == true){
+                    res.send({success : "Delete " + body.id+ " successfully !"})
+                }
+                else res.send({msg : "Error delete IOT device in firebase "})
             }
         }
         else{
@@ -155,8 +161,10 @@ async function delDevice(req,res){
                 res.send({msg : "Invalid IOT device !"})
             }
             else{
-                await Light.delete(body.id)
-                res.send({success : "Delete " + body.id+ " successfully !"})
+                if(await Light.delete(body.id) == true){
+                    res.send({success : "Delete " + body.id+ " successfully !"})
+                }
+                else res.send({msg : "Error delete IOT device in firebase "})
             }
         }
         
