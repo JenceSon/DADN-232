@@ -13,11 +13,18 @@ export function RegisterClassModal({ close }) {
     classroom: "",
     noStu: "",
     endTime: " ",
+    startDate: "",
+    endDate: "",
+    classID: "",
   });
 
   const [startTime, setStartTime] = useState(new Date(Date.now()));
   const [endTime, setEndTime] = useState(new Date(Date.now()));
-  const [showStartDateTimePicker, setshowStartDateTimePicker] = useState(false);
+  const [startDate, setStartDate] = useState(new Date(Date.now()));
+
+  const [showStartTimePicker, setshowStartTimePicker] = useState(false);
+  const [showStartDatePicker, setshowStartDatePicker] = useState(false);
+
   const [showEndDateTimePicker, setshowEndDateTimePicker] = useState(false);
 
   return (
@@ -35,13 +42,23 @@ export function RegisterClassModal({ close }) {
               style={formRegisClassStyle.inputStyle}
               onChangeText={(building) => setForm({ ...form, building })}
             />
-            <TextInput
-              label="Classroom No"
-              placeholder="201"
-              mode="outlined"
-              style={formRegisClassStyle.inputStyle}
-              onChangeText={(classroom) => setForm({ ...form, classroom })}
-            />
+            <View style={{display: 'flex', justifyContent:'center', width:'100%', flexDirection:'row', gap: 10}}>
+              <TextInput
+                label="Classroom No"
+                placeholder="201"
+                mode="outlined"
+                style={{flex: 1}}
+                onChangeText={(classroom) => setForm({ ...form, classroom })}
+              />
+              <TextInput
+                label="Class ID"
+                placeholder="L01"
+                mode="outlined"
+                style={{flex: 1}}
+                onChangeText={(classID) => setForm({ ...form, classID })}
+              />
+            </View>
+
             <TextInput
               label="Subject ID"
               placeholder="CO12345"
@@ -56,6 +73,7 @@ export function RegisterClassModal({ close }) {
               style={formRegisClassStyle.inputStyle}
               onChangeText={(noStu) => setForm({ ...form, noStu })}
             />
+            {/* From */}
             <View
               style={{
                 width: "100%",
@@ -68,22 +86,57 @@ export function RegisterClassModal({ close }) {
               <Text style={{ fontSize: 16, fontWeight: "600" }}>From:</Text>
               <View style={{ display: "flex", flexDirection: "row" }}>
                 {Platform.OS === "android" && (
-                  <Pressable onPress={() => setshowStartDateTimePicker(true)} style={{backgroundColor:colors.bgColor, padding: 10, borderRadius: 10}}>
-                    <Text style={{fontSize: 15, fontWeight: '600'}}>
-                      {startTime.toLocaleTimeString(navigator.language, {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </Text>
-                  </Pressable>
+                  <>
+                    <Pressable
+                      onPress={() => setshowStartDatePicker(true)}
+                      style={{
+                        backgroundColor: colors.bgColor,
+                        padding: 10,
+                        borderRadius: 10,
+                        marginRight: 8
+                      }}
+                    >
+                      <Text style={{ fontSize: 15, fontWeight: "600" }}>
+                        {startDate.toLocaleDateString()}
+                      </Text>
+                    </Pressable>
+                    <Pressable
+                      onPress={() => setshowStartTimePicker(true)}
+                      style={{
+                        backgroundColor: colors.bgColor,
+                        padding: 10,
+                        borderRadius: 10,
+                      }}
+                    >
+                      <Text style={{ fontSize: 15, fontWeight: "600" }}>
+                        {startTime.toLocaleTimeString(navigator.language, {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </Text>
+                    </Pressable>
+                  </>
                 )}
-                {Platform.OS === "android" && showStartDateTimePicker && (
+                {Platform.OS === "android" && showStartDatePicker && (
+                  <DateTimePicker
+                    value={startDate}
+                    mode={"date"}
+                    is24Hour={true}
+                    onChange={(event, startDate) => {
+                      setshowStartDatePicker(false);
+                      setStartDate(startDate);
+                      setForm({ ...form, startDate });
+                      setForm({ ...form, endDate });
+                    }}
+                  />
+                )}
+                {Platform.OS === "android" && showStartTimePicker && (
                   <DateTimePicker
                     value={startTime}
                     mode={"time"}
                     is24Hour={true}
                     onChange={(event, startTime) => {
-                      setshowStartDateTimePicker(false);
+                      setshowStartTimePicker(false);
                       startTime.setMinutes(0, 0);
                       setForm({ ...form, startTime });
                       setStartTime(startTime);
@@ -91,21 +144,33 @@ export function RegisterClassModal({ close }) {
                   />
                 )}
                 {Platform.OS === "ios" && (
-                  <DateTimePicker
-                    display="default"
-                    value={startTime}
-                    mode={"time"}
-                    is24Hour={true}
-                    onChange={(event, startTime) => {
-                      startTime.setMinutes(0, 0);
-                      setForm({ ...form, startTime });
-                      setStartTime(startTime);
-                      setEndTime(startTime);
-                    }}
-                  />
+                  <>
+                    <DateTimePicker
+                      display="default"
+                      value={startDate}
+                      mode={"date"}
+                      is24Hour={true}
+                      onChange={(event, startDate) => {
+                        setForm({ ...form, startDate });
+                        setStartDate(startDate);
+                      }}
+                    />
+                    <DateTimePicker
+                      display="default"
+                      value={startTime}
+                      mode={"time"}
+                      is24Hour={true}
+                      onChange={(event, startTime) => {
+                        startTime.setMinutes(0, 0);
+                        setForm({ ...form, startTime });
+                        setStartTime(startTime);
+                      }}
+                    />
+                  </>
                 )}
               </View>
             </View>
+            {/* To */}
             <View
               style={{
                 width: "100%",
@@ -118,8 +183,15 @@ export function RegisterClassModal({ close }) {
               <Text style={{ fontSize: 16, fontWeight: "600" }}>To:</Text>
               <View style={{ display: "flex", flexDirection: "row" }}>
                 {Platform.OS === "android" && (
-                  <Pressable onPress={() => setshowEndDateTimePicker(true)} style={{backgroundColor:colors.bgColor, padding: 10, borderRadius: 10}}>
-                    <Text style={{fontSize: 15, fontWeight: '600'}}>
+                  <Pressable
+                    onPress={() => setshowEndDateTimePicker(true)}
+                    style={{
+                      backgroundColor: colors.bgColor,
+                      padding: 10,
+                      borderRadius: 10,
+                    }}
+                  >
+                    <Text style={{ fontSize: 15, fontWeight: "600" }}>
                       {endTime.toLocaleTimeString(navigator.language, {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -137,7 +209,7 @@ export function RegisterClassModal({ close }) {
                       setshowEndDateTimePicker(false);
                       endTime.setMinutes(0, 0);
                       setForm({ ...form, endTime });
-                      setEndTime(endTime)
+                      setEndTime(endTime);
                     }}
                   />
                 )}

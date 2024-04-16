@@ -4,6 +4,7 @@ import micRouter from './routes/micRouter.js'
 import profileRouter from './routes/profileRouter.js'
 import registerClassRouter from './routes/registerClassRouter.js'
 import loginRouter from './routes/loginRouter.js'
+import IoTDeviceRouter from './routes/IoTDeviceRouter.js'
 import express from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser'
@@ -36,6 +37,8 @@ app.use('/api/mic',micRouter)
 app.use('/api/profile',profileRouter)
 app.use('/api/registerClass',registerClassRouter)
 app.use('/api/login',loginRouter)
+app.use('/api/IoTDevice',IoTDeviceRouter)
+
 
 
 app.listen(port,()=>{
