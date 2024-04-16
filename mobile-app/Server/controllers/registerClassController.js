@@ -6,6 +6,25 @@ async function getRoomsAvailable(req,res){
 
 }
 
+async function delSchedule(req,res){
+    const body = req.body
+    try {
+        if (body.id){
+            if (await Schedule.delete(body.id) == true){
+                res.send({success : "The schedule " + body.id + " has been deleted !"})
+            }
+            else {
+                res.send({message : "Error deleting "+ body.id+" in firebase"})
+            }
+        }
+        else{
+            res.send({message : "Null id"})
+        }
+    } catch (error) {
+        res.send({message : ""})
+    }
+}
+
 async function registerRoom(req,res){
     const body = req.body;
     /*
@@ -24,12 +43,13 @@ async function registerRoom(req,res){
         const idSchedules = allSchedules.map(item => parseInt(item.id))
         const id = String(Math.max(...idSchedules) + 1)
         let invalid = []
+        const now = new Date()
         //check valid input
-        if (body.FromTime <= new Date()){
-            invalid.push("From time can not be before system date")
+        if (body.FromTime <= now.setHours(now.getHours()+1)){
+            invalid.push("From-time must after 1 hour from system time")
         }
         if (body.FromTime >= body.ToTime){
-            invalid.push("From time can not be after to time")
+            invalid.push("From-time can not be after to-time")
         }
 
         //check conflict
@@ -40,21 +60,25 @@ async function registerRoom(req,res){
                 }
             }
         }
-        if (await Schedule.add(
-            id,
-            body.FromTime,
-            body.Building,
-            body.Classroom,
-            body.NoStu,
-            body.ToTime,
-            body.User,
-            body.Course,
-            body.Class) == true && 
-            invalid.length == 0){
-            res.send({success : "Successfully register classroom"})
+        if (invalid.length == 0){
+            if (await Schedule.add(
+                id,
+                body.FromTime,
+                body.Building,
+                body.Classroom,
+                body.NoStu,
+                body.ToTime,
+                body.User,
+                body.Course,
+                body.Class) == true){
+                res.send({success : "Successfully register classroom"})
+            }
+            else{
+                res.send({message : "Fail register classroom in firebase "})
+            }    
         }
         else{
-            res.send({message : "Fail register classroom : \n", error : invalid})
+            res.send({message : "Invalid input !", validate : invalid })
         }
 
     } catch (error) {
@@ -83,4 +107,5 @@ export {
     getRoomsAvailable,
     registerRoom,
     getScheduleUser,
+    delSchedule,
 }

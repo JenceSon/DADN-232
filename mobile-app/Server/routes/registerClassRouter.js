@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getRoomsAvailable, getScheduleUser, registerRoom } from "../controllers/registerClassController.js";
+import { delSchedule, getRoomsAvailable, getScheduleUser, registerRoom } from "../controllers/registerClassController.js";
 
 
 const router = Router();
@@ -7,5 +7,6 @@ const router = Router();
 router.get('/getRoomsAvailable',getRoomsAvailable)
 router.get('/getScheduleUser',getScheduleUser)
 router.post('/registerRoom',registerRoom)
+router.post('/delSchedule',delSchedule)
 
 export default router;
