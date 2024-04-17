@@ -5,10 +5,11 @@ import RNDateTimePicker from "@react-native-community/datetimepicker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { formRegisClassStyle } from "../../style/regis-class-style";
 import { colors } from "../../style/global";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { registerRoom } from "./form-regis-class-func";
+import { setIsChange } from "../../features/fetchData/fetchDataSlice";
 
-export function RegisterClassModal({ close,fetchData,setFetchData }) {
+export function RegisterClassModal({ close, fetchData, setFetchData }) {
   const [form, setForm] = useState({
     startTime: (new Date()),
     building: "H6",
@@ -20,8 +21,10 @@ export function RegisterClassModal({ close,fetchData,setFetchData }) {
     //endDate: "",
     classID: "L02",
   });
-
-  const user = useSelector(state =>state.user);
+  const dispatch = useDispatch()
+  const user = useSelector(state => state.user);
+  const fetchDataGlobal = useSelector(state => state.fetchDataGlobal)
+  //console.log(fetchDataGlobal)
   const [startTime, setStartTime] = useState(new Date(Date.now()));
   const [endTime, setEndTime] = useState(new Date(Date.now()));
   const [startDate, setStartDate] = useState(new Date(Date.now()));
@@ -32,44 +35,50 @@ export function RegisterClassModal({ close,fetchData,setFetchData }) {
   const [showEndDateTimePicker, setshowEndDateTimePicker] = useState(false);
 
 
-  const regis = async () =>{
-    console.log(form)
-    const res = await registerRoom({
-      FormTime : form.startTime.setFullYear(form.startDate.getFullYear(),form.startDate.getMonth(),form.startDate.getDate()),
-      ToTime : form.endTime.setFullYear(form.startDate.getFullYear(),form.startDate.getMonth(),form.startDate.getDate()),
-      NoStu : parseInt(form.noStu),
-      Course : form.subject,
-      Class : form.classID,
-      Building :form.building,
-      Classroom : form.building + "-" + String(form.classroom),
-      User : user.id,
-    })
-    console.log(res)
-    if(res.validate){
-      Alert.alert("Fail",res.validate[0],[
-        {
-          text :'OK',
-          onPress: () => console.log('OK pressed'),
-        }
-      ])
+  const regis = async () => {
+    try {
+      console.log(form)
+      const res = await registerRoom({
+        FormTime: form.startTime.setFullYear(form.startDate.getFullYear(), form.startDate.getMonth(), form.startDate.getDate()),
+        ToTime: form.endTime.setFullYear(form.startDate.getFullYear(), form.startDate.getMonth(), form.startDate.getDate()),
+        NoStu: parseInt(form.noStu),
+        Course: form.subject,
+        Class: form.classID,
+        Building: form.building,
+        Classroom: form.building + "-" + String(form.classroom),
+        User: user.id,
+      })
+      console.log(res)
+      if (res.validate) {
+        Alert.alert("Fail", res.validate[0], [
+          {
+            text: 'OK',
+            onPress: () => console.log('OK pressed'),
+          }
+        ])
+      }
+      else if (res.message) {
+        Alert.alert("Fail", res.message, [
+          {
+            text: 'OK',
+            onPress: () => console.log('OK pressed')
+          }
+        ])
+      }
+      else {
+        Alert.alert("Success", res.success, [
+          {
+            text: 'OK',
+            onPress: () => console.log('OK')
+          }
+        ])
+      }
+      await setFetchData(!fetchData)
+      dispatch(setIsChange(!fetchDataGlobal.isChange))
+
+    } catch (error) {
+      console.error("Error registering : ", error)
     }
-    else if (res.message){
-      Alert.alert("Fail", res.message,[
-        {
-          text : 'OK',
-          onPress: () => console.log('OK pressed')
-        }
-      ])
-    }
-    else{
-      Alert.alert("Success", res.success,[
-        {
-          text : 'OK',
-          onPress: () => console.log('OK')
-        }
-      ])
-    }
-    setFetchData(!fetchData)
   }
 
   return (
@@ -81,27 +90,27 @@ export function RegisterClassModal({ close,fetchData,setFetchData }) {
               Register class
             </Text>
             <TextInput
-              
+
               label="Building No"
               placeholder="H1"
               mode="outlined"
               style={formRegisClassStyle.inputStyle}
               onChangeText={(building) => setForm({ ...form, building })}
             />
-            <View style={{display: 'flex', justifyContent:'center', width:'100%', flexDirection:'row', gap: 10}}>
+            <View style={{ display: 'flex', justifyContent: 'center', width: '100%', flexDirection: 'row', gap: 10 }}>
               <TextInput
                 label="Classroom No"
                 placeholder="201"
                 mode="outlined"
                 keyboardType="numeric"
-                style={{flex: 1}}
+                style={{ flex: 1 }}
                 onChangeText={(classroom) => setForm({ ...form, classroom })}
               />
               <TextInput
                 label="Class ID"
                 placeholder="L01"
                 mode="outlined"
-                style={{flex: 1}}
+                style={{ flex: 1 }}
                 onChangeText={(classID) => setForm({ ...form, classID })}
               />
             </View>

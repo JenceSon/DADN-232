@@ -46,6 +46,7 @@ export function RoomList() {
   
   
   const user = useSelector((state) => state.user);
+  const fetchDataGlobal = useSelector((state) => state.fetchDataGlobal)
   const [lissclass, setListClass] = useState([]);
   useEffect( () => {
     async function fetchData() {
@@ -66,7 +67,7 @@ export function RoomList() {
     }
     fetchData();
 
-  }, []);
+  }, [fetchDataGlobal]);
 
   
   
