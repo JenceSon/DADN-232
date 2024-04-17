@@ -87,7 +87,7 @@ export function RegisterClass({ navigation }) {
         <Text style={{ color: colors.white, fontWeight: "700" }}>Register</Text>
       </Pressable>
       {showModal && (
-        <RegisterClassModal close={toggleShowModal} isVisible={showModal} style={{position:'absolute'}}></RegisterClassModal>
+        <RegisterClassModal close={toggleShowModal} fetchData={fetchData} setFetchData={setFetchData} isVisible={showModal} style={{position:'absolute'}}></RegisterClassModal>
       )}
     </SafeAreaView>
   );

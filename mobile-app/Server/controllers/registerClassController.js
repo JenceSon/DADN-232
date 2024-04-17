@@ -1,3 +1,4 @@
+import Building from "../models/buildingModel.js";
 import Schedule from "../models/scheduleModel.js";
 import User from "../models/userModel.js";
 
@@ -46,7 +47,18 @@ async function registerRoom(req,res){
         let invalid = []
         const now = new Date()
         //check valid input
-        if (body.FromTime <= new Date(now.setHours(now.getHours()+1))){
+        const listBuilding = await Building.all()
+        if(!listBuilding.some(x => x.name == body.Building)){
+            invalid.push("Invalid building input")
+        }
+        else{
+            const roomsByBuilding = await Building.getClass(body.Building)
+            if (!roomsByBuilding.some(x => x.name == body.Classroom)){
+                invalid.push("Invalid room id input")
+            }
+        }
+
+        if (body.FromTime <= now){
             invalid.push("From-time must after 1 hour from system time")
         }
         if (body.FromTime >= body.ToTime){
@@ -97,7 +109,7 @@ async function getScheduleUser(req,res){
         console.log(userRef)
 
         let schedules = await Schedule.getAll()
-        if (schedules != [])schedules = schedules.filter(item => item.User == userRef)
+        if (schedules != [])schedules = schedules.filter(item => item.User == userRef && item.ToTime > (new Date()))
 
         res.send(schedules)
         

@@ -7,7 +7,8 @@ import { formRegisClassStyle } from "../../style/regis-class-style";
 import { colors } from "../../style/global";
 import { useSelector } from "react-redux";
 import { registerRoom } from "./form-regis-class-func";
-export function RegisterClassModal({ close }) {
+
+export function RegisterClassModal({ close,fetchData,setFetchData }) {
   const [form, setForm] = useState({
     startTime: (new Date()),
     building: "H6",
@@ -68,6 +69,7 @@ export function RegisterClassModal({ close }) {
         }
       ])
     }
+    setFetchData(!fetchData)
   }
 
   return (
@@ -183,7 +185,7 @@ export function RegisterClassModal({ close }) {
                     is24Hour={true}
                     onChange={(event, startTime) => {
                       setshowStartTimePicker(false);
-                      startTime.setMinutes(0, 0);
+                      //startTime.setMinutes(0, 0);
                       setForm({ ...form, startTime });
                       setStartTime(startTime);
                     }}
@@ -207,7 +209,7 @@ export function RegisterClassModal({ close }) {
                       mode={"time"}
                       is24Hour={true}
                       onChange={(event, startTime) => {
-                        startTime.setMinutes(0, 0);
+                        //startTime.setMinutes(0, 0);
                         setForm({ ...form, startTime });
                         setStartTime(startTime);
                       }}
@@ -253,7 +255,7 @@ export function RegisterClassModal({ close }) {
                     is24Hour={true}
                     onChange={(event, endTime) => {
                       setshowEndDateTimePicker(false);
-                      endTime.setMinutes(0, 0);
+                      //endTime.setMinutes(0, 0);
                       setForm({ ...form, endTime });
                       setEndTime(endTime);
                     }}
@@ -266,7 +268,7 @@ export function RegisterClassModal({ close }) {
                     mode={"time"}
                     is24Hour={true}
                     onChange={(event, endTime) => {
-                      endTime.setMinutes(0, 0);
+                      //endTime.setMinutes(0, 0);
                       setForm({ ...form, endTime });
                       setEndTime(endTime);
                     }}
