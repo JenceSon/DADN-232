@@ -1,23 +1,26 @@
 import React, { useState } from "react";
-import { Pressable, View, Text, Modal, Platform } from "react-native";
+import { Pressable, View, Text, Modal, Platform, Alert } from "react-native";
 import { TextInput } from "react-native-paper";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { formRegisClassStyle } from "../../style/regis-class-style";
 import { colors } from "../../style/global";
+import { useSelector } from "react-redux";
+import { registerRoom } from "./form-regis-class-func";
 export function RegisterClassModal({ close }) {
   const [form, setForm] = useState({
-    startTime: "",
-    building: "",
-    subject: "",
-    classroom: "",
-    noStu: "",
-    endTime: " ",
-    startDate: "",
-    endDate: "",
-    classID: "",
+    startTime: (new Date()),
+    building: "H6",
+    subject: "CO3020",
+    classroom: "201",
+    noStu: 0,
+    endTime: (new Date()),
+    startDate: (new Date()),
+    //endDate: "",
+    classID: "L02",
   });
 
+  const user = useSelector(state =>state.user);
   const [startTime, setStartTime] = useState(new Date(Date.now()));
   const [endTime, setEndTime] = useState(new Date(Date.now()));
   const [startDate, setStartDate] = useState(new Date(Date.now()));
@@ -26,6 +29,46 @@ export function RegisterClassModal({ close }) {
   const [showStartDatePicker, setshowStartDatePicker] = useState(false);
 
   const [showEndDateTimePicker, setshowEndDateTimePicker] = useState(false);
+
+
+  const regis = async () =>{
+    console.log(form)
+    const res = await registerRoom({
+      FormTime : form.startTime.setFullYear(form.startDate.getFullYear(),form.startDate.getMonth(),form.startDate.getDate()),
+      ToTime : form.endTime.setFullYear(form.startDate.getFullYear(),form.startDate.getMonth(),form.startDate.getDate()),
+      NoStu : parseInt(form.noStu),
+      Course : form.subject,
+      Class : form.classID,
+      Building :form.building,
+      Classroom : form.building + "-" + String(form.classroom),
+      User : user.id,
+    })
+    console.log(res)
+    if(res.validate){
+      Alert.alert("Fail",res.validate[0],[
+        {
+          text :'OK',
+          onPress: () => console.log('OK pressed'),
+        }
+      ])
+    }
+    else if (res.message){
+      Alert.alert("Fail", res.message,[
+        {
+          text : 'OK',
+          onPress: () => console.log('OK pressed')
+        }
+      ])
+    }
+    else{
+      Alert.alert("Success", res.success,[
+        {
+          text : 'OK',
+          onPress: () => console.log('OK')
+        }
+      ])
+    }
+  }
 
   return (
     <View style={formRegisClassStyle.centeredView}>
@@ -36,6 +79,7 @@ export function RegisterClassModal({ close }) {
               Register class
             </Text>
             <TextInput
+              
               label="Building No"
               placeholder="H1"
               mode="outlined"
@@ -47,6 +91,7 @@ export function RegisterClassModal({ close }) {
                 label="Classroom No"
                 placeholder="201"
                 mode="outlined"
+                keyboardType="numeric"
                 style={{flex: 1}}
                 onChangeText={(classroom) => setForm({ ...form, classroom })}
               />
@@ -70,6 +115,7 @@ export function RegisterClassModal({ close }) {
               label="Number of student"
               placeholder="xxx"
               mode="outlined"
+              keyboardType="numeric"
               style={formRegisClassStyle.inputStyle}
               onChangeText={(noStu) => setForm({ ...form, noStu })}
             />
@@ -126,7 +172,7 @@ export function RegisterClassModal({ close }) {
                       setshowStartDatePicker(false);
                       setStartDate(startDate);
                       setForm({ ...form, startDate });
-                      setForm({ ...form, endDate });
+                      //setForm({ ...form, endDate });
                     }}
                   />
                 )}
@@ -228,7 +274,7 @@ export function RegisterClassModal({ close }) {
                 )}
               </View>
             </View>
-            <Pressable style={formRegisClassStyle.btnStyle} onPress={()=>console.log(form)}>
+            <Pressable style={formRegisClassStyle.btnStyle} onPress={regis}>
               <Text style={{ color: "white", fontWeight: "500", fontSize: 16 }}>
                 Register
               </Text>
