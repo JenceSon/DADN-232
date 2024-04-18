@@ -11,67 +11,98 @@ import {
 import Modal from "react-native-modal";
 import * as ImagePicker from "expo-image-picker";
 import api from "../../api/api";
-import {useSelector} from 'react-redux'
-function parseDatefromString(date_str) {
+import { useSelector } from "react-redux";
+function parseDatefromString(from, to) {
   //string is in format 4/11/2024, 12:00:00 AM
   const nowDate = new Date();
-  const date = date_str.split(",")[0];
-  const time = date_str.split(",")[1];
+  console.log("New date string: " + from);
+  const fromdate = from.split(",")[0];
+  console.log("Date: " + fromdate);
+  const fromtime = from.split(",")[1];
+  console.log("Time: " + fromtime);
 
-  let year = date.split("/")[2];
-  let month = date.split("/")[0];
-  let day = date.split("/")[1];
+  let fromyear = fromdate.split("/")[2];
+  console.log("Year: " + fromyear);
+  let frommonth = fromdate.split("/")[0];
+  console.log("Month: " + frommonth);
+  let fromday = fromdate.split("/")[1];
+  console.log("Day: " + fromday);
 
-  let hour = time.split(":")[0];
-  let minute = time.split(":")[1];
-  let second = time.split(":")[2];
-  //delete last 3 characters of second
-  second = second.slice(0, -3);
-  const newDate = new Date(year, month, day, hour, minute, second);
-  console.log("Now date: " + nowDate);
-  console.log("New date: " + newDate);
+  let fromhour = fromtime.split(":")[0];
+  let fromminute = fromtime.split(":")[1];
+  let fromsecond = fromtime.split(":")[2];
+  let fromampm = fromsecond.split(" ")[1];
 
-  if (nowDate.getDate() < newDate.getDate()) {
-    console.log("Now date is less than new date");
-    return true;
-    
+  if (fromampm == "PM") {
+    fromhour = parseInt(fromhour) + 12;
   }
-  console.log("Now date is greater than new date");
-  return false;
+
+  //delete last 3 characters of second
+  fromsecond = fromsecond.slice(0, -3);
+  const fromDate = new Date(fromyear, frommonth - 1, fromday,fromhour, fromminute, fromsecond);
 
 
+  let todate = to.split(",")[0];
+  console.log("Date: " + todate);
+  let totime = to.split(",")[1];
+  
+  let toyear = todate.split("/")[2];
+  console.log("Year: " + toyear);
+  let tomonth = todate.split("/")[0];
+  console.log("Month: " + tomonth);
+  let today = todate.split("/")[1];
+  console.log("Day: " + today);
+
+  let tohour = totime.split(":")[0];
+  let tominute = totime.split(":")[1];
+  let tosecond = totime.split(":")[2];
+  let toampm = tosecond.split(" ")[1];
+
+  if (toampm == "PM") {
+    tohour = parseInt(tohour) + 12;
+  }
+
+  //delete last 3 characters of second
+  tosecond = tosecond.slice(0, -3);
+
+  const toDate = new Date(toyear, tomonth - 1, today,tohour, tominute, tosecond);
+
+
+
+  console.log("Now date: " + nowDate);
+  console.log("From Date: " + fromDate);
+  console.log("To Date: " + toDate);
+
+  if (nowDate.getTime() > toDate.getTime()) {
+    return 0;
+  } else if (nowDate.getTime() < fromDate.getTime()) {
+    return 2;
+  } else {
+    return 1;
+  }
 }
 export function RoomList() {
-  
-  
-  
   const user = useSelector((state) => state.user);
+  const fetchDataGlobal = useSelector((state) => state.fetchDataGlobal)
   const [lissclass, setListClass] = useState([]);
-  useEffect( () => {
+  useEffect(() => {
     async function fetchData() {
       try {
-        const response = await api.get("/api/classInfo/getListClassByUser",{
+        const response = await api.get("/api/classInfo/getListClassByUser", {
           params: {
             id: user.id,
           },
         });
         console.log("Response: " + response.data);
 
-
         setListClass(response.data);
-  
       } catch (error) {
         console.log("Error fetching data: " + error);
       }
     }
     fetchData();
+  }, [fetchDataGlobal]);
 
-  }, []);
-
-  
-  
-  
-  
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState("");
@@ -86,14 +117,14 @@ export function RoomList() {
       if (!result.cancelled) {
         setNoStu("Processing...");
         let type = result.assets[0].mimeType;
-        let base64String = "data:"+type+";base64,"+result.assets[0].base64
-        
-        
-        
+        let base64String =
+          "data:" + type + ";base64," + result.assets[0].base64;
 
         //send base64String to server
-        const response = await api.post("/api/classInfo/getNumberStu", {base64String: base64String});
-        let data= await response.data;
+        const response = await api.post("/api/classInfo/getNumberStu", {
+          base64String: base64String,
+        });
+        let data = await response.data;
         console.log(data.noStu);
         setNoStu(data.noStu);
       }
@@ -140,29 +171,22 @@ export function RoomList() {
           From: {item.from} {"\n"}To: {item.to}
         </Text>
         <View
-        style ={{
-          flexDirection: "row",
-          
-          width: "100%",
-          marginTop: 10,
-        
-        }}>
-        <Text>
-        Status:  
-        </Text>
-        {parseDatefromString(item.from) ? <Text style={{
+          style={{
+            flexDirection: "row",
 
-          color: "green",
-
-        }}> Available</Text> : <Text
-        style={{
-          color: "red",
-        
-        }}
-        
-        > Class is over</Text>}
+            width: "100%",
+            marginTop: 10,
+          }}
+        >
+          <Text>Status:</Text>
+          {parseDatefromString(item.from, item.to) == 0 ? (
+            <Text style={{ color: "gray" }}> Expired</Text>
+          ) : parseDatefromString(item.from, item.to) == 1 ? (
+            <Text style={{ color: "green" }}> Ongoing</Text>
+          ) : (
+            <Text style={{ color: "yellow" }}> Upcoming</Text>
+          )}
         </View>
-
       </Pressable>
     );
   };
@@ -248,14 +272,15 @@ export function RoomList() {
             }}
             onPress={OpenCamera}
           >
-            <View style={{
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-              height: "100%",
-            
-            }}>
+            <View
+              style={{
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                height: "100%",
+              }}
+            >
               <Text
                 style={{
                   fontSize: 16,
@@ -264,9 +289,7 @@ export function RoomList() {
               >
                 Attendance:
               </Text>
-              <Text>
-              {noStu}
-              </Text>
+              <Text>{noStu}</Text>
             </View>
           </TouchableOpacity>
 

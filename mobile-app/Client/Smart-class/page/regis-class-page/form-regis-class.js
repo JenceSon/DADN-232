@@ -1,23 +1,30 @@
 import React, { useState } from "react";
-import { Pressable, View, Text, Modal, Platform } from "react-native";
+import { Pressable, View, Text, Modal, Platform, Alert } from "react-native";
 import { TextInput } from "react-native-paper";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { formRegisClassStyle } from "../../style/regis-class-style";
 import { colors } from "../../style/global";
-export function RegisterClassModal({ close }) {
-  const [form, setForm] = useState({
-    startTime: "",
-    building: "",
-    subject: "",
-    classroom: "",
-    noStu: "",
-    endTime: " ",
-    startDate: "",
-    endDate: "",
-    classID: "",
-  });
+import { useDispatch, useSelector } from "react-redux";
+import { registerRoom } from "./form-regis-class-func";
+import { setIsChange } from "../../features/fetchData/fetchDataSlice";
 
+export function RegisterClassModal({ close, fetchData, setFetchData }) {
+  const [form, setForm] = useState({
+    startTime: (new Date()),
+    building: "H6",
+    subject: "CO3020",
+    classroom: "201",
+    noStu: 0,
+    endTime: (new Date()),
+    startDate: (new Date()),
+    //endDate: "",
+    classID: "L02",
+  });
+  const dispatch = useDispatch()
+  const user = useSelector(state => state.user);
+  const fetchDataGlobal = useSelector(state => state.fetchDataGlobal)
+  //console.log(fetchDataGlobal)
   const [startTime, setStartTime] = useState(new Date(Date.now()));
   const [endTime, setEndTime] = useState(new Date(Date.now()));
   const [startDate, setStartDate] = useState(new Date(Date.now()));
@@ -26,6 +33,53 @@ export function RegisterClassModal({ close }) {
   const [showStartDatePicker, setshowStartDatePicker] = useState(false);
 
   const [showEndDateTimePicker, setshowEndDateTimePicker] = useState(false);
+
+
+  const regis = async () => {
+    try {
+      console.log(form)
+      const res = await registerRoom({
+        FormTime: form.startTime.setFullYear(form.startDate.getFullYear(), form.startDate.getMonth(), form.startDate.getDate()),
+        ToTime: form.endTime.setFullYear(form.startDate.getFullYear(), form.startDate.getMonth(), form.startDate.getDate()),
+        NoStu: parseInt(form.noStu),
+        Course: form.subject,
+        Class: form.classID,
+        Building: form.building,
+        Classroom: form.building + "-" + String(form.classroom),
+        User: user.id,
+      })
+      console.log(res)
+      if (res.validate) {
+        Alert.alert("Fail", res.validate[0], [
+          {
+            text: 'OK',
+            onPress: () => console.log('OK pressed'),
+          }
+        ])
+      }
+      else if (res.message) {
+        Alert.alert("Fail", res.message, [
+          {
+            text: 'OK',
+            onPress: () => console.log('OK pressed')
+          }
+        ])
+      }
+      else {
+        Alert.alert("Success", res.success, [
+          {
+            text: 'OK',
+            onPress: () => console.log('OK')
+          }
+        ])
+      }
+      await setFetchData(!fetchData)
+      dispatch(setIsChange(!fetchDataGlobal.isChange))
+
+    } catch (error) {
+      console.error("Error registering : ", error)
+    }
+  }
 
   return (
     <View style={formRegisClassStyle.centeredView}>
@@ -36,25 +90,27 @@ export function RegisterClassModal({ close }) {
               Register class
             </Text>
             <TextInput
+
               label="Building No"
               placeholder="H1"
               mode="outlined"
               style={formRegisClassStyle.inputStyle}
               onChangeText={(building) => setForm({ ...form, building })}
             />
-            <View style={{display: 'flex', justifyContent:'center', width:'100%', flexDirection:'row', gap: 10}}>
+            <View style={{ display: 'flex', justifyContent: 'center', width: '100%', flexDirection: 'row', gap: 10 }}>
               <TextInput
                 label="Classroom No"
                 placeholder="201"
                 mode="outlined"
-                style={{flex: 1}}
+                keyboardType="numeric"
+                style={{ flex: 1 }}
                 onChangeText={(classroom) => setForm({ ...form, classroom })}
               />
               <TextInput
                 label="Class ID"
                 placeholder="L01"
                 mode="outlined"
-                style={{flex: 1}}
+                style={{ flex: 1 }}
                 onChangeText={(classID) => setForm({ ...form, classID })}
               />
             </View>
@@ -70,6 +126,7 @@ export function RegisterClassModal({ close }) {
               label="Number of student"
               placeholder="xxx"
               mode="outlined"
+              keyboardType="numeric"
               style={formRegisClassStyle.inputStyle}
               onChangeText={(noStu) => setForm({ ...form, noStu })}
             />
@@ -126,7 +183,7 @@ export function RegisterClassModal({ close }) {
                       setshowStartDatePicker(false);
                       setStartDate(startDate);
                       setForm({ ...form, startDate });
-                      setForm({ ...form, endDate });
+                      //setForm({ ...form, endDate });
                     }}
                   />
                 )}
@@ -137,7 +194,7 @@ export function RegisterClassModal({ close }) {
                     is24Hour={true}
                     onChange={(event, startTime) => {
                       setshowStartTimePicker(false);
-                      startTime.setMinutes(0, 0);
+                      //startTime.setMinutes(0, 0);
                       setForm({ ...form, startTime });
                       setStartTime(startTime);
                     }}
@@ -161,7 +218,7 @@ export function RegisterClassModal({ close }) {
                       mode={"time"}
                       is24Hour={true}
                       onChange={(event, startTime) => {
-                        startTime.setMinutes(0, 0);
+                        //startTime.setMinutes(0, 0);
                         setForm({ ...form, startTime });
                         setStartTime(startTime);
                       }}
@@ -207,7 +264,7 @@ export function RegisterClassModal({ close }) {
                     is24Hour={true}
                     onChange={(event, endTime) => {
                       setshowEndDateTimePicker(false);
-                      endTime.setMinutes(0, 0);
+                      //endTime.setMinutes(0, 0);
                       setForm({ ...form, endTime });
                       setEndTime(endTime);
                     }}
@@ -220,7 +277,7 @@ export function RegisterClassModal({ close }) {
                     mode={"time"}
                     is24Hour={true}
                     onChange={(event, endTime) => {
-                      endTime.setMinutes(0, 0);
+                      //endTime.setMinutes(0, 0);
                       setForm({ ...form, endTime });
                       setEndTime(endTime);
                     }}
@@ -228,7 +285,7 @@ export function RegisterClassModal({ close }) {
                 )}
               </View>
             </View>
-            <Pressable style={formRegisClassStyle.btnStyle} onPress={()=>console.log(form)}>
+            <Pressable style={formRegisClassStyle.btnStyle} onPress={regis}>
               <Text style={{ color: "white", fontWeight: "500", fontSize: 16 }}>
                 Register
               </Text>

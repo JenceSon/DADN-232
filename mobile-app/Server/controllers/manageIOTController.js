@@ -206,13 +206,33 @@ async function getRoomByUser(req,res){
             }
             return note
         })
-        //rooms = [...new Set(rooms)]
+
         console.log(rooms)
         if (rooms == undefined){
             //console.error("null list")
             res.send([])
         } 
-        else res.send(rooms)
+        else {
+            //resolve duplicate
+            let removeDupRooms = []
+
+            for (const room of rooms){
+                if(removeDupRooms.some(x => (x.name == room.name))){ //has same name
+                    console.log(room)
+                    let idx = removeDupRooms.findIndex(x => x.name == room.name)
+                    console.log(removeDupRooms[idx])
+                    if (room.status == true) {
+                        removeDupRooms[idx].status = true //check if new room has been on => set on
+                        console.log(removeDupRooms)
+                    }
+                }
+                else{
+                    removeDupRooms.push(room)
+                }
+            }
+            console.log(removeDupRooms)
+            res.send(removeDupRooms)
+        }
     } catch (error) {
         res.send({msg : "Error in finding schedules : " + error})
     }
