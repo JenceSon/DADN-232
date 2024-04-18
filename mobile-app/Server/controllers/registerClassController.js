@@ -1,3 +1,4 @@
+import Building from "../models/buildingModel.js";
 import Schedule from "../models/scheduleModel.js";
 import User from "../models/userModel.js";
 
@@ -21,7 +22,7 @@ async function delSchedule(req,res){
             res.send({message : "Null id"})
         }
     } catch (error) {
-        res.send({message : ""})
+        res.send({message : "Error delecting : ", error})
     }
 }
 
@@ -39,13 +40,26 @@ async function registerRoom(req,res){
 
     */
     try {
+        console.log(body)
         const allSchedules = await Schedule.getAll();
         const idSchedules = allSchedules.map(item => parseInt(item.id))
         const id = String(Math.max(...idSchedules) + 1)
         let invalid = []
         const now = new Date()
         //check valid input
-        if (body.FromTime <= now.setHours(now.getHours()+1)){
+        const listBuilding = await Building.all()
+        if(!listBuilding.some(x => x.name == body.Building)){
+            invalid.push("Invalid building input")
+        }
+        else{
+            const roomsByBuilding = await Building.getClass(body.Building)
+            if (roomsByBuilding == undefined) roomsByBuilding = []
+            if (!roomsByBuilding.some(x => x.name == body.Classroom)){
+                invalid.push("Invalid room id input")
+            }
+        }
+
+        if (body.FromTime <= now){
             invalid.push("From-time must after 1 hour from system time")
         }
         if (body.FromTime >= body.ToTime){
@@ -55,19 +69,22 @@ async function registerRoom(req,res){
         //check conflict
         for (const schedule of allSchedules){
             if (schedule.Location == body.Classroom){
-                if (schedule.FromTime <= body.FromTime || schedule.ToTime >= body.ToTime){
+                if ((schedule.FromTime <= body.FromTime && body.FromTime <= schedule.ToTime) || 
+                (schedule.FromTime <= body.ToTime && body.ToTime <= schedule.ToTime) ){
                     invalid.push("Conflict with range from "+schedule.FromTime.toLocaleString() + " to " + schedule.ToTime.toLocaleString())                   
                 }
             }
         }
+        console.log(String(body.FromTime))
+        console.log(String(body.ToTime))
         if (invalid.length == 0){
             if (await Schedule.add(
                 id,
-                body.FromTime,
+                String(body.FromTime),
                 body.Building,
                 body.Classroom,
                 body.NoStu,
-                body.ToTime,
+                String(body.ToTime),
                 body.User,
                 body.Course,
                 body.Class) == true){
@@ -93,7 +110,7 @@ async function getScheduleUser(req,res){
         console.log(userRef)
 
         let schedules = await Schedule.getAll()
-        if (schedules != [])schedules = schedules.filter(item => item.User == userRef)
+        if (schedules != [])schedules = schedules.filter(item => item.User == userRef && item.ToTime > (new Date()))
 
         res.send(schedules)
         

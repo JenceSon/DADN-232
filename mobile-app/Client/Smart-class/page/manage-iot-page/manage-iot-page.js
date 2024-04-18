@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, Pressable, ScrollView, Text, View } from "react-native";
+import { FlatList, LogBox, Pressable, ScrollView, Text, View } from "react-native";
 import { colors, globalStyles } from "../../style/global";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { manageIOTStyles } from "../../style/manage-iot-style";
@@ -14,6 +14,7 @@ import { ListRoomAdmin } from "./list-room-admin";
 //let listBuilding = async () =>{await getAllBuilding()}
 
 export function ManageIOT() {
+    LogBox.ignoreAllLogs(true)
     const [listBuilding, setlistBuilding] = useState([])
     const [fetchData, setFetchData] = useState(false)
     const navigation = useNavigation()
