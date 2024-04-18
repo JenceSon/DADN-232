@@ -8,6 +8,18 @@ const userSlice = createSlice({
         setName: ((state, action) => {
             return {...state, Name: action.payload}
         }),
+        setPhone: ((state, action) => {
+            return {...state, Phone: action.payload};
+        }),
+        setFaculty: ((state, action) => {
+            return {...state, Faculty: action.payload};
+        }),
+        setStatus: ((state, action) => {
+            return {...state, Status: action.payload};
+        }),
+        setType: ((state, action) => {
+            return {...state, Type: action.payload};
+        }),
         initUser: ((state, action) => {
             console.log(action.payload)
             return {
@@ -24,5 +36,5 @@ const userSlice = createSlice({
         })
     }
 })
-export const {setName, initUser} = userSlice.actions;
+export const {setName, setPhone, setFaculty, setStatus, setType, initUser} = userSlice.actions;
 export default userSlice.reducer

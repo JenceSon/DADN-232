@@ -1,5 +1,4 @@
 import {
-  addDoc,
   collection,
   setDoc,
   doc,
@@ -12,33 +11,18 @@ import hashPassword from "../services/profileService.js";
 
 const User = {
   add: async (
-    schoolId,
-    email,
-    pw,
-    name,
-    phone,
-    role,
-    faculty,
-    status,
-    type
+    data
   ) => {
     //Example:
-    // User.add("2111401", "luuchanhung123@gmai.com", "luuchanhung123","Luu Chan Hung", "0123456789", "Student", "CSE", "On Learning", "Formal");
-    const hashCode = await hashPassword(pw);
+    const hashCode = await hashPassword(data.Pw);
     try {
-      const docRef = await setDoc(doc(db, "User", schoolId), {
-        id: schoolId,
-        Email: email,
+      const docRef = await setDoc(doc(db, "User", data.id), {
+        id: data.id,
+        Email: data.Email,
         HashCode: hashCode,
-        Name: name,
-        Phone: phone,
-        Role: role,
-        Faculty: faculty,
-        Status: status,
-        Type: type,
+        Role: data.Role,
       });
-      console.log(docRef);
-      return true;
+      return data.id;
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -68,16 +52,17 @@ const User = {
       throw e;
     }
   },
-  update: async (id, email, name, phone, role) => {
+  update: async (data) => {
     try {
-      const docRef = doc(db, "User", id);
-      await setDoc(docRef, {
-        Email: email,
-        Name: name,
-        Phone: phone,
-        Role: role,
-      });
-      return true;
+      const docRef = doc(db, "User", data.id);
+      const docData = await  getDoc(docRef);
+      if (docData.exists()) {
+        await setDoc(docRef, {
+          ...docData.data(),
+          ...data,
+        });
+        return true;
+      }
     } catch (e) {
       console.error("Error updating document:", e);
       throw e;
