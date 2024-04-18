@@ -9,6 +9,7 @@ import intervalRouter from './routes/intervalRouter.js'
 import express from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser'
+import { intervalAutoControlDevice } from './controllers/intervalController.js'
 
 const app  = express()
 //server config
@@ -41,8 +42,9 @@ app.use('/api/login',loginRouter)
 app.use('/api/IoTDevice',IoTDeviceRouter)
 app.use('/api/interval',intervalRouter)
 
-global.hasChanged = []
+global.hasChangedGlobal = []
 
 app.listen(port,()=>{
-    console.log("Hello")
+    intervalAutoControlDevice()
+    setInterval(intervalAutoControlDevice,1000*60)
 })

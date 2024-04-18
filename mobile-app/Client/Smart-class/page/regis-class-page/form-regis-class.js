@@ -73,11 +73,9 @@ export function RegisterClassModal({ close }) {
           }
         ])
         close()
+        dispatch(setIsChange(!fetchDataGlobal.isChange))
       }
       //await setFetchData(!fetchData)
-      dispatch(setIsChange(!fetchDataGlobal.isChange))
-      
-
     } catch (error) {
       console.error("Error registering : ", error)
     }
