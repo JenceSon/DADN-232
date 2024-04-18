@@ -95,6 +95,7 @@ export function RoomList() {
   const [selectedRoom, setSelectedRoom] = useState("");
   const [noStu, setNoStu] = useState("Undefined, click to take picture");
   const [temp, setTemp] = useState(0);
+  const [Light, setLight] = useState(0);
   useEffect(() => {
     async function fetchData() {
       try {
@@ -121,6 +122,11 @@ export function RoomList() {
         console.log("Temp: " + temp.data[0].value);
 
         setTemp(temp.data[0].value);
+
+        const light = await api.get("/api/IoTDevice/getLightSensor");
+        console.log("Light: " + light.data[0].value);
+
+        setLight(light.data[0].value);
       } catch (error) {
         console.log("Error fetching data: " + error);
       }
@@ -343,7 +349,8 @@ export function RoomList() {
                 alignItems: "center",
               }}
             >
-              <Text>light</Text>
+              <Text>Light</Text>
+              <Text>{Light} lux</Text>
             </View>
             <View
               style={{
@@ -361,6 +368,7 @@ export function RoomList() {
               }}
             >
               <Text>Humidity</Text>
+              <Text>60%</Text>
             </View>
           </View>
         </Pressable>
