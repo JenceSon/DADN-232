@@ -23,6 +23,7 @@ export function RegisterClass({ navigation }) {
     //setFetchData(!fetchData)
   };
   const user = useSelector(state => state.user)
+  const fetchDataGlobal = useSelector(state => state.fetchDataGlobal)
   // const regisClass = [
   //   {
   //     id: "0",
@@ -44,7 +45,7 @@ export function RegisterClass({ navigation }) {
   //   },
   // ];
   const [regisClass,setRegisClass] = useState([])
-  const [fetchData, setFetchData] = useState(false)
+  //const [fetchData, setFetchData] = useState(false)
 
   const getRegisClass = async ()=>{
     try {
@@ -67,7 +68,7 @@ export function RegisterClass({ navigation }) {
 
   useEffect(()=>{
     getRegisClass()
-  }, [fetchData])
+  }, [fetchDataGlobal])
 
   return (
     <SafeAreaView style={[globalStyles.container]}>
@@ -87,7 +88,7 @@ export function RegisterClass({ navigation }) {
         <Text style={{ color: colors.white, fontWeight: "700" }}>Register</Text>
       </Pressable>
       {showModal && (
-        <RegisterClassModal close={toggleShowModal} fetchData={fetchData} setFetchData={setFetchData} isVisible={showModal} style={{position:'absolute'}}></RegisterClassModal>
+        <RegisterClassModal close={toggleShowModal} isVisible={showModal} style={{position:'absolute'}}></RegisterClassModal>
       )}
     </SafeAreaView>
   );

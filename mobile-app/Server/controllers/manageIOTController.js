@@ -37,6 +37,7 @@ async function getIOTByRoom(req,res){
 }
 
 async function adjustInfoDevice(req,res){
+    //type = "Fan" or not
     const body = req.body;
     try {
         console.log(body)
