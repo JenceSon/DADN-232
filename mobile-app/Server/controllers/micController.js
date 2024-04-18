@@ -1,11 +1,12 @@
-import speech2text, {upload} from "../services/micService.js";
+import speech2text, {commandParser, upload} from "../services/micService.js";
 import fs from "fs";
 
 async function reqSpeech2text(req, res) {
-    //testing
-    // convert2Wav();
     const rs = await speech2text("file_recorded.wav");
-    //testing
+    if (rs["message"] == "SUCCESS") {
+        const parsedCmd = commandParser(rs["transcription"])
+        rs = {...rs, parsedCmd: parsedCmd}
+    }
     res.send(rs);
 }
 
