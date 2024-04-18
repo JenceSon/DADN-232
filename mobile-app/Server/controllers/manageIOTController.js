@@ -1,4 +1,4 @@
-import { query } from "express";
+import { application, query } from "express";
 import Building from "../models/buildingModel.js";
 import Schedule from "../models/scheduleModel.js";
 import Fan from "../models/fanModel.js";
@@ -37,6 +37,7 @@ async function getIOTByRoom(req,res){
 }
 
 async function adjustInfoDevice(req,res){
+    //type = "Fan" or not
     const body = req.body;
     try {
         console.log(body)
@@ -194,7 +195,7 @@ async function getRoomByUser(req,res){
         let schedules = await Schedule.getAll();
         console.log(schedules)
         //take of comment after fixbug
-        schedules = schedules.filter(
+        schedules = schedules.filter( //filter of userid, building and toTime > now (mean is ready or on working)
             (item) => (item.User == req.query.id && 
             item.Location.substring(0,2) == req.query.nameBuilding &&
             item.ToTime > new Date()
@@ -202,7 +203,7 @@ async function getRoomByUser(req,res){
         let rooms = schedules.map(item=>{
             let note = {
                 name : item.Location,
-                status : (new Date() < item.ToTime && new Date() >= item.FromTime) ? true : false,
+                status : (new Date() < item.ToTime && new Date() >= item.FromTime) ? true : false, //true : on going, false : is ready
             }
             return note
         })

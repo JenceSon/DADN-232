@@ -22,7 +22,7 @@ async function delSchedule(req,res){
             res.send({message : "Null id"})
         }
     } catch (error) {
-        res.send({message : ""})
+        res.send({message : "Error delecting : ", error})
     }
 }
 
@@ -53,6 +53,7 @@ async function registerRoom(req,res){
         }
         else{
             const roomsByBuilding = await Building.getClass(body.Building)
+            if (roomsByBuilding == undefined) roomsByBuilding = []
             if (!roomsByBuilding.some(x => x.name == body.Classroom)){
                 invalid.push("Invalid room id input")
             }

@@ -90,6 +90,7 @@ const Building = {
             else return res            
         } catch (error) {
             console.error("Error getting rooms")
+            return []
         }
     }
 

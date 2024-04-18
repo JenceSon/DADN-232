@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -13,6 +13,7 @@ import { ManageIOT } from "../manage-iot-page/manage-iot-page";
 import { RegisterClass } from "../regis-class-page/regis-class-page";
 import { ClassInfo } from "../class-info-page.js/class-info-page";
 import { Mic } from "../mic-tool/mic-func";
+import { Interval } from "../../components/Interval/Interval";
 
 
 //screen name
@@ -26,46 +27,49 @@ const Tab = createBottomTabNavigator();
 export function MainTeacher({ teacher }) {
     const navigation = useNavigation();
     return (
-        <Tab.Navigator
-            initialRouteName={classInfoName}
-            screenOptions={({ route }) => ({
-                tabBarIcon: ({ focused, color, size }) => {
-                    let iconName;
-                    let rn = route.name;
+        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
+            <Interval />
+            <Tab.Navigator
+                initialRouteName={classInfoName}
+                screenOptions={({ route }) => ({
+                    tabBarIcon: ({ focused, color, size }) => {
+                        let iconName;
+                        let rn = route.name;
 
-                    if (rn === profileName) {
-                        iconName = focused ? 'person' : 'person-outline'
-                    }
-                    else if (rn === classInfoName) {
-                        iconName = focused ? 'bar-chart' : 'bar-chart-outline'
-                    }
-                    else if (rn === manageIOTName) {
-                        iconName = focused ? 'build' : 'build-outline'
-                    }
-                    else if (rn === regisName) {
-                        iconName = focused ? 'pencil' : 'pencil-outline'
-                    }
-                    else {
-                        iconName = focused ? 'mic-circle' : 'mic-circle-outline'
-                    }
+                        if (rn === profileName) {
+                            iconName = focused ? 'person' : 'person-outline'
+                        }
+                        else if (rn === classInfoName) {
+                            iconName = focused ? 'bar-chart' : 'bar-chart-outline'
+                        }
+                        else if (rn === manageIOTName) {
+                            iconName = focused ? 'build' : 'build-outline'
+                        }
+                        else if (rn === regisName) {
+                            iconName = focused ? 'pencil' : 'pencil-outline'
+                        }
+                        else {
+                            iconName = focused ? 'mic-circle' : 'mic-circle-outline'
+                        }
 
-                    return <Ionicons name={iconName} size={size} color={color} />
-                },
-                tabBarActiveTintColor: colors.navigationColorActive,
-                tabBarInactiveTintColor: colors.navigatorColorInActive,
-                headerTitleAlign: 'center',
-                headerTintColor: colors.headerColor,
-                headerStyle: {
-                    backgroundColor: colors.navigationColorActive,
-                }
-            })}
-        >
-            <Tab.Screen name={classInfoName} component={ClassInfo} />
-            <Tab.Screen name={manageIOTName} component={ManageIOT} />
-            <Tab.Screen name={'Mic'} component={Mic} />
-            <Tab.Screen name={regisName} component={RegisterClass} />
-            <Tab.Screen name={profileName} component={Profile} />
-        </Tab.Navigator>
+                        return <Ionicons name={iconName} size={size} color={color} />
+                    },
+                    tabBarActiveTintColor: colors.navigationColorActive,
+                    tabBarInactiveTintColor: colors.navigatorColorInActive,
+                    headerTitleAlign: 'center',
+                    headerTintColor: colors.headerColor,
+                    headerStyle: {
+                        backgroundColor: colors.navigationColorActive,
+                    }
+                })}
+            >
+                <Tab.Screen name={classInfoName} component={ClassInfo} />
+                <Tab.Screen name={manageIOTName} component={ManageIOT} />
+                <Tab.Screen name={'Mic'} component={Mic} />
+                <Tab.Screen name={regisName} component={RegisterClass} />
+                <Tab.Screen name={profileName} component={Profile} />
+            </Tab.Navigator>
+        </View>
     );
 }
 

@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { registerRoom } from "./form-regis-class-func";
 import { setIsChange } from "../../features/fetchData/fetchDataSlice";
 
-export function RegisterClassModal({ close, fetchData, setFetchData }) {
+export function RegisterClassModal({ close }) {
   const [form, setForm] = useState({
     startTime: (new Date()),
     building: "H6",
@@ -72,10 +72,10 @@ export function RegisterClassModal({ close, fetchData, setFetchData }) {
             onPress: () => console.log('OK')
           }
         ])
+        close()
+        dispatch(setIsChange(!fetchDataGlobal.isChange))
       }
-      await setFetchData(!fetchData)
-      dispatch(setIsChange(!fetchDataGlobal.isChange))
-
+      //await setFetchData(!fetchData)
     } catch (error) {
       console.error("Error registering : ", error)
     }

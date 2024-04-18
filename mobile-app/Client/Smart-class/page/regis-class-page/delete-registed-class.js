@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Alert,
   Modal,
   Pressable,
   StyleSheet,
@@ -10,7 +11,47 @@ import {
 import { globalStyles, colors } from "../../style/global";
 import { FontAwesome } from "@expo/vector-icons";
 import { deleteRegistedClassStyle } from "../../style/regis-class-style";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsChange } from "../../features/fetchData/fetchDataSlice";
+import api from "../../api/api";
+
+
+
 export function DeleteClassModal({ close, item }) {
+  const dispatch = useDispatch()
+  const fetchDataGlobal = useSelector(state=>state.fetchDataGlobal)
+  const delSchedule = async () =>{
+    try {
+      let res = await api.post('/api/registerClass/delSchedule',{
+        id : item.id
+      })
+      res = res.data
+      console.log(res)
+      if (res.message){
+        Alert.alert("Fail",res.message,[{
+          text : 'OK'
+        }])
+      }
+      else{
+        Alert.alert("Success",res.success,[
+          {
+            text : 'OK'
+          }
+        ])
+        dispatch(setIsChange(!fetchDataGlobal.isChange))
+        close((oldVal)=> !oldVal)
+      }
+      
+
+    } catch (error) {
+      Alert.alert("Fail","Error deleting schedule " + error,[
+        {
+          text : 'OK'
+        }
+      ])
+    }
+  }
+
   return (
     <View style={deleteRegistedClassStyle.centeredView}>
       <Modal animationType="fade" transparent={true}>
@@ -35,11 +76,11 @@ export function DeleteClassModal({ close, item }) {
               Do you really want to unschedule class
               <Text style={{ fontWeight: "700", fontSize: 16 }}>
                 {" "}
-                {item.subjectID}
+                {item.Course}
               </Text>
               <Text style={{ fontWeight: "600", fontSize: 16 }}>
                 {" "}
-                from: {item.from} - to: {item.to}
+                from: {(new Date(item.FromTime)).toLocaleString()} - to: {(new Date(item.ToTime)).toLocaleString()}
               </Text>
             </Text>
             <View
@@ -57,7 +98,7 @@ export function DeleteClassModal({ close, item }) {
                 <Text style={deleteRegistedClassStyle.textBtn}>Cancle</Text>
               </Pressable>
               <Pressable
-                onPress={() => close((oldVal) => !oldVal)}
+                onPress={delSchedule}
                 style={[deleteRegistedClassStyle.submitBtn, deleteRegistedClassStyle.deleteBtn]}
               >
                 <Text style={[deleteRegistedClassStyle.textBtn, {color:'white'}]}>Delete</Text>
