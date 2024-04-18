@@ -5,6 +5,7 @@ import profileRouter from './routes/profileRouter.js'
 import registerClassRouter from './routes/registerClassRouter.js'
 import loginRouter from './routes/loginRouter.js'
 import IoTDeviceRouter from './routes/IoTDeviceRouter.js'
+import intervalRouter from './routes/intervalRouter.js'
 import express from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser'
@@ -38,9 +39,10 @@ app.use('/api/profile',profileRouter)
 app.use('/api/registerClass',registerClassRouter)
 app.use('/api/login',loginRouter)
 app.use('/api/IoTDevice',IoTDeviceRouter)
+app.use('/api/interval',intervalRouter)
 
-
+global.hasChanged = []
 
 app.listen(port,()=>{
-    console.log('hello')
+    console.log("Hello")
 })
