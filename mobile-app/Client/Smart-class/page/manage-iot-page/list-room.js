@@ -18,6 +18,7 @@ export function ListRoom() {
     const navigation = useNavigation()
     const Stack = createNativeStackNavigator()
 
+    const fetchDataGlobal = useSelector(state => state.fetchDataGlobal)
     const [fetchData, setFetchData] = useState(false)
     const [listRoom, setListRoom] = useState([])
 
@@ -47,7 +48,7 @@ export function ListRoom() {
 
     useEffect(() => {
         getRooms();
-    }, [fetchData])
+    }, [fetchData,fetchDataGlobal])
 
 
     function Display() {

@@ -3,6 +3,7 @@ import api from "../../api/api";
 
 
 export async function ToggleDevice({type,id,status,building,classroom}){
+    //type is "Fan" or not
     const res = await api.post("/api/manageIOT/adjustInfoDevice", {
         id : id,
         status : status,
@@ -10,6 +11,14 @@ export async function ToggleDevice({type,id,status,building,classroom}){
         classroom : classroom,
         type : type,
     })
+    let resAda =""
+    if(type == "Fan") resAda =  await api.post("/api/IoTDevice/controlFan", {
+        code : (status == true)? 1 : 0,
+    })
+    else resAda =  await api.post("/api/IoTDevice/controlLight",{
+        code : (status == true)? 1 : 0
+    })
+    console.log(resAda.data)
     return res.data
 }
 

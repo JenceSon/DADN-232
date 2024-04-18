@@ -87,6 +87,7 @@ function parseDatefromString(from, to) {
 }
 export function RoomList() {
   const user = useSelector((state) => state.user);
+  const fetchDataGlobal = useSelector((state) => state.fetchDataGlobal)
   const [lissclass, setListClass] = useState([]);
   const [count, setCount] = useState(0);
 

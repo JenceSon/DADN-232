@@ -5,9 +5,11 @@ import profileRouter from './routes/profileRouter.js'
 import registerClassRouter from './routes/registerClassRouter.js'
 import loginRouter from './routes/loginRouter.js'
 import IoTDeviceRouter from './routes/IoTDeviceRouter.js'
+import intervalRouter from './routes/intervalRouter.js'
 import express from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser'
+import { intervalAutoControlDevice } from './controllers/intervalController.js'
 
 const app  = express()
 //server config
@@ -38,9 +40,11 @@ app.use('/api/profile',profileRouter)
 app.use('/api/registerClass',registerClassRouter)
 app.use('/api/login',loginRouter)
 app.use('/api/IoTDevice',IoTDeviceRouter)
+app.use('/api/interval',intervalRouter)
 
-
+global.hasChangedGlobal = []
 
 app.listen(port,()=>{
-    console.log('hello')
+    intervalAutoControlDevice()
+    setInterval(intervalAutoControlDevice,1000*60)
 })

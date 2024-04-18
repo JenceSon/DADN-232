@@ -86,9 +86,11 @@ const Building = {
                 }
                 return note
             })
-            return res            
+            if (res == undefined) return []
+            else return res            
         } catch (error) {
             console.error("Error getting rooms")
+            return []
         }
     }
 
