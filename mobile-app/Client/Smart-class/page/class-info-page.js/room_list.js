@@ -15,18 +15,16 @@ import { useSelector } from "react-redux";
 function parseDatefromString(from, to) {
   //string is in format 4/11/2024, 12:00:00 AM
   const nowDate = new Date();
-  console.log("New date string: " + from);
+
   const fromdate = from.split(",")[0];
-  console.log("Date: " + fromdate);
+
   const fromtime = from.split(",")[1];
-  console.log("Time: " + fromtime);
 
   let fromyear = fromdate.split("/")[2];
-  console.log("Year: " + fromyear);
+
   let frommonth = fromdate.split("/")[0];
-  console.log("Month: " + frommonth);
+
   let fromday = fromdate.split("/")[1];
-  console.log("Day: " + fromday);
 
   let fromhour = fromtime.split(":")[0];
   let fromminute = fromtime.split(":")[1];
@@ -39,19 +37,24 @@ function parseDatefromString(from, to) {
 
   //delete last 3 characters of second
   fromsecond = fromsecond.slice(0, -3);
-  const fromDate = new Date(fromyear, frommonth - 1, fromday,fromhour, fromminute, fromsecond);
-
+  const fromDate = new Date(
+    fromyear,
+    frommonth - 1,
+    fromday,
+    fromhour,
+    fromminute,
+    fromsecond
+  );
 
   let todate = to.split(",")[0];
-  console.log("Date: " + todate);
+
   let totime = to.split(",")[1];
-  
+
   let toyear = todate.split("/")[2];
-  console.log("Year: " + toyear);
+
   let tomonth = todate.split("/")[0];
-  console.log("Month: " + tomonth);
+
   let today = todate.split("/")[1];
-  console.log("Day: " + today);
 
   let tohour = totime.split(":")[0];
   let tominute = totime.split(":")[1];
@@ -65,13 +68,14 @@ function parseDatefromString(from, to) {
   //delete last 3 characters of second
   tosecond = tosecond.slice(0, -3);
 
-  const toDate = new Date(toyear, tomonth - 1, today,tohour, tominute, tosecond);
-
-
-
-  console.log("Now date: " + nowDate);
-  console.log("From Date: " + fromDate);
-  console.log("To Date: " + toDate);
+  const toDate = new Date(
+    toyear,
+    tomonth - 1,
+    today,
+    tohour,
+    tominute,
+    tosecond
+  );
 
   if (nowDate.getTime() > toDate.getTime()) {
     return 0;
@@ -84,6 +88,13 @@ function parseDatefromString(from, to) {
 export function RoomList() {
   const user = useSelector((state) => state.user);
   const [lissclass, setListClass] = useState([]);
+  const [count, setCount] = useState(0);
+
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const [selectedRoom, setSelectedRoom] = useState("");
+  const [noStu, setNoStu] = useState("Undefined, click to take picture");
+  const [temp, setTemp] = useState(0);
   useEffect(() => {
     async function fetchData() {
       try {
@@ -99,12 +110,24 @@ export function RoomList() {
         console.log("Error fetching data: " + error);
       }
     }
+
     fetchData();
   }, []);
+  useEffect(() => {
+    console.log("SSSSSSSSSSSSSSSSSSSSSSS");
+    async function fetchData() {
+      try {
+        const temp = await api.get("/api/IoTDevice/getTempSensor");
+        console.log("Temp: " + temp.data[0].value);
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedRoom, setSelectedRoom] = useState("");
-  const [noStu, setNoStu] = useState("Undefined, click to take picture");
+        setTemp(temp.data[0].value);
+      } catch (error) {
+        console.log("Error fetching data: " + error);
+      }
+    }
+    fetchData();
+  }, [count]);
+
   const OpenCamera = async () => {
     try {
       await ImagePicker.requestCameraPermissionsAsync();
@@ -135,6 +158,7 @@ export function RoomList() {
       <Pressable
         onPress={() => {
           console.log("Pressed on " + item.title + " room.");
+          setCount(count + 1);
           setSelectedRoom(item);
           toggleModal();
         }}
@@ -190,6 +214,8 @@ export function RoomList() {
   };
 
   const toggleModal = () => {
+    setCount(count + 1);
+    console.log("Count: " + count);
     setModalVisible(!modalVisible);
   };
   return (
@@ -238,7 +264,7 @@ export function RoomList() {
               }}
             >
               {" "}
-              32 °
+              {temp} °
             </Text>
             <Text
               style={{
@@ -248,7 +274,7 @@ export function RoomList() {
                 marginTop: 40,
               }}
             >
-              Max: 32 ° Min: 32 °
+              Max: 31.2 ° Min: 29.1 °
             </Text>
           </View>
           <TouchableOpacity

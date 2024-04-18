@@ -13,6 +13,18 @@ async function getLightSensor(req, res) {
   });
   }
 
+async function getTempSensor(req, res) {
+  axios
+  .get("https://io.adafruit.com/api/v2/phongcute/feeds/hum-sen/data",{
+    params: {
+      "x-aio-key": api_key,
+    }
+  })
+  .then((response) => {
+    res.send(response.data);
+  });
+  
+}
 //body :
 // { "code": 0 or 1 }
 // 0 : turn off
@@ -46,5 +58,6 @@ async function controlFan(req, res) {
   export {
     getLightSensor,
     controlFan,
-    controlLight
+    controlLight,
+    getTempSensor
   }
