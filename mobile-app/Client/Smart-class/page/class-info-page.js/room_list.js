@@ -114,7 +114,7 @@ export function RoomList() {
     }
 
     fetchData();
-  }, []);
+  }, [fetchDataGlobal]);
   useEffect(() => {
     console.log("SSSSSSSSSSSSSSSSSSSSSSS");
     async function fetchData() {
