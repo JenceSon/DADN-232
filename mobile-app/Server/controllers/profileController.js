@@ -16,14 +16,16 @@ async function getInfoByUser(req, res) {
 
 async function updateInfo(req, res) {
     const body = req.body
-    const user = await User.get(body.schoolId)
+    const user = await User.get(body.id)
     try {
         if (user == null) {
-            await User.add(body.schoolId, body.email, body.pw, body.name, body.phone, body.role, body.faculty, body.status, body.type)
-            res.send({...body, message: "create user success"})
+            await User.add(body)
+            res.send({"message": "User do not exists"})
         } else {
-            await User.update(body.schoolId, body.email, body.pw, body.name, body.phone, body.role, body.faculty, body.status, body.type)
-            res.send({...body, message: "update user success"})
+            await User.update(body)
+            let newUser = await User.get(body.id);
+            delete newUser["HashCode"];
+            res.send({newUser, message: "update user success"})
         }
 
     } catch (e) {
@@ -31,7 +33,17 @@ async function updateInfo(req, res) {
     }
     // UserModel.add(2, req.email, req.data.name, req.data.phone, req.role)
 }
-
+async function addUser(req, res) {
+    const body = req.body;
+    const user = await User.get(body.id)
+    if (user != null) {
+        res.send({"message": "User information already exists"})
+    }
+    else {
+        const id = await User.add(body)
+        res.send({"id": id,  "message": "Add user success"})
+    }
+}
 async function deleteUser(req, res) {
     try {
         const deleteState = await User.delete(req.body.id);
@@ -54,5 +66,6 @@ export {
     getInfoByUser,
     updateInfo,
     allUsers,
-    deleteUser
+    deleteUser,
+    addUser
 }

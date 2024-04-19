@@ -2,7 +2,8 @@ import axios from "axios";
 import FFmpeg from 'fluent-ffmpeg'
 import multer from "multer";
 import fs from 'fs'
-import { config } from 'dotenv'
+import api_key from "../ada_api.js";
+
 export default async function speech2text(filename) {
     const fileArr = filename.split(".");
     const fileExt = fileArr.pop();
@@ -66,9 +67,9 @@ export default async function speech2text(filename) {
                     return rs.alternatives[0].transcript;
                 })
                 .join('\n');
-            return { "transcription": transcription, message: "speech 2 text success" };
+            return { "transcription": transcription, message: "SUCCESS" };
         } else {
-            return { "transcription": "", message: "speech 2 text success but no result text" };
+            return { "transcription": "", message: "NO_TEXT_FOUND" };
         }
     }
 
@@ -82,3 +83,71 @@ const storage = multer.diskStorage({
     }
 })
 export const upload = multer({ storage: storage });
+
+export function commandParser(text) {
+    const textClean = text.trim().toLowerCase();
+    let textArr = textClean.split(" ");
+    textArr = textArr.filter(w => w !== "") //remote white space
+    let rt_cmdDevice = [];
+    let rt_cmdArg = [];
+    for (let i = 0; i < textArr.length; i++) {
+        const element = textArr[i];
+        if (element in preDefineValidCmds) {
+            rt_cmdDevice.push(element);
+        }
+        if (preDefineValidArgs.includes(element)) {
+            rt_cmdArg.push(element);
+        }
+    }
+    const validCmd = [];
+    if (rt_cmdArg.length === 0 || rt_cmdDevice.length === 0) throw new Error("Can not parse command");
+    rt_cmdDevice.forEach(cmd => {
+        rt_cmdArg.forEach(arg => {
+            console.log("[-] candidate cmd:" + cmd + " " + arg)
+            if (arg in preDefineValidCmds[cmd]) {
+                //invoke
+                preDefineValidCmds[cmd][arg]();
+                validCmd.push(cmd + " " + arg);
+            }
+        });
+    });
+    return validCmd;
+}
+///////
+const preDefineValidArgs = ["on", "off", "start", "end"]
+const preDefineValidCmds = {
+    "light": {
+        "on": () => lightControl(1),
+        "off": () => lightControl(0)
+    },
+    "fan": {
+        "on": () => fanControl(1),
+        "off": () => fanControl(0)
+    },
+}
+
+async function fanControl(code) {
+    try {
+        const resp = await axios.post("https://io.adafruit.com/api/v2/phongcute/feeds/fan-con/data", {
+            "x-aio-key": api_key,
+            value: code,
+        });
+        console.log("success:" + resp.data)
+    } catch (error) {
+        console.log("Fail to control IoT fan:" + error.message)
+    }
+
+}
+async function lightControl(code) {
+    try {
+        const resp = await axios.post("https://io.adafruit.com/api/v2/phongcute/feeds/light-con/data", {
+            "x-aio-key": api_key,
+            value: code,
+        })
+        console.log("success:" + resp.data)
+    } catch (error) {
+        console.log("Fail to control IoT light:" + error.message)
+    }
+}
+
+

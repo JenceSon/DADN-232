@@ -39,3 +39,6 @@ yarn-error.*
 .idea/
 Note.txt
 ada_api.js
+
+Dockerfile
+.dockerignore

@@ -1,14 +1,13 @@
 import React, {useRef, useState} from "react";
 import {View, Text, TouchableOpacity, TextInput, ScrollView} from "react-native";
 import {Picker} from "@react-native-picker/picker";
-import {MaterialIcons} from '@expo/vector-icons';
 import {colors} from "../../style/global";
 import LottieView from "lottie-react-native";
 import CusModal from "../../components/CusModal";
 import {Audio} from "expo-av";
 import {useSelector} from "react-redux";
 import {formRequest} from "../../api/api";
-import commandParser from "./cmd-utils";
+import {MaterialIcons} from '@expo/vector-icons';
 
 export function Mic() {
     const [isMicOn, setIsMicOn] = useState(false);
@@ -98,14 +97,11 @@ export function Mic() {
             console.log(reps.data);
             if (reps.data["transcription"] != null) {
                 setRcText(prevStat => prevStat = reps.data["transcription"]);
-                try {
-                    const parsedCmdLst = commandParser(reps.data["transcription"]);
-                    let parsedCmdStr = "";
-                    parsedCmdLst.forEach(cmd => parsedCmdStr += cmd + " | ");
-                    setParsedCmd(parsedCmdStr);
-
-                } catch (error) {
-                    console.log(error.message);
+                if (reps.data["parsedCmds"] != null) {
+                    const parsedCmds = reps.data["parsedCmds"];
+                    let parsedCmdsStr = "";
+                    parsedCmds.forEach(cmd => {parsedCmdsStr += cmd + " | "});
+                    setParsedCmd(parsedCmdsStr);
                 }
             } else {
                 setRcText(prevState => prevState = "");
@@ -114,7 +110,6 @@ export function Mic() {
             console.error("Fail to translate to text: " + e.message);
         }
         setFetchP2TDone(prevState => !prevState);
-
     }
 
     function ModalError() {
