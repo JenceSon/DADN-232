@@ -135,7 +135,7 @@ export function Profile({navigation}) {
                                 marginLeft: 10,
                             }}
                         >
-                            {user.Name}
+                            {user.Name || "Unknown"}
                         </Text>
                         <View
                             style={{
@@ -193,11 +193,11 @@ export function Profile({navigation}) {
             <AnaHeader/>
             <Container type={"row"}>
                 <View className="basis-1/3">
-                    <Text>{user.Faculty}</Text>
+                    <Text>{user.Faculty || "NA"}</Text>
                     <Label labeName={"Faculty"}/>
                 </View>
                 <View className="basis-1/3">
-                    <Text>{user.Type}</Text>
+                    <Text>{user.Type || "NA"}</Text>
                     <Label labeName={"Type"}/>
                 </View>
                 <View className="basis-1/3">
@@ -208,11 +208,11 @@ export function Profile({navigation}) {
             <View>
                 {/* <View className="flex flex-col gap-2 mt-1"> */}
                 <Container type={"col"} name={"Information"}>
-                    <ContanerElemenRow label={"Full Name"} value={user.Name}/>
-                    <ContanerElemenRow label={"Phone"} value={user.Phone}/>
-                    <ContanerElemenRow label={"Email"} value={user.Email}/>
-                    <ContanerElemenRow label={"Status"} value={user.Status}/>
-                    <ContanerElemenRow label={"Type"} value={user.Type}/>
+                    <ContanerElemenRow label={"Full Name"} value={user.Name || "NA"} />
+                    <ContanerElemenRow label={"Phone"} value={user.Phone || "NA"}/>
+                    <ContanerElemenRow label={"Email"} value={user.Email || "NA"}/>
+                    <ContanerElemenRow label={"Status"} value={user.Status || "NA"}/>
+                    <ContanerElemenRow label={"Type"} value={user.Type || "NA"}/>
                 </Container>
             </View>
         </ScrollView>
