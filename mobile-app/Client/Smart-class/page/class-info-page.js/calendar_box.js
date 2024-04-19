@@ -247,13 +247,13 @@ export function CalendarBox() {
                 <Text
                   style={{
                     fontSize: 15,
-
+                    flexShrink: 1,
                     color: "gray",
                     marginLeft: 10,
                     marginTop: 3,
                   }}
                 >
-                  {item.room}: {item.time}
+                  {item.room}:{item.time}
                 </Text>
               </View>
             );

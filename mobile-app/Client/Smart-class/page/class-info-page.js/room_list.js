@@ -87,7 +87,7 @@ function parseDatefromString(from, to) {
 }
 export function RoomList() {
   const user = useSelector((state) => state.user);
-  const fetchDataGlobal = useSelector((state) => state.fetchDataGlobal)
+  const fetchDataGlobal = useSelector((state) => state.fetchDataGlobal);
   const [lissclass, setListClass] = useState([]);
   const [count, setCount] = useState(0);
 
@@ -106,8 +106,28 @@ export function RoomList() {
           },
         });
         console.log("Response: " + response.data);
+        let sortedListClass = [];
+        
+        response.data.forEach((element) => {
+          console.log("Element:",element)
+          console.log("Element From",element["from"])
+          
+          if (parseDatefromString(element["from"], element["to"]) == 1) {
+            sortedListClass.push(element);
+          }
+        });
+        response.data.forEach((element) => {
+          if (parseDatefromString(element["from"], element["to"]) == 2) {
+            sortedListClass.push(element);
+          }
+        });
+        response.data.forEach((element) => {
+          if (parseDatefromString(element["from"],element["to"]) == 0) {
+            sortedListClass.push(element);
+          }
+        });
 
-        setListClass(response.data);
+        setListClass(sortedListClass);
       } catch (error) {
         console.log("Error fetching data: " + error);
       }

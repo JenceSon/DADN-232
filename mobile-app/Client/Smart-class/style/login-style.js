@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
+import { colors } from './global';
 export const loginStyles = StyleSheet.create({
     container:{
         flex : 1,
@@ -49,7 +50,7 @@ export const loginStyles = StyleSheet.create({
         fontSize : 20,
     },
     button:{
-        marginVertical : '5%',
+        marginTop : '5%',
         height : 60,
         marginHorizontal : '5%',
         backgroundColor : '#0693F1',
@@ -60,9 +61,26 @@ export const loginStyles = StyleSheet.create({
         flexDirection : 'row'
         
     },
+    buttonUp:{
+        marginVertical : '5%',
+        height : 60,
+        marginHorizontal : '5%',
+        //backgroundColor : '#0693F1',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal : 16,
+        borderRadius : 12,
+        flexDirection : 'row'
+        
+    },
     buttonText:{
         fontSize : 20,
         color : '#ffffff',
+        fontWeight : 'bold',
+    },
+    buttonTextUp:{
+        fontSize : 20,
+        color : colors.primary80,
         fontWeight : 'bold',
     }
 });

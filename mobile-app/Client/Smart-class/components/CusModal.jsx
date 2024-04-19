@@ -1,6 +1,7 @@
 import {Modal, View, TouchableOpacity, Text, Pressable} from "react-native";
 import {colors} from "../style/global";
 import {formRegisClassStyle} from "../style/regis-class-style";
+import { loginStyles } from "../style/login-style";
 
 export default function CusModal({children, handleSubmit, isVisible, setVisibleState, title}) {
     return (
@@ -23,18 +24,18 @@ export default function CusModal({children, handleSubmit, isVisible, setVisibleS
                                        setVisibleState();
                                        if (handleSubmit !== null) handleSubmit();
                                    }}>
-                            <Text style={{color: "white", fontWeight: "500", fontSize: 16}}>
+                            <Text style={loginStyles.buttonText}>
                                 Submit
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={[
-                                formRegisClassStyle.btnStyle,
+                                loginStyles.buttonUp,
                             ]}
                             onPress={() => setVisibleState()}
                         >
                             <Text
-                                style={{color: "#acacac", fontWeight: "500", fontSize: 16}}
+                                style={loginStyles.buttonTextUp}
                             >
                                 Cancle
                             </Text>

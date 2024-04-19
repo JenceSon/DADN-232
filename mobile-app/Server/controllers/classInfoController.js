@@ -14,6 +14,7 @@ import {
   deleteDoc,
   getDocs,
   query,
+  Timestamp,
 } from "firebase/firestore";
 import fs from 'fs';
 
@@ -24,9 +25,11 @@ async function getListClassByUser(req, res) {
     const listClass = await Schedule.getByUserRef(user);
     //for each schedule, get the class room, building, light, fan
     let listClassWithInfo = [];
+    //listClass.sort((x, y) =>  {return (new Timestamp(x.From.seconds,x.From.nanoseconds)) >= y.From.toDate()})
 
     for await (const schedule of listClass) {
       const classRoom = await getDoc(schedule.Location);
+
       const from = schedule.From.toDate().toLocaleString();
       const to = schedule.To.toDate().toLocaleString();
       listClassWithInfo.push({
