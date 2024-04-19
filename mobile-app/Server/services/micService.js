@@ -111,7 +111,6 @@ export function commandParser(text) {
             }
         });
     });
-    console.log(validCmd);
     return validCmd;
 }
 ///////
@@ -127,12 +126,13 @@ const preDefineValidCmds = {
     },
 }
 
-function fanControl(code) {
+async function fanControl(code) {
     try {
-        axios.post("https://io.adafruit.com/api/v2/phongcute/feeds/fan-con/data"), {
+        const resp = await axios.post("https://io.adafruit.com/api/v2/phongcute/feeds/fan-con/data", {
             "x-aio-key": api_key,
             value: code,
-        }
+        });
+        console.log("success:" + resp.data)
     } catch (error) {
         console.log("Fail to control IoT fan:" + error.message)
     }
@@ -140,10 +140,11 @@ function fanControl(code) {
 }
 async function lightControl(code) {
     try {
-        const cmdResp = await axios.post("https://io.adafruit.com/api/v2/phongcute/feeds/light-con/data", {
+        const resp = await axios.post("https://io.adafruit.com/api/v2/phongcute/feeds/light-con/data", {
             "x-aio-key": api_key,
             value: code,
         })
+        console.log("success:" + resp.data)
     } catch (error) {
         console.log("Fail to control IoT light:" + error.message)
     }

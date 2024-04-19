@@ -7,6 +7,7 @@ import CusModal from "../../components/CusModal";
 import {Audio} from "expo-av";
 import {useSelector} from "react-redux";
 import {formRequest} from "../../api/api";
+import {MaterialIcons} from '@expo/vector-icons';
 
 export function Mic() {
     const [isMicOn, setIsMicOn] = useState(false);
@@ -96,8 +97,11 @@ export function Mic() {
             console.log(reps.data);
             if (reps.data["transcription"] != null) {
                 setRcText(prevStat => prevStat = reps.data["transcription"]);
-                if (reps.data["parsedCmd"] != null) {
-                    setParsedCmd(reps.data["parsedCmd"])
+                if (reps.data["parsedCmds"] != null) {
+                    const parsedCmds = reps.data["parsedCmds"];
+                    let parsedCmdsStr = "";
+                    parsedCmds.forEach(cmd => {parsedCmdsStr += cmd + " | "});
+                    setParsedCmd(parsedCmdsStr);
                 }
             } else {
                 setRcText(prevState => prevState = "");
