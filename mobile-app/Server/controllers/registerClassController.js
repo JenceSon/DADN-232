@@ -41,6 +41,9 @@ async function registerRoom(req,res){
     */
     try {
         console.log(body)
+        const from = new Date(body.FromTime)
+        const to = new Date(body.ToTime)
+
         const allSchedules = await Schedule.getAll();
         const idSchedules = allSchedules.map(item => parseInt(item.id))
         const id = String(Math.max(...idSchedules) + 1)
@@ -59,18 +62,19 @@ async function registerRoom(req,res){
             }
         }
 
-        if (body.FromTime <= now){
+        if (from <= now){
             invalid.push("From-time must after 1 hour from system time")
         }
-        if (body.FromTime >= body.ToTime){
+        if (from >= to){
             invalid.push("From-time can not be after to-time")
         }
 
         //check conflict
         for (const schedule of allSchedules){
+            console.log(schedule.Location)
             if (schedule.Location == body.Classroom){
-                if ((schedule.FromTime <= body.FromTime && body.FromTime <= schedule.ToTime) || 
-                (schedule.FromTime <= body.ToTime && body.ToTime <= schedule.ToTime) ){
+                if ((schedule.FromTime <= from && from <= schedule.ToTime) || 
+                (schedule.FromTime <= to && to <= schedule.ToTime) ){
                     invalid.push("Conflict with range from "+schedule.FromTime.toLocaleString() + " to " + schedule.ToTime.toLocaleString())                   
                 }
             }
