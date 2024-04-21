@@ -12,6 +12,8 @@ import Modal from "react-native-modal";
 import * as ImagePicker from "expo-image-picker";
 import api from "../../api/api";
 import { useSelector } from "react-redux";
+import { colors } from "../../style/global";
+
 function parseDatefromString(from, to) {
   //string is in format 4/11/2024, 12:00:00 AM
   const nowDate = new Date();
@@ -233,7 +235,7 @@ export function RoomList() {
           ) : parseDatefromString(item.from, item.to) == 1 ? (
             <Text style={{ color: "green" }}> Ongoing</Text>
           ) : (
-            <Text style={{ color: "yellow" }}> Upcoming</Text>
+            <Text style={{ color: colors.primary80 }}> Upcoming</Text>
           )}
         </View>
       </Pressable>
