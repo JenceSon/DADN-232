@@ -34,7 +34,8 @@ function parseDatefromString(from, to) {
   let fromampm = fromsecond.split(" ")[1];
 
   if (fromampm == "PM") {
-    fromhour = parseInt(fromhour) + 12;
+    if (parseInt(fromhour) == 12){}
+    else fromhour = parseInt(fromhour) + 12;
   }
 
   //delete last 3 characters of second
@@ -64,7 +65,8 @@ function parseDatefromString(from, to) {
   let toampm = tosecond.split(" ")[1];
 
   if (toampm == "PM") {
-    tohour = parseInt(tohour) + 12;
+    if (parseInt(fromhour) == 12){}
+    else tohour = parseInt(tohour) + 12;
   }
 
   //delete last 3 characters of second

@@ -41,7 +41,8 @@ export function CalendarBox() {
     let fromampm = fromsecond.split(" ")[1];
   
     if (fromampm == "PM") {
-      fromhour = parseInt(fromhour) + 12;
+      if (parseInt(fromhour) == 12){}
+      else fromhour = parseInt(fromhour) + 12;
     }
   
     //delete last 3 characters of second
@@ -230,7 +231,7 @@ export function CalendarBox() {
                 marginTop: 4,
               }}
             >
-              Today upcoming class{" "}
+              Today class{" "}
             </Text>
           </View>
           {roomToday.map((item) => {
