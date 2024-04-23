@@ -36,8 +36,13 @@ async function updateInfo(req, res) {
 async function addUser(req, res) {
     const body = req.body;
     const user = await User.get(body.id)
-    if (user != null) {
-        res.send({"message": "User information already exists"})
+    let allUsers = await User.all()
+    allUsers = (allUsers == undefined)? []:allUsers
+    let emails = allUsers.map(item => String(item.Email))
+    emails = (emails == undefined)? []:emails
+    console.log(emails)
+    if (user != null || emails.some(item => item == body.Email)) {
+        res.send({"message": "User information already exists : "+ ((user != null)? user.id: body.Email)})
     }
     else {
         const id = await User.add(body)

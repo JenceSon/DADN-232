@@ -1,5 +1,5 @@
 import React, {useCallback, useRef, useState} from "react";
-import {Text, TouchableOpacity, View, Image, ScrollView} from "react-native";
+import {Text, TouchableOpacity, View, Image, ScrollView, Alert} from "react-native";
 import {useSelector, useDispatch} from "react-redux";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
 import {colors} from "../../style/global";
@@ -17,9 +17,13 @@ export function Profile({navigation}) {
     const [updateProfile, setUpdateProfile] = useState(false)
     const navigator = useNavigation();
 
-    const userUpdate = useRef(
-        {Name: "", Phone: "", Faculty: "", Status: "", Type: ""})
-
+    const userUpdate = useRef({
+        Name: (user.Name)? user.Name:"", 
+        Phone: (user.Phone)? user.Phone:"", 
+        Faculty: (user.Faculty)? user.Faculty : "", 
+        Status: (user.Status)? user.Status : "", 
+        Type: (user.Type)? user.Type : ""
+    })
     const UpdateProfileModal = () => {
         return (
             <>
@@ -34,7 +38,9 @@ export function Profile({navigation}) {
                             label={"Full Name"}
                             placeholder="Nguyễn Văn An"
                             className={"flex-auto w-64"}
+                            mode="outlined"
                             value={userUpdate["name"]}
+                            defaultValue={(user.Name)? user.Name:""}
                             onChangeText={newText => userUpdate.current["Name"] = newText}
                         />
                         <TextInput
@@ -42,20 +48,26 @@ export function Profile({navigation}) {
                             className={"flex-auto w-64"}
                             placeholder="0913990009"
                             value={userUpdate["phone"]}
+                            mode="outlined"
+                            defaultValue={(user.Phone)? user.Phone:""}
                             onChangeText={newText => userUpdate.current["Phone"] = newText}
                         />
                         <TextInput
                             label={"Faculty"}
                             className={"flex-auto w-64"}
                             placeholder="CSE"
+                            mode="outlined"
                             value={userUpdate["Faculty"]}
+                            defaultValue={(user.Faculty)? user.Faculty : ""}
                             onChangeText={newText => userUpdate.current["Faculty"] = newText}
                         />
                         <TextInput
                             label={"Status"}
                             className={"flex-auto w-64"}
                             placeholder="On Learning"
+                            mode="outlined"
                             value={userUpdate["Status"]}
+                            defaultValue={(user.Status)? user.Status : ""}
                             onChangeText={newText => userUpdate.current["Status"] = newText}
                         />
                         <TextInput
@@ -63,6 +75,8 @@ export function Profile({navigation}) {
                             className={"flex-auto w-64"}
                             placeholder="Formal"
                             value={userUpdate["Type"]}
+                            mode="outlined"
+                            defaultValue={(user.Type)? user.Type : ""}
                             onChangeText={newText => userUpdate.current["Type"] = newText}
                         />
                     </View>
@@ -85,11 +99,17 @@ export function Profile({navigation}) {
             console.log(data)
             const updResp = await api.post("/api/profile/updateInfo",
                 data)
-            dispatch(setName(userUpdate.current["Name"]));
-            dispatch(setPhone(userUpdate.current["Phone"]));
-            dispatch(setFaculty(userUpdate.current["Faculty"]));
-            dispatch(setStatus(userUpdate.current["Status"]));
-            dispatch(setType(userUpdate.current["Type"]));
+            if (updResp.data.newUser){
+                Alert.alert("Success", updResp.data.message,[{text : 'OK'}])
+                dispatch(setName(userUpdate.current["Name"]));
+                dispatch(setPhone(userUpdate.current["Phone"]));
+                dispatch(setFaculty(userUpdate.current["Faculty"]));
+                dispatch(setStatus(userUpdate.current["Status"]));
+                dispatch(setType(userUpdate.current["Type"]));
+            }
+            else{
+                Alert.alert("Fail",updResp.data.message,[{text:'OK'}])
+            }
         } catch (e) {
             console.log("Update user profile fail:" + e.message);
         }

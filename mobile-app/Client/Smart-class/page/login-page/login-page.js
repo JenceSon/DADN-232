@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Modal,
+  Alert,
 } from "react-native";
 import { loginStyles } from "../../style/login-style";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -104,6 +105,12 @@ export function Login() {
     try {
       const postResp = await api.post("/api/profile/add", signUpInfo.current);
       console.log(postResp.data);
+      if (postResp.data.id){
+        Alert.alert("Success",postResp.data.message,[{ text : 'OK'}])
+      }
+      else{
+        Alert.alert("Fail",postResp.data.message,[{text : 'OK'}])
+      }
     } catch (e) {
       console.log("Sign up fail:" + e.message);
     }
