@@ -342,7 +342,7 @@ export function RoomList() {
                   fontWeight: "bold",
                 }}
               >
-                Attendance:
+                Attendance
               </Text>
               <Text>{noStu}</Text>
             </View>
@@ -363,7 +363,7 @@ export function RoomList() {
               style={{
                 backgroundColor: "white",
                 height: 100,
-                width: "45%",
+                width: "100%",
                 borderRadius: 20,
                 shadowColor: "#171717",
                 shadowOffset: { width: 1, height: 2 },
@@ -374,26 +374,8 @@ export function RoomList() {
                 alignItems: "center",
               }}
             >
-              <Text>Light</Text>
+              <Text style ={{fontWeight : 'bold'}}>Light</Text>
               <Text>{Light} lux</Text>
-            </View>
-            <View
-              style={{
-                backgroundColor: "white",
-                height: 100,
-                width: "45%",
-                borderRadius: 20,
-                shadowColor: "#171717",
-                shadowOffset: { width: 1, height: 2 },
-                shadowOpacity: 0.25,
-                shadowRadius: 3,
-                elevation: 5,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text>Humidity</Text>
-              <Text>60%</Text>
             </View>
           </View>
         </Pressable>

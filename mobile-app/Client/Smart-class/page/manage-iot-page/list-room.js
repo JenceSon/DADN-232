@@ -70,7 +70,7 @@ export function ListRoom() {
             <View style={manageIOTStyles.container}>
                 <View>
                     <Text style={manageIOTStyles.typeText}>
-                        On classes
+                        On going
                     </Text>
                     <FlatList
                         data={disPlayListOn}
@@ -119,7 +119,7 @@ export function ListRoom() {
                 </View>
                 <View>
                     <Text style={manageIOTStyles.typeText}>
-                        Off classes
+                        Up coming
                     </Text>
                     <FlatList
                         data={disPlayListOff}
