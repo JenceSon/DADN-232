@@ -4,30 +4,34 @@
 
 SMART-CLASS is a mobile app that provides teachers and students with the remote controlling IoT devices service in classrooms. This also helps adming to keep track the information of each IoT devices and create/delete/update devices
 
-## Tính năng
+## Features
 
 ### Manage information of class
 
-- **Điểm danh tự động**: ClassRoomIQ tự động điểm danh học sinh khi họ nhập lớp học, giúp tiết kiệm thời gian và giảm thiểu sai sót.
-- **Lên kế hoạch bài giảng**: Giáo viên có thể lên kế hoạch bài giảng trước và chia sẻ với học sinh để họ có thể chuẩn bị trước.
-- **Quản lý tài liệu**: Dễ dàng tải lên và chia sẻ tài liệu giảng dạy, bài giảng, và tài liệu tham khảo khác.
+- **Keep track the information of degree, light** : get the information about degree and light of a class room via IoT devices
+- **Following the attendances in class** : integrate the YOLOv8 model to detect a number of students in class
 
-### Tương tác học tập
+### Manage IoT
 
-- **Diễn đàn lớp học**: Học sinh có thể thảo luận và chia sẻ ý kiến trên diễn đàn lớp học, tạo một không gian học tập xã hội.
-- **Trò chơi giáo dục**: ClassRoomIQ cung cấp các trò chơi giáo dục để làm cho quá trình học tập trở nên thú vị và hấp dẫn hơn.
-- **Phản hồi tức thì**: Học sinh có thể nhận phản hồi ngay lập tức từ giáo viên qua chat hoặc bình luận, giúp họ hiểu rõ hơn về bài học.
+- **As admin**: can add/delete/adjust all the IoT devices
+- **As student/teacher**: can only adjust the IoT devices (turn on/off) in classrooms which they registerd
 
-## Tính tương thích
+### Control IoT devices via microphone (student/teacher only)
 
-ClassRoomIQ có sẵn trên nhiều nền tảng, bao gồm:
+- Control IoT devices remotely via microphone and convert speech to text technology
 
-- **Web**: Để truy cập từ máy tính cá nhân hoặc máy tính bảng.
-- **Ứng dụng di động**: Để dễ dàng truy cập từ bất kỳ đâu, bất kỳ khi nào.
+### Register class and turn on/off automatically 
 
-## Tính bảo mật
+- Student or teacher can register classrooms which haven't been registerd yet
+- The room which was registerd will be automatically turned on/off its IoT devices when the schedule starts or expires
 
-Chúng tôi đặt sự bảo mật là ưu tiên hàng đầu. ClassRoomIQ bảo vệ thông tin cá nhân của học sinh và giáo viên và tuân thủ các tiêu chuẩn bảo mật quốc tế.
+### Profile
+
+- View and update the information of user themselves 
+
+## Security
+
+- Hashcode password of each user
 
 ## Bắt đầu sử dụng
 If you want to host server locally yourself, make sure that your local system help :
