@@ -33,7 +33,7 @@ SMART-CLASS is a mobile app that provides teachers and students with the remote 
 
 - Hashcode password of each user
 
-## Bắt đầu sử dụng
+## Instructions
 If you want to host server locally yourself, make sure that your local system help :
 - **Nodejs** : you can download nodejs from the official [website](https://nodejs.org/en)
 - **Python** : you can download python from the offical [website](https://www.python.org/)
