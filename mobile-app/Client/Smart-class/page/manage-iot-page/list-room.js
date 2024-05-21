@@ -77,17 +77,19 @@ export function ListRoom() {
                         contentContainerStyle={manageIOTStyles.containerFlat}
                         //contentContainerStyle = {'20%'}
                         keyExtractor={(item) => item.name}
-                        renderItem={({ item }) => (
+                        renderItem={({ item, index }) => (
                             <Pressable
                                 style={() => {
-                                    if (disPlayList.indexOf(item) % 2 == 0) {
+                                    if (index % 2 == 0) {
                                         buttonText = manageIOTStyles.buttonText2
                                         iconColor = 'black'
                                         return manageIOTStyles.button1Room
                                     }
-                                    buttonText = manageIOTStyles.buttonText1
-                                    iconColor = 'white'
-                                    return manageIOTStyles.button2Room
+                                    else{
+                                        buttonText = manageIOTStyles.buttonText1
+                                        iconColor = 'white'
+                                        return manageIOTStyles.button2Room
+                                    }
                                 }}
                                 onPress={() => {
                                     if (item.status) {
